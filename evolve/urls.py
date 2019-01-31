@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls.static import static
-from Ek_Step import settings
+from evolve import settings
 
 
 admin.site.site_header = "Evolve Administration"

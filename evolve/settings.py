@@ -91,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('evolve', 'evolvedb'),
         'USER': 'postgres',
-        'PASSWORD': os.environ.get('EK_STEPDB_PASSWORD', 'password'),
+        'PASSWORD': os.environ.get('EK_STEPDB_PASSWORD', 'Root@12345'),
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '',
         # 'OPTIONS': {'charset': 'utf-8'},
