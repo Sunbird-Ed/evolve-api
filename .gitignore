@@ -7,3 +7,4 @@
 *static_root
 .env
 .vscode
+**/**/*.pyc
