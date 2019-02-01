@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.configuration',
     'apps.hardspot',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -161,3 +162,4 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT=os.path.join(BASE_DIR, 'static')
 
+AUTH_USER_MODEL = 'user.EvolveUser'
