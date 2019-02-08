@@ -1,11 +1,21 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
+from django.contrib.auth.models import PermissionsMixin,AbstractUser
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.utils.translation import ugettext_lazy as _
+from apps.configuration.models import State
 
-# Create your models here.
 class EvolveUser(AbstractUser):
-    # add additional fields in here
-    identifier=models.CharField(max_length=200)
-
+    pass
     
-    def __str__(self):
-        return self.username
+class Roles(models.Model):
+    rolename=models.CharField(max_length=200)
+
+
+
+class UserDetails(models.Model):
+    state=models.ForeignKey(State,on_delete=models.CASCADE)
+    role=models.ForeignKey(Roles,on_delete=models.CASCADE)
+    user=models.OneToOneField(EvolveUser,on_delete=models.CASCADE, to_field='id', primary_key=True)
+
+

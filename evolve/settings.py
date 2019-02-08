@@ -25,8 +25,7 @@ SECRET_KEY = '0^q+@03g_-3eh*!ia0_u*j(&%k(wy%3px^%qpw43do5%_emsg8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["localhost", "d6bca3d8.ngrok.io", 'localhost:8080']
 
 # Application definition
 
@@ -40,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.configuration',
     'apps.hardspot',
+    'apps.content',
+    'apps.dataupload',
     'user',
 ]
 
@@ -136,7 +137,9 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser'
     ),
 }
-
+AUTHENTICATION_BACKENDS = (
+    ('django.contrib.auth.backends.ModelBackend'),
+)
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
