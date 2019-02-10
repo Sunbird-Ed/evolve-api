@@ -12,7 +12,7 @@ urlpatterns = [
     path('hardspotcontributors', views.HardSpotContributorCreateView.as_view(), name= "HardSpotContributorCreate"),
     path('hardspotvisiterslist', views.HardspotContributorDownloadView.as_view(), name= "HardspotContributorDownloadView"),
     path('contentvisiterslist', views.ContentContributorDownloadView.as_view(), name= "ContentContributorDownloadView"),
+    path('approvedhardspotdownload', views.ApprovedHardSpotDownloadView.as_view(), name= "ApprovedHardSpotDownloadView"),
     path('hardspotstatusdownload', views.HardSpotStatusDownloadView.as_view(), name= "HardSpotStatusDownloadView"),
-    path('contentstatusdownload', views.ContentStatusDownloadView.as_view(), name= "ContentStatusDownloadView")
-  
+
     ]

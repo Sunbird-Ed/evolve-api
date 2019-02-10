@@ -12,9 +12,9 @@ from apps.configuration.models import State,Book,Medium,Grade,Subject
 from .models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword
 from evolve import settings
 from django.core.files.storage import FileSystemStorage
-
 import pandas as pd
 
+@permission_classes((IsAuthenticated,))
 class TOCUploadView(ListCreateAPIView):
     queryset = Chapter.objects.all()
 

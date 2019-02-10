@@ -9,17 +9,17 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from apps.configuration.models import Book
-from apps.dataupload.models import Chapter
+from apps.dataupload.models import Chapter,Section,SubSection
 from .models import HardSpot,HardSpotContributors
 from apps.content.models import Content, ContentContributors
-from .serializers import HardSpotCreateSerializer,BookNestedSerializer, HardSpotUpdateSerializer, HardspotStatusSerializer, ContentStatusSerializer, HardspotVisitersSerializer, ContentVisitersSerializer,HardSpotContributorSerializer
+from .serializers import HardSpotCreateSerializer,BookNestedSerializer, HardSpotUpdateSerializer, HardspotVisitersSerializer, ContentVisitersSerializer,HardSpotContributorSerializer,ApprovedHardSpotSerializer,HardspotStatusSerializer
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 import pandas as pd
 from evolve import settings
 
 
-# 
+
 class HardSpotListOrCreateView(ListCreateAPIView):
     queryset = HardSpot.objects.all()
     serializer_class = HardSpotCreateSerializer
@@ -215,65 +215,6 @@ class HardSpotUpdateView(RetrieveUpdateAPIView):
             context = {'error': str(error), 'success': "false", 'message': 'Failed To Update Hardsport Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
-    queryset = HardSpot.objects.all()
-    serializer_class = HardSpotCreateSerializer
-
-    def get(self, request):
-        try:
-            # import ipdb; ipdb.set_trace()
-            final_list = []
-            import os
-            from shutil import copyfile
-            book_id = request.query_params.get('book', None)
-            if book_id is not None:
-                chapters=Chapter.objects.filter(book__id=book_id)
-            serializer = HardspotStatusSerializer(chapters, many=True)
-            for data in serializer.data:
-                for d in data['chapter']:
-                    final_list.append(d)
-
-            data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_Hardspot', 'rejected_hardspot', 'pending_hardspot'])
-            exists = os.path.isfile('hardspotstatus.xlsx')
-            path = settings.MEDIA_ROOT + '/files/'
-            if exists:
-                os.remove('hardspotstatus.xlsx')
-            data_frame.to_excel(path + 'hardspotstatus.xlsx')
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspotstatus.xlsx'}
-            return Response(context, status=status.HTTP_200_OK)
-        except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
-            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class ContentStatusDownloadView(RetrieveUpdateAPIView):
-    queryset = HardSpot.objects.all()
-    serializer_class = HardSpotCreateSerializer
-
-    def get(self, request):
-        try:
-            # import ipdb; ipdb.set_trace()
-            final_list = []
-            import os
-            from shutil import copyfile
-            book_id = request.query_params.get('book', None)
-            if book_id is not None:
-                chapters=Chapter.objects.filter(book__id=book_id)
-            serializer = ContentStatusSerializer(chapters, many=True)
-            for data in serializer.data:
-                for d in data['chapter']:
-                    final_list.append(d)
-
-            data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_contents', 'rejected_contents', 'pending_contents', 'hard_spots'])
-            exists = os.path.isfile('contentstatus.xlsx')
-            path = settings.MEDIA_ROOT + '/files/'
-            if exists:
-                os.remove('contentstatus.xlsx')
-            data_frame.to_excel(path + 'contentstatus.xlsx')
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/contentstatus.xlsx'}
-            return Response(context, status=status.HTTP_200_OK)
-        except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
-            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class HardspotContributorDownloadView(RetrieveUpdateAPIView):
     queryset = HardSpotContributors.objects.all()
@@ -368,4 +309,75 @@ class HardSpotContributorCreateView(ListCreateAPIView):
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to Personal Details.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@permission_classes((IsAuthenticated,))
+class ApprovedHardSpotDownloadView(ListAPIView):
+    queryset = Book.objects.all()
+
+    def get(self, request):
+        try:
+            final_list = []
+            import os
+            from shutil import copyfile
+            book = request.query_params.get('book', None)
+            if book is not None:
+                chapters=Chapter.objects.filter(book_id=book)
+                serializer = ApprovedHardSpotSerializer(chapters, many=True)
+                for data in serializer.data:
+                    for d in data['chapter']:
+                        if len(d) == 13:
+                            final_list.append(d)
+                        elif len(d) == 11:
+                            d.append(" ")
+                            d.append(" ")
+                            final_list.append(d)
+                        elif len(d) == 12:
+                            d.append(" ")
+                            final_list.append(d)
+
+                data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','hard_spot','description','points_to_be_covered','useful_to'])
+                exists = os.path.isfile('ApprovedHardSpot.csv')
+                path = settings.MEDIA_ROOT + '/files/'
+                if exists:
+                    os.remove('ApprovedHardSpot.csv')
+                data_frame.to_csv(path + 'ApprovedHardSpot.csv', encoding="utf-8-sig", index=False)
+        
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/ApprovedHardSpot.csv'}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
+    queryset = HardSpot.objects.all()
+    serializer_class = HardSpotCreateSerializer
+
+    def get(self, request):
+        try:
+            # import ipdb; ipdb.set_trace()
+            final_list = []
+            import os
+            from shutil import copyfile
+            book_id = request.query_params.get('book', None)
+            if book_id is not None:
+                chapters=Chapter.objects.filter(book__id=book_id)
+            serializer = HardspotStatusSerializer(chapters, many=True)
+            for data in serializer.data:
+                for d in data['chapter']:
+                    final_list.append(d)
+
+            data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_Hardspot', 'rejected_hardspot', 'pending_hardspot'])
+            exists = os.path.isfile('hardspotstatus.xlsx')
+            path = settings.MEDIA_ROOT + '/files/'
+            if exists:
+                os.remove('hardspotstatus.xlsx')
+            data_frame.to_excel(path + 'hardspotstatus.xlsx')
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspotstatus.xlsx'}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

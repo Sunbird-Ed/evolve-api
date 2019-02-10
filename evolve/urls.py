@@ -28,6 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('hardspot/', include('apps.hardspot.urls')),
     path('config/', include('apps.configuration.urls')),
+    path('content/', include('apps.content.urls')),
     path('toc/', include('apps.dataupload.urls')),
     path('user/', include('user.urls')),
 

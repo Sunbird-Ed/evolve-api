@@ -12,7 +12,9 @@ urlpatterns = [
     path('status',views.ContentStatusList.as_view(),name="ContentStatusList"),
     path('rejected',views.ContentRejectedList.as_view(),name="ContentRejectedList"),
     path('keywords',views.Keywords.as_view(),name="keywords"),
-    path('contentcontributors', views.ContentContributorCreateView.as_view(), name= "ContentContributorCreate")
+    path('contentcontributors', views.ContentContributorCreateView.as_view(), name= "ContentContributorCreate"),
+    path('approvedcontentdownload', views.ApprovedContentDownloadView.as_view(), name= "ApprovedContentDownload"),
+    path('contentstatusdownload', views.ContentStatusDownloadView.as_view(), name= "ContentStatusDownloadView"),
 
 
     ]

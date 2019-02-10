@@ -9,14 +9,16 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from apps.configuration.models import Book
-
+from apps.hardspot.models import  HardSpot
 from .models import Content,ContentContributors
-from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer
+from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer,ApprovedContentSerializer,ContentStatusSerializer,HardSpotCreateSerializer
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 from rest_framework.parsers import MultiPartParser
 from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword
 import json
+import pandas as pd
+from evolve import settings
 
 class ContentList(ListCreateAPIView):
     queryset = Content.objects.all()
@@ -284,3 +286,72 @@ class ContentContributorCreateView(ListCreateAPIView):
             context = {'error': str(error), 'success': "false", 'message': 'Failed to Personal Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   
+
+
+class ApprovedContentDownloadView(ListAPIView):
+    queryset = Book.objects.all()
+
+    def get(self, request):
+        try:
+            final_list = []
+            import os
+            from shutil import copyfile
+            book = request.query_params.get('book', None)
+            # chapters=Chapter.objects.all()
+            chapters=Chapter.objects.filter(book_id=book)
+            serializer = ApprovedContentSerializer(chapters, many=True)
+            for data in serializer.data:
+                for d in data['chapter']:
+                    if len(d) == 13:
+                        final_list.append(d)
+                    elif len(d) == 11:
+                        d.append(" ")
+                        d.append(" ")
+                        final_list.append(d)
+                    elif len(d) == 12:
+                        d.append(" ")
+                        final_list.append(d)
+
+            data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','content_name','video','rating','comment'])
+            exists = os.path.isfile('ApprovedContent.csv')
+            path = settings.MEDIA_ROOT + '/files/'
+            if exists:
+                os.remove('ApprovedContent.csv')
+            data_frame.to_csv(path + 'ApprovedContent.csv', encoding="utf-8-sig", index=False)
+     
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/ApprovedContent.csv'}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ContentStatusDownloadView(RetrieveUpdateAPIView):
+    queryset = HardSpot.objects.all()
+    serializer_class = HardSpotCreateSerializer
+
+    def get(self, request):
+        try:
+            # import ipdb; ipdb.set_trace()
+            final_list = []
+            import os
+            from shutil import copyfile
+            book_id = request.query_params.get('book', None)
+            if book_id is not None:
+                chapters=Chapter.objects.filter(book__id=book_id)
+            serializer = ContentStatusSerializer(chapters, many=True)
+            for data in serializer.data:
+                for d in data['chapter']:
+                    final_list.append(d)
+
+            data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_contents', 'rejected_contents', 'pending_contents', 'hard_spots'])
+            exists = os.path.isfile('contentstatus.xlsx')
+            path = settings.MEDIA_ROOT + '/files/'
+            if exists:
+                os.remove('contentstatus.xlsx')
+            data_frame.to_excel(path + 'contentstatus.xlsx')
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/contentstatus.xlsx'}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

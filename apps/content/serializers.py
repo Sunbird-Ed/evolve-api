@@ -442,3 +442,166 @@ class ContentContributorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContentContributors
         fields='__all__'
+
+
+
+
+
+class ContentDownloadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Content
+        fields=('content_name','video','rating','comment')
+
+class ApprovedContentSerializer(serializers.ModelSerializer):
+    chapter=serializers.SerializerMethodField()
+   
+    class Meta:
+        model = Chapter
+       
+        fields = ['chapter']
+
+    
+
+    def get_chapter(self, req):
+        data_str_list = []
+        # import ipdb; ipdb.set_trace()
+        chapters=Chapter.objects.filter(chapter=req.chapter).first()
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=True)
+        section = " "
+        sub_section = " "
+        tempList.append(section)
+        tempList.append(sub_section)
+        keyword = ""
+        chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id)
+        for keys in chapter_keyword:
+            keyword =  keyword + keys.keyword + ", "
+        tempList.append(keyword)
+        
+        if chapter_content.exists():
+    
+            
+            serializer = ContentDownloadSerializer(chapter_content, many=True)
+            for data in serializer.data:
+                for key, value in data.items():
+                    tempList.append(value)
+       
+        data_str_list.append( tempList )
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        sections=Section.objects.filter(chapter=req)
+        if sections.exists():
+            for section_data in sections:
+                tempList.append(section_data.section)
+                sec_content = Content.objects.filter(section__id=section_data.id,approved=True)
+                sub_section = " "
+                tempList.append(sub_section)
+                keyword = ""
+                section_keyword = SectionKeyword.objects.filter(section__id=section_data.id)
+                for keys in section_keyword:
+                    keyword = keyword + keys.keyword + ", "
+                tempList.append(keyword)
+                if sec_content.exists():
+              
+                    
+                    serializer = ContentDownloadSerializer(sec_content, many=True)
+                    for data in serializer.data:
+                        for key, value in data.items():
+                            tempList.append(value)
+                
+                data_str_list.append( tempList )
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                sub_section=SubSection.objects.filter(section__id=section_data.id)
+                if sub_section.exists():
+                    for sub_section_data in sub_section:
+                        tempList.append( sub_section_data.sub_section )
+                        keyword = ""
+                        sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id)
+                        for keys in sub_section_keyword:
+                            keyword = keyword + keys.keyword + ", "
+                        tempList.append(keyword)
+
+                        sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
+                        if sub_sec_content.exists():
+                           
+                            serializer = ContentDownloadSerializer(sub_sec_content, many=True)
+                            for data in serializer.data:
+                                for key, value in data.items():
+                                    tempList.append(value)
+                    
+                        data_str_list.append( tempList )
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
+        return data_str_list
+    
+class ContentStatusSerializer(serializers.ModelSerializer):
+    chapter=serializers.SerializerMethodField()
+    # section=serializers.SerializerMethodField()
+    # sub_section=serializers.SerializerMethodField()
+    class Meta:
+        model = Chapter
+        fields = ['chapter']
+    # def get_section(self, obj):
+    #     section = section.objects.filter(chapter=obj.id)
+    def get_chapter(self, req):
+        # import ipdb; ipdb.set_trace()
+        data_str_list = []
+        chapters=Chapter.objects.filter(chapter=req.chapter).first()
+        sections=Section.objects.filter(chapter=req)
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        if sections.exists():
+            for section_data in sections:
+                sub_section=SubSection.objects.filter(section__id=section_data.id)
+                tempList.append( section_data.section )
+                if sub_section.exists():
+                    for sub_section_data in sub_section:
+                        tempList.append( sub_section_data.sub_section )
+                        # print(sub_section_data, section_data, chapters)
+                        total = Content.objects.filter(sub_section__id=sub_section_data.id).count()
+                        approved = Content.objects.filter(sub_section__id=sub_section_data.id, approved=True).count()
+                        rejected = Content.objects.filter(sub_section__id=sub_section_data.id, approved=False).exclude(approved_by=None).count()
+                        pending = Content.objects.filter(sub_section__id=sub_section_data.id, approved=False, approved_by=None).count()
+                        hard_spot = HardSpot.objects.filter(sub_section__id=sub_section_data.id).count()
+                        tempList.append(total)
+                        tempList.append(approved)
+                        tempList.append(rejected)
+                        tempList.append(pending)
+                        tempList.append(hard_spot)
+                        data_str_list.append( tempList )
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                else:
+                    sub_section = " "
+                    tempList.append(sub_section)
+                    total = Content.objects.filter(section__id=section_data.id).count()
+                    approved = Content.objects.filter(section__id=section_data.id, approved=True).count()
+                    rejected = Content.objects.filter(section__id=section_data.id, approved=False).exclude(approved_by=None).count()
+                    pending = Content.objects.filter(section__id=section_data.id, approved=False, approved_by=None).count()
+                    hard_spot = HardSpot.objects.filter(section__id=section_data.id).count()
+                    tempList.append(total)
+                    tempList.append(approved)
+                    tempList.append(rejected)
+                    tempList.append(pending)
+                    tempList.append(hard_spot)
+                    data_str_list.append( tempList )
+                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        else:
+            section = " "
+            sub_section = " "
+            
+            tempList.append(section)
+            tempList.append(sub_section)
+            total = Content.objects.filter(chapter__id=chapters.id).count()
+            approved = Content.objects.filter(chapter__id=chapters.id, approved=True).count()
+            rejected = Content.objects.filter(chapter__id=chapters.id, approved=False).exclude(approved_by=None).count()
+            pending = Content.objects.filter(chapter__id=chapters.id, approved=False, approved_by=None).count()
+            hard_spot = HardSpot.objects.filter(chapter__id=chapters.id).count()
+            tempList.append(total)
+            tempList.append(approved)
+            tempList.append(rejected)
+            tempList.append(pending)
+            tempList.append(hard_spot)
+            data_str_list.append( tempList )
+        # print (data_str_list)
+        # print (data_list)
+
+        return data_str_list
