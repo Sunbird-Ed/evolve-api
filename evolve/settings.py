@@ -25,7 +25,7 @@ SECRET_KEY = '0^q+@03g_-3eh*!ia0_u*j(&%k(wy%3px^%qpw43do5%_emsg8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "d6bca3d8.ngrok.io", 'localhost:8080']
+ALLOWED_HOSTS = ["localhost", "edf90345.ngrok.io", 'localhost:8080']
 
 # Application definition
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.hardspot',
     'apps.content',
     'apps.dataupload',
+    'rest_framework',
     'user',
 ]
 
@@ -91,10 +92,10 @@ CORS_ORIGIN_REGEX_WHITELIST = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('evolve', 'evolvedb'),
-        'USER': 'postgres',
-        'PASSWORD': os.environ.get('EK_STEPDB_PASSWORD', 'Root@12345'),
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'NAME': os.environ.get(EVOLVE_DB_NAME),
+        'USER': os.environ.get(EVOLVE_DB_USER),
+        'PASSWORD': os.environ.get(EVOLVE_DB_USER),
+        'HOST': os.environ.get(EVOLVE_DB_USER),   # Or an IP Address that your DB is hosted on
         'PORT': '',
         # 'OPTIONS': {'charset': 'utf-8'},
     }
