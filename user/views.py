@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.generics import (
     ListAPIView,
     ListCreateAPIView,
-    ListAPIView,
+    CreateAPIView,
     RetrieveUpdateAPIView,)
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -25,7 +25,7 @@ from django.contrib import auth
 
 
 
-class UserDetail(ListCreateAPIView):
+class UserDetail(CreateAPIView):
     queryset = UserDetails.objects.all()
     serializer_class = UserDetailSerializer
     def post(self, request):
