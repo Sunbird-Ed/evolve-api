@@ -393,3 +393,28 @@ class HardspotStatusSerializer(serializers.ModelSerializer):
         # print (data_list)
 
         return data_str_list
+
+class HardspotContributorsSerializer(serializers.ModelSerializer):
+    first_name=serializers.SerializerMethodField()
+    last_name=serializers.SerializerMethodField()
+    mobile=serializers.SerializerMethodField()
+    email=serializers.SerializerMethodField()
+    class Meta:
+        model = HardSpot
+        fields = ['first_name',
+                'last_name',
+                'mobile',
+                'email']
+    def get_first_name(self, obj):
+        # import ipdb; ipdb.set_trace()
+        first_name=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().first_name
+        return first_name
+    def get_last_name(self, obj):
+        last_name=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().last_name
+        return last_name
+    def get_mobile(self, obj):
+        mobile=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().mobile
+        return mobile
+    def get_email(self, obj):
+        email=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().email
+        return email

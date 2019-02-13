@@ -12,7 +12,7 @@ from apps.configuration.models import Book
 from apps.dataupload.models import Chapter,Section,SubSection
 from .models import HardSpot,HardSpotContributors
 from apps.content.models import Content, ContentContributors
-from .serializers import HardSpotCreateSerializer,BookNestedSerializer, HardSpotUpdateSerializer, HardspotVisitersSerializer, ContentVisitersSerializer,HardSpotContributorSerializer,ApprovedHardSpotSerializer,HardspotStatusSerializer
+from .serializers import HardSpotCreateSerializer,BookNestedSerializer, HardSpotUpdateSerializer, HardspotVisitersSerializer, ContentVisitersSerializer,HardSpotContributorSerializer,ApprovedHardSpotSerializer,HardspotStatusSerializer, HardspotContributorsSerializer
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 import pandas as pd
@@ -216,7 +216,7 @@ class HardSpotUpdateView(RetrieveUpdateAPIView):
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class HardspotContributorDownloadView(RetrieveUpdateAPIView):
+class HardspotVisitorsDownloadView(RetrieveUpdateAPIView):
     queryset = HardSpotContributors.objects.all()
     serializer_class = HardSpotCreateSerializer
 
@@ -250,7 +250,7 @@ class HardspotContributorDownloadView(RetrieveUpdateAPIView):
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class ContentContributorDownloadView(RetrieveUpdateAPIView):
+class ContentVisitorsDownloadView(RetrieveUpdateAPIView):
     queryset = ContentContributors.objects.all()
     serializer_class = HardSpotCreateSerializer
 
@@ -377,6 +377,40 @@ class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
                 os.remove('hardspotstatus.xlsx')
             data_frame.to_excel(path + 'hardspotstatus.xlsx')
             context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspotstatus.xlsx'}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
+    queryset = HardSpot.objects.all()
+    serializer_class = HardSpotCreateSerializer
+
+    def get(self, request):
+        try:
+            # import ipdb; ipdb.set_trace()
+            final_list = []
+            import os
+            from shutil import copyfile
+            queryset = self.get_queryset()
+            serializer = HardspotContributorsSerializer(queryset, many=True)
+            res_list = [] 
+            for i in range(len(serializer.data)): 
+                if serializer.data[i] not in serializer.data[i + 1:]: 
+                    res_list.append(serializer.data[i])
+            for data in res_list:
+                for d in res_list:
+                    final_list.append(d)
+                # for key, value in data.items():
+                #     final_list.append(value)
+
+            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email']).drop_duplicates()
+            exists = os.path.isfile('hard_spot_contributers.xlsx')
+            path = settings.MEDIA_ROOT + '/files/'
+            if exists:
+                os.remove('hard_spot_contributers.xlsx')
+            data_frame.to_excel(path + 'hard_spot_contributers.xlsx')
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hard_spot_contributers.xlsx'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}

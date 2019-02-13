@@ -11,7 +11,7 @@ from rest_framework.decorators import permission_classes
 from apps.configuration.models import Book
 from apps.hardspot.models import  HardSpot
 from .models import Content,ContentContributors
-from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer,ApprovedContentSerializer,ContentStatusSerializer,HardSpotCreateSerializer
+from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer,ApprovedContentSerializer,ContentStatusSerializer,HardSpotCreateSerializer, ContentContributorsSerializer
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 from rest_framework.parsers import MultiPartParser
@@ -351,6 +351,40 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
                 os.remove('contentstatus.xlsx')
             data_frame.to_excel(path + 'contentstatus.xlsx')
             context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/contentstatus.xlsx'}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ContentContributorsDownloadView(RetrieveUpdateAPIView):
+    queryset = Content.objects.all()
+    serializer_class = HardSpotCreateSerializer
+
+    def get(self, request):
+        try:
+            # import ipdb; ipdb.set_trace()
+            final_list = []
+            import os
+            from shutil import copyfile
+            queryset = self.get_queryset()
+            serializer = ContentContributorsSerializer(queryset, many=True)
+            res_list = [] 
+            for i in range(len(serializer.data)): 
+                if serializer.data[i] not in serializer.data[i + 1:]: 
+                    res_list.append(serializer.data[i])
+            for data in res_list:
+                for d in res_list:
+                    final_list.append(d)
+                # for key, value in data.items():
+                #     final_list.append(value)
+
+            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email']).drop_duplicates()
+            exists = os.path.isfile('content_contributers.xlsx')
+            path = settings.MEDIA_ROOT + '/files/'
+            if exists:
+                os.remove('content_contributers.xlsx')
+            data_frame.to_excel(path + 'content_contributers.xlsx')
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/content_contributers.xlsx'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
