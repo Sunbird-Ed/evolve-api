@@ -86,7 +86,8 @@ class GradeList(ListAPIView):
         try:
             medium = request.query_params.get('medium', None)
             if medium is not None:
-                queryset=self.get_queryset().filter(medium__id=medium,subject__book__action=True).distinct()
+                # queryset=self.get_queryset().filter(medium__id=medium,subject__book__action=True).distinct()
+                queryset=self.get_queryset().filter(medium__id=medium)
             else:
                 queryset = self.get_queryset()
             serializer = GradeListSerializer(queryset, many=True)
@@ -105,7 +106,8 @@ class SubjectList(ListAPIView):
         try:
             grade = request.query_params.get('grade', None)
             if grade is not None:
-                queryset=self.get_queryset().filter(grade__id=grade, book__action=True).distinct()
+                # queryset=self.get_queryset().filter(grade__id=grade, book__action=True).distinct()
+                queryset=self.get_queryset().filter(grade__id=grade)
             else:
                 queryset = self.get_queryset()
             # import pdb; pdb.set_trace()
