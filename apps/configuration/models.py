@@ -55,6 +55,8 @@ class Subject(models.Model):
 class Book(models.Model):   
     book = models.CharField(max_length=200)
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE,null=True)
+    hardspot_only = models.BooleanField(default=True)
+    content_only = models.BooleanField(default=True)
     class Meta:
         verbose_name='Book'
         verbose_name_plural='Books'

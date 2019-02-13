@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from apps.configuration.models import State,Book,Medium,Grade,Subject
 from .models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword
+from .serializers import SubsectionNestedSerializer, SectionNestedSerializer, ChapterNestedSerializer, TocUploadSerializer, BookNestedSerializer
+from .serializers import ChapterSerializer, SectionSerializer, SubSectionSerializer
 from evolve import settings
 from django.core.files.storage import FileSystemStorage
 import pandas as pd
@@ -158,3 +160,42 @@ class TOCUploadView(ListCreateAPIView):
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to create data.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)     
+
+
+class ChapterList(ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = ChapterSerializer
+    def get(self, request):
+        try:
+            subject = request.query_params.get('subject', None)
+            if subject is not None:
+                queryset=self.get_queryset().filter(subject__id=subject)
+            else:
+                queryset = self.get_queryset()
+            serializer = BookNestedSerializer(queryset, many=True)
+            context = {"success": True, "message": "Chapter List", "error": "", "data": serializer.data}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Chapter list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # @method_decorator(permission_required('%s.add_%s' % (AgeGroup._meta.app_label, AgeGroup._meta.model_name), raise_exception=True))
+    def post(self, request):
+        try:
+            serializer = Agegroupserializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                context = {"success": True, "message": "Created Successful", "error": "", "data": serializer.data}
+                return Response(context, status=status.HTTP_200_OK)
+            error = serializer.errors['non_field_errors'][0].code
+            if error == "unique":
+                # context = {"success": False, "message": "Invalid Input Data to create Age Group", "error": str(serializer.errors)}
+                # return Response(context, status=status.HTTP_400_BAD_REQUEST)
+                # age_grp = AgeGroup.objects.filter(from_age=request['data']['from_age'], to_age = request['data']['from_age'], school_type = request['data']['school_type'])
+                context = {"success": False, "message": "Age group already exist", "error": str(error)}
+                return Response(context, status=status.HTTP_400_BAD_REQUEST)
+            context = {"success": False, "message": "Invalid Input Data to create Age Group", "error": str(serializer.errors)}
+            return Response(context, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to create Age Group.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
