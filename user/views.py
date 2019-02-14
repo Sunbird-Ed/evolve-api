@@ -14,7 +14,7 @@ from rest_framework.decorators import permission_classes
 from apps.configuration.models import Book,State
 from .models import UserDetails
 
-from .serializers import UserDetailSerializer
+from .serializers import UserDetailSerializer, UserSerializer
 from django.contrib.auth.models import User
 from rest_framework_jwt.utils import jwt_payload_handler, jwt_encode_handler
 
@@ -35,8 +35,12 @@ class UserDetail(CreateAPIView):
 
         if user is not None:
             if user.is_active:
-                user_details = UserDetails.objects.get(user=user)
-                serializer = UserDetailSerializer(user_details)
+                user_details = UserDetails.objects.get(user=user).first()
+                if user_details is not None:
+                	serializer = UserDetailSerializer(user_details)
+
+                else:
+                	serializer = UserSerializer(user)
 
                 payload = jwt_payload_handler(user)
                 token = jwt_encode_handler(payload)

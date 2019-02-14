@@ -1,8 +1,9 @@
 from rest_framework import routers, serializers
 from django.contrib.auth.models import User
 from rest_framework.serializers import ModelSerializer
-from .models import EvolveUser,UserDetails,Roles
+from .models import UserDetails,Roles
 from apps.configuration.models import State
+from django.contrib.auth.models import User
 
 
 class UserDetailSerializer(ModelSerializer):
@@ -15,7 +16,7 @@ class UserDetailSerializer(ModelSerializer):
 
     def get_user(self,req):
         # import ipdb; ipdb.set_trace()
-        user = EvolveUser.objects.filter(id=req.user.id)
+        user = User.objects.filter(id=req.user.id)
         serializer=UserSerializer(user,many=True)
         return serializer.data
 
@@ -33,7 +34,7 @@ class UserDetailSerializer(ModelSerializer):
 
 class UserSerializer(ModelSerializer):
     class Meta:
-        model=EvolveUser
+        model=User
         fields=['id','username','is_active','groups']
 
 class StateSerializer(ModelSerializer):

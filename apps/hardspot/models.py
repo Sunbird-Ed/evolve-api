@@ -1,7 +1,7 @@
 from django.db import models
 from apps.configuration.models import Book, Grade, State, Medium, Subject
-# from django.contrib.auth.models import User
-from user.models import EvolveUser
+from django.contrib.auth.models import User
+# from user.models import EvolveUser
 from apps.dataupload.models import Chapter,Section,SubSection
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
@@ -43,7 +43,7 @@ class HardSpot(models.Model):
 	approved = models.BooleanField(default=False)
 	rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
 		blank=True,null=True)
-	approved_by = models.ForeignKey(EvolveUser,
+	approved_by = models.ForeignKey(User,
 		on_delete=models.CASCADE,null=True,blank=True)
 	comment = models.CharField(max_length=200, blank=True, null=True)
 	hardspot_contributor=models.ForeignKey(HardSpotContributors,on_delete=models.CASCADE)

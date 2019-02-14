@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import HardSpot,HardSpotContributors
-# from django.contrib.auth.models import User
-from user.models import EvolveUser
+from django.contrib.auth.models import User
+# from user.models import EvolveUser
 from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword
 from apps.configuration.models import Book
 from apps.content.models import Content, ContentContributors
