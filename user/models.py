@@ -15,10 +15,10 @@ class Roles(models.Model):
     rolename=models.CharField(max_length=200)
 
     def __str__(self):
-		return self.rolename
+        return self.rolename
 
-	class Meta:
-		verbose_name='Role'
+    class Meta:
+        verbose_name='Role'
 
 
 class UserDetails(models.Model):
@@ -28,7 +28,7 @@ class UserDetails(models.Model):
 
 
     def __str__(self):
-		return self.user.username
+        return self.user.username
 
-	class Meta:
-		verbose_name='user detail'
+    class Meta:
+        verbose_name='user detail'
