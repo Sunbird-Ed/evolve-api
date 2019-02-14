@@ -1,7 +1,7 @@
 from django.db import models
 from apps.configuration.models import Book, Grade, State, Medium, Subject
-# from django.contrib.auth.models import User
-from user.models import EvolveUser
+from django.contrib.auth.models import User
+# from user.models import EvolveUser
 from apps.dataupload.models import Section,SubSection,Chapter,ChapterKeyword,SectionKeyword,SubSectionKeyword
 from apps.hardspot.models import HardSpot
 from django.core.validators import MaxValueValidator
@@ -41,14 +41,14 @@ class Content(models.Model):
 			blank=True,
 			null=True,)
 	approved = models.BooleanField(default=False)
-	approved_by = models.ForeignKey(EvolveUser,
+	approved_by = models.ForeignKey(User,
 		on_delete=models.CASCADE,
 		related_name='%(class)s_approved_by',
 		null=True,
 		blank=True)
 	rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
 		blank=True,null=True)
-	rated_by = models.ForeignKey(EvolveUser,
+	rated_by = models.ForeignKey(User,
 		on_delete=models.CASCADE,
 		related_name='%(class)s_rated_by',null=True,blank=True)
 	comment = models.CharField(max_length=200, null=True, blank=True)
