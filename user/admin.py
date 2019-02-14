@@ -12,8 +12,8 @@ class UserDetailInline(admin.StackedInline):
     #readonly_fields = ('data', 'user') #Bonus question later
 
 
-class ReportingToInline(admin.StackedInline):
-    model = Roles
+# class ReportingToInline(admin.StackedInline):
+#     model = Roles
 
 class UserAdmin(BaseUserAdmin):
     inlines = [

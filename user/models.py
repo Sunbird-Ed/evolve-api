@@ -14,6 +14,11 @@ from django.contrib.auth.models import User
 class Roles(models.Model):
     rolename=models.CharField(max_length=200)
 
+    def __str__(self):
+		return self.rolename
+
+	class Meta:
+		verbose_name='Role'
 
 
 class UserDetails(models.Model):
@@ -22,3 +27,8 @@ class UserDetails(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE, to_field='id', primary_key=True)
 
 
+    def __str__(self):
+		return self.user.username
+
+	class Meta:
+		verbose_name='user detail'
