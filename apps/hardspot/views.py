@@ -243,7 +243,8 @@ class HardspotVisitorsDownloadView(RetrieveUpdateAPIView):
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
                 os.remove('hardspot_contributers.xlsx')
-            data_frame.to_excel(path + 'hardspot_contributers.xlsx')
+            # data_frame.to_excel(path + 'hardspot_contributers.xlsx')
+            data_frame.to_csv(path + 'hardspot_contributers.csv', encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspot_contributers.xlsx'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -277,7 +278,8 @@ class ContentVisitorsDownloadView(RetrieveUpdateAPIView):
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
                 os.remove('content_contributers.xlsx')
-            data_frame.to_excel(path + 'content_contributers.xlsx')
+            # data_frame.to_excel(path + 'content_contributers.xlsx')
+            data_frame.to_csv(path + 'content_contributers.csv', encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/content_contributers.xlsx'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -371,12 +373,13 @@ class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
                     final_list.append(d)
 
             data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_Hardspot', 'rejected_hardspot', 'pending_hardspot'])
-            exists = os.path.isfile('hardspotstatus.xlsx')
+            exists = os.path.isfile('hardspotstatus.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove('hardspotstatus.xlsx')
-            data_frame.to_excel(path + 'hardspotstatus.xlsx')
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspotstatus.xlsx'}
+                os.remove('hardspotstatus.csv')
+            # data_frame.to_excel(path + 'hardspotstatus.xlsx')
+            data_frame.to_csv(path + 'hardspotstatus.csv', encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspotstatus.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
@@ -405,12 +408,13 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
                 #     final_list.append(value)
 
             data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email']).drop_duplicates()
-            exists = os.path.isfile('hard_spot_contributers.xlsx')
+            exists = os.path.isfile('hard_spot_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove('hard_spot_contributers.xlsx')
-            data_frame.to_excel(path + 'hard_spot_contributers.xlsx')
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hard_spot_contributers.xlsx'}
+                os.remove('hard_spot_contributers.csv')
+            # data_frame.to_excel(path + 'hard_spot_contributers.xlsx')
+            data_frame.to_csv(path + 'hard_spot_contributers.csv', encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hard_spot_contributers.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}

@@ -345,12 +345,13 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
                     final_list.append(d)
 
             data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_contents', 'rejected_contents', 'pending_contents', 'hard_spots'])
-            exists = os.path.isfile('contentstatus.xlsx')
+            exists = os.path.isfile('contentstatus.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove('contentstatus.xlsx')
-            data_frame.to_excel(path + 'contentstatus.xlsx')
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/contentstatus.xlsx'}
+                os.remove('contentstatus.csv')
+            # data_frame.to_excel(path + 'contentstatus.xlsx')
+            data_frame.to_csv(path + 'contentstatus.csv', encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/contentstatus.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
@@ -379,12 +380,13 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
                 #     final_list.append(value)
 
             data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email']).drop_duplicates()
-            exists = os.path.isfile('content_contributers.xlsx')
+            exists = os.path.isfile('content_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove('content_contributers.xlsx')
-            data_frame.to_excel(path + 'content_contributers.xlsx')
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/content_contributers.xlsx'}
+                os.remove('content_contributers.csv')
+            # data_frame.to_excel(path + 'content_contributers.xlsx')
+            data_frame.to_csv(path + 'content_contributers.csv', encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/content_contributers.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
