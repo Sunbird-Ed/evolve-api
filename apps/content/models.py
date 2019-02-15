@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from apps.dataupload.models import Section,SubSection,Chapter,ChapterKeyword,SectionKeyword,SubSectionKeyword
 from apps.hardspot.models import HardSpot
 from django.core.validators import MaxValueValidator
+from evolve.custom_storage import MediaStorage
+from datetime import datetime
 # Create your models here.
 
 
@@ -29,6 +31,9 @@ class ContentContributors(models.Model):
 		
 class Content(models.Model):
 
+	def format_thumbnail_folder(self, filename):
+        return "Content/{0}/{1}/{2}/{3}".format(self.content_name, str(datetime.now().date()), str(datetime.now().time()), filename)
+
 	GENDER_CHOICES = (
         ('Male', 'Male'),
         ('Female', 'Female'),
@@ -37,7 +42,8 @@ class Content(models.Model):
 	section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
 	sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
 	content_name = models.CharField(max_length=200)
-	video = models.FileField(upload_to='video/',
+	video = models.FileField(upload_to=format_thumbnail_folder,
+			storage=MediaStorage(),
 			blank=True,
 			null=True,)
 	approved = models.BooleanField(default=False)
