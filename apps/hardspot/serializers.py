@@ -427,3 +427,8 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         email=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().email
         return email
+
+class HardSpotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HardSpot
+        fields=['id','approved_by','hardspot_contributor','chapter','section','hard_spot','description','points_to_be_covered','useful_to']
