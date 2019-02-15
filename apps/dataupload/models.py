@@ -7,7 +7,7 @@ from apps.configuration.models import Book
 
 class Chapter(models.Model):
 	book = models.ForeignKey(Book,
-		on_delete=models.PROTECT)
+		on_delete=models.CASCADE)
 	chapter = models.CharField(max_length=200)
 
 	def __str__(self):
@@ -19,7 +19,7 @@ class Chapter(models.Model):
 
 class Section(models.Model):
 	chapter = models.ForeignKey(Chapter,
-		on_delete=models.PROTECT,null=False)
+		on_delete=models.CASCADE,null=False)
 	section = models.CharField(max_length=200)
 
 	def __str__(self):
@@ -31,7 +31,7 @@ class Section(models.Model):
 
 class SubSection(models.Model):
 	section = models.ForeignKey(Section,
-		on_delete=models.PROTECT,null=False)
+		on_delete=models.CASCADE,null=False)
 	sub_section = models.CharField(max_length=200)
 
 	def __str__(self):
@@ -45,7 +45,7 @@ class SubSection(models.Model):
 
 class ChapterKeyword(models.Model):
 	chapter = models.ForeignKey(Chapter,
-		on_delete=models.PROTECT)
+		on_delete=models.CASCADE)
 	keyword = models.CharField(max_length=200)
 
 	def __str__(self):
@@ -57,7 +57,7 @@ class ChapterKeyword(models.Model):
 
 class SectionKeyword(models.Model):
 	section = models.ForeignKey(Section,
-		on_delete=models.PROTECT,null=False)
+		on_delete=models.CASCADE,null=False)
 	keyword = models.CharField(max_length=200)
 
 	def __str__(self):
@@ -69,7 +69,7 @@ class SectionKeyword(models.Model):
 
 class SubSectionKeyword(models.Model):
 	sub_section = models.ForeignKey(SubSection,
-		on_delete=models.PROTECT,null=False)
+		on_delete=models.CASCADE,null=False)
 	keyword = models.CharField(max_length=200)
 
 	def __str__(self):
