@@ -189,6 +189,7 @@ class BookNestedSerializer(serializers.ModelSerializer):
             return None
 
 class HardSpotCreateSerializer(serializers.ModelSerializer):
+    hardspot_contributor = serializers.SerializerMethodField()
     class Meta:
         model = HardSpot
         fields='__all__'
