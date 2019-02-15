@@ -375,7 +375,7 @@ class KeywordSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Content
-        fields = ('id','first_name','last_name', 'email','mobile','hard_spot','chapter','section','sub_section','content_name','video','approved','approved_by' ,'rating','rated_by','comment','keywords', 'content_contributors')
+        fields = ('id','hard_spot','chapter','section','sub_section','content_name','video','approved','approved_by' ,'rating','rated_by','comment','keywords', 'content_contributors')
     
     def get_hard_spot(self, req):
         try:
