@@ -371,7 +371,7 @@ class KeywordSerializer(serializers.ModelSerializer):
     # sub_section_keywords=SubSectionKeywordsSerializer(many=True)
     keywords = serializers.SerializerMethodField()
     hard_spot = serializers.SerializerMethodField()
-    content_contributors = serializer.SerializerMethodField()
+    content_contributors = serializers.SerializerMethodField()
     
     class Meta:
         model = Content
