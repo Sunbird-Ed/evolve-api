@@ -17,7 +17,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 import pandas as pd
 from evolve import settings
-
+from hardspot.serializers import HardSpotSerializer
 
 
 class HardSpotListOrCreateView(ListCreateAPIView):
