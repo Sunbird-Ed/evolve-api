@@ -56,7 +56,7 @@ class HardSpotListOrCreateView(ListCreateAPIView):
 
 class HardSpotApprovedList(ListAPIView):
     queryset = HardSpot.objects.all()
-    serializer_class = HardSpotCreateSerializer
+    serializer_class = HardSpotSerializer
   
     def get(self, request):
         try:
@@ -72,7 +72,7 @@ class HardSpotApprovedList(ListAPIView):
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=True)
             else:
                 queryset = self.get_queryset()
-            serializer = HardSpotCreateSerializer(queryset, many=True)
+            serializer = HardSpotSerializer(queryset, many=True)
             context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -81,7 +81,7 @@ class HardSpotApprovedList(ListAPIView):
 
 class HardSpotPendingList(ListAPIView):
     queryset = HardSpot.objects.all()
-    serializer_class = HardSpotCreateSerializer
+    serializer_class = HardSpotSerializer
   
     def get(self, request):
         try:
@@ -97,7 +97,7 @@ class HardSpotPendingList(ListAPIView):
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False, approved_by=None)
             else:
                 queryset = self.get_queryset()
-            serializer = HardSpotCreateSerializer(queryset, many=True)
+            serializer = HardSpotSerializer(queryset, many=True)
             context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -109,7 +109,7 @@ class HardSpotPendingList(ListAPIView):
 class HardSpotStatusList(ListCreateAPIView):
 
     queryset = HardSpot.objects.all()
-    serializer_class = HardSpotCreateSerializer
+    serializer_class = HardSpotSerializer
 
 
     def get(self, request):
@@ -124,7 +124,7 @@ class HardSpotStatusList(ListCreateAPIView):
 
             else:
                 queryset = self.get_queryset()
-            serializer = HardSpotCreateSerializer(queryset, many=True)
+            serializer = HardSpotSerializer(queryset, many=True)
             context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -134,7 +134,7 @@ class HardSpotStatusList(ListCreateAPIView):
 
 class HardSpotRejectedList(ListAPIView):
     queryset = HardSpot.objects.all()
-    serializer_class = HardSpotCreateSerializer
+    serializer_class = HardSpotSerializer
   
     def get(self, request):
         try:
@@ -150,7 +150,7 @@ class HardSpotRejectedList(ListAPIView):
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False).exclude(approved_by=None)
             else:
                 queryset = self.get_queryset()
-            serializer = HardSpotCreateSerializer(queryset, many=True)
+            serializer = HardSpotSerializer(queryset, many=True)
             context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -179,7 +179,7 @@ class BookNestedList(ListAPIView):
 @permission_classes((IsAuthenticated,))
 class HardSpotUpdateView(RetrieveUpdateAPIView):
     queryset = HardSpot.objects.all()
-    serializer_class = HardSpotCreateSerializer
+    serializer_class = HardSpotSerializer
   
     def get(self, request,pk):
         try:

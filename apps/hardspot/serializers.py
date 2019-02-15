@@ -189,18 +189,9 @@ class BookNestedSerializer(serializers.ModelSerializer):
             return None
 
 class HardSpotCreateSerializer(serializers.ModelSerializer):
-    hardspot_contributor = serializers.SerializerMethodField()
     class Meta:
         model = HardSpot
         fields='__all__'
-
-    def get_hardspot_contributor(self, req):
-        contributor = HardSpotContributors.objects.filter(id=req.hardspot_contributor.id).first()
-        if contributor is not None:
-            serializer = HardspotVisitersSerializer(contributor)
-            return serializer.data
-        else:
-            return None
 
 
 
@@ -429,6 +420,15 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
         return email
 
 class HardSpotSerializer(serializers.ModelSerializer):
+    hardspot_contributor = serializers.SerializerMethodField()
     class Meta:
         model = HardSpot
         fields=['id','approved_by','hardspot_contributor','chapter','section','hard_spot','description','points_to_be_covered','useful_to']
+
+    def get_hardspot_contributor(self, req):
+        contributor = HardSpotContributors.objects.filter(id=req.hardspot_contributor.id).first()
+        if contributor is not None:
+            serializer = HardSpotContributorSerializer(contributor)
+            return serializer.data
+        else:
+            return None
