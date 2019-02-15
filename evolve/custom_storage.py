@@ -7,6 +7,7 @@ class MediaStorage(AzureStorage):
     account_key = settings.AZURE_ACCOUNT_KEY
     azure_container = settings.AZURE_CONTAINER
     expiration_secs = None
+    AZURE_BLOB_MAX_MEMORY_SIZE = settings.AZURE_BLOB_MAX_MEMORY_SIZE
 
 # class FileStorage(S3Boto3Storage):
 #     location = 'files'

@@ -49,7 +49,7 @@ class HardSpotListOrCreateView(ListCreateAPIView):
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id)
             else:
                 queryset = self.get_queryset()
-                serializer = HardSpotSerializer(queryset, many=True)
+            serializer = HardSpotSerializer(queryset, many=True)
             context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
