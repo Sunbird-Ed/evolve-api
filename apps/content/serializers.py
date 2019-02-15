@@ -371,10 +371,11 @@ class KeywordSerializer(serializers.ModelSerializer):
     # sub_section_keywords=SubSectionKeywordsSerializer(many=True)
     keywords = serializers.SerializerMethodField()
     hard_spot = serializers.SerializerMethodField()
+    content_contributors = serializer.SerializerMethodField()
     
     class Meta:
         model = Content
-        fields = ('id','first_name','last_name', 'email','mobile','hard_spot','chapter','section','sub_section','content_name','video','approved','approved_by' ,'rating','rated_by','comment','keywords',)
+        fields = ('id','first_name','last_name', 'email','mobile','hard_spot','chapter','section','sub_section','content_name','video','approved','approved_by' ,'rating','rated_by','comment','keywords', 'content_contributors')
     
     def get_hard_spot(self, req):
         try:
@@ -420,6 +421,16 @@ class KeywordSerializer(serializers.ModelSerializer):
                 return None
         except Exception as error:
             pass
+
+    def get_content_contributors(self, req):
+        try:
+            # import ipdb;ipdb.set_trace()
+            content_contributor = ContentContributors.objects.filter(id=req.content_contributors.id).first()
+            serializer = ContentContributorSerializer(content_contributor)
+            data = serializer.data
+            return data
+        except:
+            return None
 
 
 class SectionKeywordSerializer(serializers.ModelSerializer):
