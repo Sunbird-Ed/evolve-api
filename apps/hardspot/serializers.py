@@ -195,7 +195,7 @@ class HardSpotCreateSerializer(serializers.ModelSerializer):
         fields='__all__'
 
     def get_hardspot_contributor(self, req):
-        contributor = HardSpotContributors.objects.filter(id=req.hardspot_contributor).first()
+        contributor = HardSpotContributors.objects.filter(id=req.hardspot_contributor.id).first()
         if contributor is not None:
             serializer = HardspotVisitersSerializer(contributor)
             return serializer.data
