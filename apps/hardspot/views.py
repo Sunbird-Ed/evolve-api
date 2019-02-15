@@ -12,13 +12,11 @@ from apps.configuration.models import Book
 from apps.dataupload.models import Chapter,Section,SubSection
 from .models import HardSpot,HardSpotContributors
 from apps.content.models import Content, ContentContributors
-from .serializers import HardSpotCreateSerializer,BookNestedSerializer, HardSpotUpdateSerializer, HardspotVisitersSerializer, ContentVisitersSerializer,HardSpotContributorSerializer,ApprovedHardSpotSerializer,HardspotStatusSerializer, HardspotContributorsSerializer
+from .serializers import HardSpotCreateSerializer, BookNestedSerializer, HardSpotUpdateSerializer, HardspotVisitersSerializer, ContentVisitersSerializer,HardSpotContributorSerializer,ApprovedHardSpotSerializer,HardspotStatusSerializer, HardspotContributorsSerializer, HardSpotSerializer
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 import pandas as pd
 from evolve import settings
-from hardspot.serializers import HardSpotSerializer
-
 
 class HardSpotListOrCreateView(ListCreateAPIView):
     queryset = HardSpot.objects.all()
