@@ -337,7 +337,7 @@ class ApprovedHardSpotDownloadView(ListAPIView):
                             d.append(" ")
                             final_list.append(d)
 
-                data_frame = pd.DataFrame(final_list , columns=['State', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','hard_spot','description','points_to_be_covered','useful_to'])
+                data_frame = pd.DataFrame(final_list , columns=['State','Grade', 'Subject', 'Medium', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','hard_spot','description','points_to_be_covered','useful_to'])
                 exists = os.path.isfile('ApprovedHardSpot.csv')
                 path = settings.MEDIA_ROOT + '/files/'
                 if exists:
