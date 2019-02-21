@@ -143,7 +143,7 @@ class TOCUploadView(ListCreateAPIView):
                     # sheet_to_df_map[sheet_name] = xls.parse(sheet_name)
                     df = pd.ExcelFile(fs.path(file.name))
                     df = df.parse(sheet_name, na_values=None)
-                    columns = ['state','grade','subject','medium','book', 'chapter', 'section', 'sub_section' 'keywords', 'hard_spot', 'first_name', 'last_name', 'email', 'mobile', 'description', 'points_to_be_covered', 'useful_to', 'approval', 'comment rating', 'approved_by']
+                    columns = ['board','grade','subject','medium','book', 'chapter', 'section', 'sub_section' 'keywords', 'hard_spot', 'first_name', 'last_name', 'email', 'mobile', 'description', 'points_to_be_covered', 'useful_to', 'approval', 'comment rating', 'approved_by']
                 #import ipdb;ipdb.set_trace()
                     json_list = df.to_dict('resource')
                     context, res_status=self.upload(json_list , stateid)
