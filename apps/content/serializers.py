@@ -465,15 +465,17 @@ class ContentDownloadSerializer(serializers.ModelSerializer):
         fields=('content_name','video','rating','comment', 'selected_keyword')
 
     def get_selected_keyword(self, obj):
-        if len(obj.chapter_keywords) != 0:
+        # import ipdb; ipdb.set_trace()
+        if  obj.chapter_keywords.all().count() != 0:
             linked_keyword = ChapterKeyword.objects.filter(id__in=obj.chapter_keywords.all())
-            return linked_keyword
-        elif len(obj.section_keywords) != 0:
+            keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
+            return keyword_list
+        elif obj.section_keywords.all().count() != 0:
             linked_keyword = SectionKeyword.objects.filter(id__in=obj.section_keywords.all())
-            return linked_keyword
-        elif len(obj.sub_section_keywords) !=0:
+            return linked_keyword.keyword
+        elif obj.sub_section_keywords.all().count() !=0:
             linked_keyword = SubSectionKeyword.objects.filter(id__in=obj.sub_section_keywords.all())
-            return linked_keyword
+            return linked_keyword.keyword
         else:
             return None
 
@@ -535,16 +537,24 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                 for keys in section_keyword:
                     keyword = keyword + keys.keyword + ", "
                 tempList.append(keyword)
+
                 if sec_content.exists():
-              
+                    no_of_hardspot = len(serializer.data)
+                    if no_of_hardspot == 5:
+                        for data in serializer.data:
+                            for key, value in data.items():
+                                tempList.append(value)
+                    else:
+                        for data in serializer.data[:no_of_hardspot]:
+                            for key, value in data.items():
+                                tempList.append(value)
+                        for i in range(0,(5*(5-no_of_hardspot))):
+                            tempList.append("")
+                    data_str_list.append( tempList )
                     
-                    serializer = ContentDownloadSerializer(sec_content, many=True)
-                    for data in serializer.data:
-                        for key, value in data.items():
-                            tempList.append(value)
-                        data_str_list.append(tempList)
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section, keyword ]
                 else:
+                    for x in range(1,25):
+                        tempList.append("")
                     data_str_list.append( tempList )
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 sub_section=SubSection.objects.filter(section__id=section_data.id)
@@ -559,14 +569,28 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
 
                         sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
                         if sub_sec_content.exists():
+                            no_of_hardspot = len(serializer.data)
+                            if no_of_hardspot == 5:
+                                for data in serializer.data:
+                                    for key, value in data.items():
+                                        tempList.append(value)
+                            else:
+                                for data in serializer.data[:no_of_hardspot]:
+                                    for key, value in data.items():
+                                        tempList.append(value)
+                                for i in range(0,(5*(5-no_of_hardspot))):
+                                    tempList.append("")
+                            data_str_list.append( tempList )
                            
-                            serializer = ContentDownloadSerializer(sub_sec_content, many=True)
-                            for data in serializer.data:
-                                for key, value in data.items():
-                                    tempList.append(value)
-                                data_str_list.append(tempList)
-                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section, keyword ]
+                            # serializer = ContentDownloadSerializer(sub_sec_content, many=True)
+                            # for data in serializer.data:
+                            #     for key, value in data.items():
+                            #         tempList.append(value)
+                            #     data_str_list.append(tempList)
+                            #     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section, keyword ]
                         else:
+                            for x  in range(1,25):
+                                tempList.append("")
                             data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]

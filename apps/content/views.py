@@ -293,6 +293,7 @@ class ApprovedContentDownloadView(ListAPIView):
 
     def get(self, request):
         try:
+            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
@@ -302,17 +303,17 @@ class ApprovedContentDownloadView(ListAPIView):
             serializer = ApprovedContentSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
-                    if len(d) == 13:
-                        final_list.append(d)
-                    elif len(d) == 11:
-                        d.append(" ")
-                        d.append(" ")
-                        final_list.append(d)
-                    elif len(d) == 12:
-                        d.append(" ")
-                        final_list.append(d)
+                    # if len(d) == 33:
+                    #     final_list.append(d)
+                    # elif len(d) == 11:
+                    #     d.append(" ")
+                    #     d.append(" ")
+                    #     final_list.append(d)
+                    # elif len(d) == 12:
+                    #     d.append(" ")
+                    final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','content_name','video','rating','comment', 'linked_keywords'])
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','content_name','video','rating','comment', 'linked_keywords','content_name','video','rating','comment', 'linked_keywords','content_name','video','rating','comment', 'linked_keywords','content_name','video','rating','comment', 'linked_keywords','content_name','video','rating','comment', 'linked_keywords'])
             exists = os.path.isfile('ApprovedContent.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
