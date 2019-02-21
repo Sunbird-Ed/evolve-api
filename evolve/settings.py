@@ -10,8 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os
-
+import os, datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +24,7 @@ SECRET_KEY = '0^q+@03g_-3eh*!ia0_u*j(&%k(wy%3px^%qpw43do5%_emsg8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "edf90345.ngrok.io", 'localhost:8080']
+ALLOWED_HOSTS = ["localhost", "edf90345.ngrok.io", 'localhost:8080','52.172.196.135']
 
 # Application definition
 
@@ -81,21 +80,26 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'localhost:8000',
+    '52.172.196.135',
+    '52.172.196.135:5000',
 )
 CORS_ORIGIN_REGEX_WHITELIST = (
     'localhost:8000',
+    '52.172.196.135',
+    '52.172.196.135:5000',
 )
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+print(os.environ.get('EVOLVE_DB_NAME'))
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get(EVOLVE_DB_NAME),
-        'USER': os.environ.get(EVOLVE_DB_USER),
-        'PASSWORD': os.environ.get(EVOLVE_DB_PASSWORD),
-        'HOST': os.environ.get(EVOLVE_DB_HOST),   # Or an IP Address that your DB is hosted on
+        'NAME': os.environ.get('EVOLVE_DB_NAME'),
+        'USER': os.environ.get('EVOLVE_DB_USER'),
+        'PASSWORD': os.environ.get('EVOLVE_DB_PASSWORD'),
+        'HOST': os.environ.get('EVOLVE_DB_HOST'),   # Or an IP Address that your DB is hosted on
         'PORT': '',
         # 'OPTIONS': {'charset': 'utf-8'},
     }
@@ -154,6 +158,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_ALLOW_REFRESH': True
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
@@ -166,4 +174,25 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT=os.path.join(BASE_DIR, 'static')
 
-AUTH_USER_MODEL = 'user.EvolveUser'
+#AUTH_USER_MODEL = 'user.EvolveUser'
+
+AZURE_BLOB_MAX_MEMORY_SIZE =  20*1024*1024
+
+# AZURE_SSL = False
+
+AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
+
+AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
+
+AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER')
+
+# AZURE_LOCATION = ""
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 4,
+        }
+    },
+]
