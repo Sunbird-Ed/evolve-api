@@ -390,7 +390,7 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
 
     def get(self, request):
         try:
-            import ipdb; ipdb.set_trace()
+            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
