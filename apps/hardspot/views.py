@@ -390,7 +390,7 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
+            import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
@@ -406,7 +406,7 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
                 # for key, value in data.items():
                 #     final_list.append(value)
 
-            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email']).drop_duplicates()
+            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email', 'textbook_name']).drop_duplicates()
             exists = os.path.isfile('hard_spot_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:

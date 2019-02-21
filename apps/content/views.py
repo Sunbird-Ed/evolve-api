@@ -379,7 +379,7 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
                 # for key, value in data.items():
                 #     final_list.append(value)
 
-            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email']).drop_duplicates()
+            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email', 'textbook_name']).drop_duplicates()
             exists = os.path.isfile('content_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:

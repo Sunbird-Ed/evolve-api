@@ -35,8 +35,8 @@ class UserDetail(CreateAPIView):
 
         if user is not None:
             if user.is_active:
-                user_details = UserDetails.objects.get(user=user).first()
-                if user_details is not None:
+                user_details = UserDetails.objects.get(user=user)
+                if user_details:
                 	serializer = UserDetailSerializer(user_details)
 
                 else:

@@ -6,6 +6,7 @@ class MediaStorage(AzureStorage):
     account_name = settings.AZURE_ACCOUNT_NAME
     account_key = settings.AZURE_ACCOUNT_KEY
     azure_container = settings.AZURE_CONTAINER
+    # expiration_secs = 3000
     expiration_secs = None
     AZURE_BLOB_MAX_MEMORY_SIZE = settings.AZURE_BLOB_MAX_MEMORY_SIZE
 

@@ -628,12 +628,14 @@ class ContentContributorsSerializer(serializers.ModelSerializer):
     last_name=serializers.SerializerMethodField()
     mobile=serializers.SerializerMethodField()
     email=serializers.SerializerMethodField()
+    textbook_name=serializers.SerializerMethodField()
     class Meta:
         model = Content
         fields = ['first_name',
                 'last_name',
                 'mobile',
-                'email']
+                'email',
+                'textbook_name']
     def get_first_name(self, obj):
         first_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().first_name
         return first_name
@@ -646,3 +648,15 @@ class ContentContributorsSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         email=ContentContributors.objects.filter(id=obj.content_contributors.id).first().email
         return email
+    def get_textbook_name(self, obj):
+        if obj.chapter is not None:
+            book = Book.objects.filter(id=obj.chapter.book.id).first().book
+            return book
+        elif obj.section is not None:
+            book = Book.objects.filter(id=obj.section.chapter.book.id).first().book
+            return book
+        elif obj.sub_section is not None:
+            book = Book.objects.filter(id = obj.sub_section.section.chapter.book.id).first().book
+            return book
+        else:
+            return None

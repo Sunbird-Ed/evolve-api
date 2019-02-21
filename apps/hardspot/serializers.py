@@ -404,12 +404,14 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
     last_name=serializers.SerializerMethodField()
     mobile=serializers.SerializerMethodField()
     email=serializers.SerializerMethodField()
+    textbook_name = serializers.SerializerMethodField()
     class Meta:
         model = HardSpot
         fields = ['first_name',
                 'last_name',
                 'mobile',
-                'email']
+                'email',
+                'textbook_name']
     def get_first_name(self, obj):
         # import ipdb; ipdb.set_trace()
         first_name=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().first_name
@@ -423,6 +425,19 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         email=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().email
         return email
+    def get_textbook_name(self, obj):
+        if obj.chapter is not None:
+            book = Book.objects.filter(id=obj.chapter.book.id).first().book
+            return book
+        elif obj.section is not None:
+            book = Book.objects.filter(id=obj.section.chapter.book.id).first().book
+            return book
+        elif obj.sub_section is not None:
+            book = Book.objects.filter(id = obj.sub_section.section.chapter.book.id).first().book
+            return book
+        else:
+            return None
+
 
 class HardSpotSerializer(serializers.ModelSerializer):
     hardspot_contributor = serializers.SerializerMethodField()
