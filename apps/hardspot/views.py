@@ -328,17 +328,17 @@ class ApprovedHardSpotDownloadView(ListAPIView):
                 serializer = ApprovedHardSpotSerializer(chapters, many=True)
                 for data in serializer.data:
                     for d in data['chapter']:
-                        if len(d) == 13:
-                            final_list.append(d)
-                        elif len(d) == 11:
-                            d.append(" ")
-                            d.append(" ")
-                            final_list.append(d)
-                        elif len(d) == 12:
-                            d.append(" ")
-                            final_list.append(d)
+                        # if len(d) == 13:
+                        #     final_list.append(d)
+                        # elif len(d) == 11:
+                        #     d.append(" ")
+                        #     d.append(" ")
+                        #     final_list.append(d)
+                        # elif len(d) == 12:
+                        #     d.append(" ")
+                        final_list.append(d)
 
-                data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','hard_spot','description','points_to_be_covered','useful_to'])
+                data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','hard_spot','description','points_to_be_covered','useful_to','rating','comment','hard_spot','description','points_to_be_covered','useful_to','rating','comment','hard_spot','description','points_to_be_covered','useful_to','rating','comment','hard_spot','description','points_to_be_covered','useful_to','rating','comment','hard_spot','description','points_to_be_covered','useful_to','rating','comment'])
                 exists = os.path.isfile('ApprovedHardSpot.csv')
                 path = settings.MEDIA_ROOT + '/files/'
                 if exists:

@@ -242,7 +242,7 @@ class HardSpotContributorSerializer(serializers.ModelSerializer):
 class HardSpotDownloadSerializer(serializers.ModelSerializer):
     class Meta:
         model=HardSpot
-        fields=('hard_spot','description','points_to_be_covered','useful_to')
+        fields=('hard_spot','description','points_to_be_covered','useful_to','rating','comment')
 
 class ApprovedHardSpotSerializer(serializers.ModelSerializer):
     chapter=serializers.SerializerMethodField()
@@ -271,12 +271,26 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
         
         if chapter_hardspot.exists():
             serializer = HardSpotDownloadSerializer(chapter_hardspot, many=True)
-            for data in serializer.data:
-                for key, value in data.items():
-                    tempList.append(value)
-                data_str_list.append( tempList )
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section, sub_section, keyword ]
+            no_of_hardspot=len(serializer.data)
+            if no_of_hardspot == 5:
+                for data in serializer.data:
+                    for key, value in data.items():
+                        tempList.append(value)
+            else:
+                for data in serializer.data[:no_of_hardspot]:
+                    for key, value in data.items():
+                        tempList.append(value)
+                for i in range(0,(6*(5-no_of_hardspot))):
+                    tempList.append("")
+            data_str_list.append( tempList )
+            # for data in serializer.data:
+            #     for key, value in data.items():
+            #         tempList.append(value)
+            #     data_str_list.append( tempList )
+            #     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section, sub_section, keyword ]
         else:
+            for x in range(1,30):
+                tempList.append("")
        
             data_str_list.append( tempList )
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
@@ -296,12 +310,26 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
               
                     
                     serializer = HardSpotDownloadSerializer(sec_hardspot, many=True)
-                    for data in serializer.data:
-                        for key, value in data.items():
-                            tempList.append(value)
-                        data_str_list.append (tempList)
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section, keyword]
+                    no_of_hardspot=len(serializer.data)
+                    if no_of_hardspot == 5:
+                        for data in serializer.data:
+                            for key, value in data.items():
+                                tempList.append(value)
+                    else:
+                        for data in serializer.data[:no_of_hardspot]:
+                            for key, value in data.items():
+                                tempList.append(value)
+                        for i in range(0,(6*(5-no_of_hardspot))):
+                            tempList.append("")
+                    data_str_list.append( tempList )
+                    # for data in serializer.data:
+                    #     for key, value in data.items():
+                    #         tempList.append(value)
+                    #     data_str_list.append (tempList)
+                    #     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section, keyword]
                 else:
+                    for x in range(1,30):
+                        tempList.append("")
                     data_str_list.append( tempList )
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 sub_section=SubSection.objects.filter(section__id=section_data.id)
@@ -318,12 +346,26 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                         if sub_sec_hardspot.exists():
                            
                             serializer = HardSpotDownloadSerializer(sub_sec_hardspot, many=True)
-                            for data in serializer.data:
-                                for key, value in data.items():
-                                    tempList.append(value)
-                                data_str_list.append(tempList)
-                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section, keyword ]
+                            no_of_hardspot=len(serializer.data)
+                            if no_of_hardspot == 5:
+                                for data in serializer.data:
+                                    for key, value in data.items():
+                                        tempList.append(value)
+                            else:
+                                for data in serializer.data[:no_of_hardspot]:
+                                    for key, value in data.items():
+                                        tempList.append(value)
+                                for i in range(0,(6*(5-no_of_hardspot))):
+                                    tempList.append("")
+                            data_str_list.append( tempList )
+                            # for data in serializer.data:
+                            #     for key, value in data.items():
+                            #         tempList.append(value)
+                            #     data_str_list.append(tempList)
+                            #     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section, keyword ]
                         else:
+                            for x in range(1,30):
+                                tempList.append("")
                             data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
