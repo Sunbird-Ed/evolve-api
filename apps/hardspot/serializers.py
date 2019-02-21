@@ -257,7 +257,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
     def get_chapter(self, req):
         data_str_list = []
         chapters=Chapter.objects.filter(chapter=req.chapter).first()
-        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade, chapters.book.subject, chapters.book.subject.grade.medium, chapters.book, chapters.chapter ]
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         chapter_hardspot = HardSpot.objects.filter(chapter__id=chapters.id,approved=True)
         section = " "
         sub_section = " "
@@ -275,11 +275,11 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                 for key, value in data.items():
                     tempList.append(value)
                 data_str_list.append( tempList )
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade, chapters.book.subject, chapters.book.subject.grade.medium, chapters.book, chapters.chapter, section, sub_section, keyword ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section, sub_section, keyword ]
         else:
        
             data_str_list.append( tempList )
-        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade, chapters.book.subject, chapters.book.subject.grade.medium, chapters.book, chapters.chapter ]
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         sections=Section.objects.filter(chapter=req)
         if sections.exists():
             for section_data in sections:
@@ -300,10 +300,10 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                         for key, value in data.items():
                             tempList.append(value)
                         data_str_list.append (tempList)
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade, chapters.book.subject, chapters.book.subject.grade.medium, chapters.book, chapters.chapter, section_data.section, sub_section, keyword]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section, keyword]
                 else:
                     data_str_list.append( tempList )
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade, chapters.book.subject, chapters.book.subject.grade.medium, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 sub_section=SubSection.objects.filter(section__id=section_data.id)
                 if sub_section.exists():
                     for sub_section_data in sub_section:
@@ -322,11 +322,11 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 for key, value in data.items():
                                     tempList.append(value)
                                 data_str_list.append(tempList)
-                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade, chapters.book.subject, chapters.book.subject.grade.medium, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section, keyword ]
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section, keyword ]
                         else:
                             data_str_list.append( tempList )
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade, chapters.book.subject, chapters.book.subject.grade.medium, chapters.book, chapters.chapter, section_data.section ]
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade, chapters.book.subject, chapters.book.subject.grade.medium, chapters.book, chapters.chapter]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
         return data_str_list
 
 
