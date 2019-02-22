@@ -8,6 +8,8 @@ class State(models.Model):
     state_logo=models.ImageField(upload_to='logos/',
 			blank=True,
 			null=True,)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'State'
@@ -20,6 +22,8 @@ class Medium(models.Model):
     
     medium = models.CharField(max_length=200)
     state=models.ForeignKey(State,on_delete=models.CASCADE,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Medium"
@@ -32,6 +36,8 @@ class Grade(models.Model):
     
     grade = models.CharField(max_length=200)
     medium=models.ForeignKey(Medium,on_delete=models.CASCADE,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Grade"
@@ -44,6 +50,8 @@ class Subject(models.Model):
 
     Subject = models.CharField(max_length=200)
     grade=models.ForeignKey(Grade,on_delete=models.CASCADE,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name='Subject'
@@ -57,6 +65,9 @@ class Book(models.Model):
     subject=models.ForeignKey(Subject,on_delete=models.CASCADE,null=True)
     hardspot_only = models.BooleanField(default=True)
     content_only = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         verbose_name='Book'
         verbose_name_plural='Books'

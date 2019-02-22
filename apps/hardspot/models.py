@@ -19,9 +19,8 @@ class HardSpotContributors(models.Model):
 	mobile =models.CharField(max_length=10,
 		blank=False,
 		null=False)
-	# created_at = models.DateTimeField(auto_now_add=True)
-
-	# updated_at = models.DateTimeField(auto_now=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.first_name
@@ -51,8 +50,8 @@ class HardSpot(models.Model):
 	comment = models.CharField(max_length=200, blank=True, null=True)
 	hardspot_contributor=models.ForeignKey(HardSpotContributors,on_delete=models.CASCADE)
 
-	# created_at = models.DateTimeField(auto_now_add=True)
-	# updated_at = models.DateTimeField(auto_now=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.hard_spot

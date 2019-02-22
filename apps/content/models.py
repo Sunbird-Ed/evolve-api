@@ -21,7 +21,8 @@ class ContentContributors(models.Model):
     mobile =models.CharField(max_length=10,
         blank=False,
         null=False)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.first_name
 
@@ -62,6 +63,8 @@ class Content(models.Model):
     section_keywords=models.ManyToManyField(SectionKeyword,blank=True)
     sub_section_keywords=models.ManyToManyField(SubSectionKeyword,blank=True)
     content_contributors=models.ForeignKey(ContentContributors,on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.content_name
 

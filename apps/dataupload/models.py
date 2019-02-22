@@ -9,7 +9,9 @@ class Chapter(models.Model):
 	book = models.ForeignKey(Book,
 		on_delete=models.CASCADE)
 	chapter = models.CharField(max_length=200)
-
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	active=models.BooleanField(default=True)
 	def __str__(self):
 		return self.chapter
 
@@ -21,6 +23,9 @@ class Section(models.Model):
 	chapter = models.ForeignKey(Chapter,
 		on_delete=models.CASCADE,null=False)
 	section = models.CharField(max_length=200)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	active=models.BooleanField(default=True)
 
 	def __str__(self):
 		return self.section
@@ -33,6 +38,9 @@ class SubSection(models.Model):
 	section = models.ForeignKey(Section,
 		on_delete=models.CASCADE,null=False)
 	sub_section = models.CharField(max_length=200)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	active=models.BooleanField(default=True)
 
 	def __str__(self):
 		return self.sub_section
@@ -47,6 +55,8 @@ class ChapterKeyword(models.Model):
 	chapter = models.ForeignKey(Chapter,
 		on_delete=models.CASCADE)
 	keyword = models.CharField(max_length=200)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.keyword
@@ -59,6 +69,8 @@ class SectionKeyword(models.Model):
 	section = models.ForeignKey(Section,
 		on_delete=models.CASCADE,null=False)
 	keyword = models.CharField(max_length=200)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.keyword
@@ -71,7 +83,9 @@ class SubSectionKeyword(models.Model):
 	sub_section = models.ForeignKey(SubSection,
 		on_delete=models.CASCADE,null=False)
 	keyword = models.CharField(max_length=200)
-
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	
 	def __str__(self):
 		return self.keyword
 
