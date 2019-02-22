@@ -539,6 +539,8 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                 tempList.append(keyword)
 
                 if sec_content.exists():
+                    serializer = ContentDownloadSerializer(sec_content, many=True)
+
                     no_of_hardspot = len(serializer.data)
                     if no_of_hardspot == 5:
                         for data in serializer.data:
@@ -569,6 +571,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
 
                         sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
                         if sub_sec_content.exists():
+                            serializer = ContentDownloadSerializer(sub_sec_content, many=True)
                             no_of_hardspot = len(serializer.data)
                             if no_of_hardspot == 5:
                                 for data in serializer.data:
