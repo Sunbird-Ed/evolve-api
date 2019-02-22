@@ -469,14 +469,18 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
         return email
     def get_textbook_name(self, obj):
         if obj.chapter is not None:
-            book = Book.objects.filter(id=obj.chapter.book.id).first().book
-            return book
+            # import ipdb; ipdb.set_trace()
+            book = Book.objects.filter(id=obj.chapter.book.id)
+            books=','.join([str(x.book) for x in book.all()])
+            return books
         elif obj.section is not None:
-            book = Book.objects.filter(id=obj.section.chapter.book.id).first().book
-            return book
+            book = Book.objects.filter(id=obj.section.chapter.book.id)
+            books=','.join([str(x.book) for x in book.all()])
+            return books
         elif obj.sub_section is not None:
-            book = Book.objects.filter(id = obj.sub_section.section.chapter.book.id).first().book
-            return book
+            book = Book.objects.filter(id = obj.sub_section.section.chapter.book.id)
+            books=','.join([str(x.book) for x in book.all()])
+            return books
         else:
             return None
 

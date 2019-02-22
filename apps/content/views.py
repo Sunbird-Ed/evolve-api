@@ -313,7 +313,7 @@ class ApprovedContentDownloadView(ListAPIView):
                     #     d.append(" ")
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','content_name','video','rating','comment', 'linked_keywords','content_name','video','rating','comment', 'linked_keywords','content_name','video','rating','comment', 'linked_keywords','content_name','video','rating','comment', 'linked_keywords','content_name','video','rating','comment', 'linked_keywords'])
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords'])
             exists = os.path.isfile('ApprovedContent.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
