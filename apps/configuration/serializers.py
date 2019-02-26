@@ -49,10 +49,17 @@ class StateListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MediumListSerializer(serializers.ModelSerializer):
+    state = serializers.SerializerMethodField()
     class Meta:
         model = Medium
         fields = '__all__'
 
+    def get_state(self, obj):
+        state = State.objects.filter(id=obj.state.id).first()
+        if state is not None:
+            return state.state
+        else:
+            return None
 
 class GradeListSerializer(serializers.ModelSerializer):
     class Meta:
