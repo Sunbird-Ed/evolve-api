@@ -393,11 +393,19 @@ class KeywordSerializer(serializers.ModelSerializer):
     keywords = serializers.SerializerMethodField()
     hard_spot = serializers.SerializerMethodField()
     content_contributors = serializers.SerializerMethodField()
-    
+    sas_token=serializers.SerializerMethodField()
     class Meta:
         model = Content
-        fields = ('id','hard_spot','chapter','section','sub_section','content_name','video','approved','approved_by' ,'rating','rated_by','comment','keywords', 'content_contributors')
+        fields = ('id','hard_spot','chapter','section','sub_section','content_name','video','approved','approved_by' ,'rating','rated_by','comment','keywords', 'content_contributors','sas_token')
     
+    def get_sas_token(self,req):
+        try:
+            blobService = BlockBlobService(account_name=accountName, account_key=accountKey)
+            sas_token = blobService.generate_container_shared_access_signature(containerName,ContainerPermissions.READ, datetime.utcnow() + timedelta(hours=1))
+            return sas_token
+        except:
+            return None
+
     def get_hard_spot(self, req):
         try:
             # import ipdb;ipdb.set_trace()
