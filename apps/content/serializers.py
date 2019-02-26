@@ -5,7 +5,16 @@ from apps.configuration.models import Book
 from apps.hardspot.models import HardSpot
 from apps.hardspot.serializers import HardSpotCreateSerializer
 from django.db.models import Q
-
+from datetime import datetime, timedelta
+import os
+from azure.storage.blob import (
+    BlockBlobService,
+    ContainerPermissions,
+)
+from evolve import settings
+accountName = settings.AZURE_ACCOUNT_NAME
+accountKey = settings.AZURE_ACCOUNT_KEY
+containerName= settings.AZURE_CONTAINER
 
 
 class ContentListSerializer(serializers.ModelSerializer):
@@ -26,10 +35,12 @@ class ContentListSerializer(serializers.ModelSerializer):
 
 class ContentStatusListSerializer(serializers.ModelSerializer):
     hard_spot = serializers.SerializerMethodField()
+    sas_token=serializers.SerializerMethodField()
 
     class Meta:
         model = Content
-        fields="__all__"
+        # fields="__all__"
+        fields=('id','hard_spot','content_name','video','approved','rating','comment','chapter','section','sub_section','aaproved_by','rated_by','content_contributors','chapter_keywords','section_keywords','sub_section_keywords','sas_token')
 
     def get_hard_spot(self, req):
         try:
@@ -40,6 +51,16 @@ class ContentStatusListSerializer(serializers.ModelSerializer):
             return data
         except:
             return None
+
+    def get_sas_token(self,req):
+        try:
+            blobService = BlockBlobService(account_name=accountName, account_key=accountKey)
+            sas_token = blobService.generate_container_shared_access_signature(containerName,ContainerPermissions.READ, datetime.utcnow() + timedelta(hours=1))
+            return sas_token
+        except:
+            return None
+            
+        
     
 
 class SubSectionSerializer(serializers.ModelSerializer):

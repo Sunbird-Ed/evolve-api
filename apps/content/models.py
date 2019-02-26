@@ -43,10 +43,11 @@ class Content(models.Model):
     section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
     content_name = models.CharField(max_length=200)
-    video = models.FileField(upload_to=format_thumbnail_folder,
-            storage=MediaStorage(),
-            blank=True,
-            null=True,)
+    # video = models.FileField(upload_to=format_thumbnail_folder,
+    #         storage=MediaStorage(),
+    #         blank=True,
+    #         null=True,)
+    video = models.URLField(max_length=255, blank=True,null=True)
     approved = models.BooleanField(default=False)
     approved_by = models.ForeignKey(User,
         on_delete=models.CASCADE,
