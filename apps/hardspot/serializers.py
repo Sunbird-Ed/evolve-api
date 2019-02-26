@@ -276,12 +276,18 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                 for data in serializer.data:
                     for key, value in data.items():
                         tempList.append(value)
-            else:
+            elif no_of_hardspot < 5:
                 for data in serializer.data[:no_of_hardspot]:
                     for key, value in data.items():
                         tempList.append(value)
                 for i in range(0,(6*(5-no_of_hardspot))):
                     tempList.append("")
+            else:
+                for data in serializer.data[:5]:
+                    for key, value in data.items():
+                        tempList.append(value)
+                # for i in range(0,(6*(5-no_of_hardspot))):
+                #     tempList.append("")
             data_str_list.append( tempList )
             # for data in serializer.data:
             #     for key, value in data.items():
@@ -315,12 +321,16 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                         for data in serializer.data:
                             for key, value in data.items():
                                 tempList.append(value)
-                    else:
+                    elif no_of_hardspot < 5:
                         for data in serializer.data[:no_of_hardspot]:
                             for key, value in data.items():
                                 tempList.append(value)
                         for i in range(0,(6*(5-no_of_hardspot))):
                             tempList.append("")
+                    else:
+                        for data in serializer.data[:5]:
+                            for key, value in data.items():
+                                tempList.append(value)
                     data_str_list.append( tempList )
                     # for data in serializer.data:
                     #     for key, value in data.items():
@@ -351,12 +361,16 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 for data in serializer.data:
                                     for key, value in data.items():
                                         tempList.append(value)
-                            else:
+                            elif no_of_hardspot < 5:
                                 for data in serializer.data[:no_of_hardspot]:
                                     for key, value in data.items():
                                         tempList.append(value)
                                 for i in range(0,(6*(5-no_of_hardspot))):
                                     tempList.append("")
+                            else:
+                                for data in serializer.data[:5]:
+                                    for key, value in data.items():
+                                        tempList.append(value)
                             data_str_list.append( tempList )
                             # for data in serializer.data:
                             #     for key, value in data.items():
