@@ -287,7 +287,7 @@ class ContentContributorCreateView(ListCreateAPIView):
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   
 
-
+@permission_classes((IsAuthenticated,))
 class ApprovedContentDownloadView(ListAPIView):
     queryset = Book.objects.all()
 
@@ -358,6 +358,7 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@permission_classes((IsAuthenticated,))
 class ContentContributorsDownloadView(RetrieveUpdateAPIView):
     queryset = Content.objects.all()
     serializer_class = HardSpotCreateSerializer
@@ -392,3 +393,37 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+from evolve import settings
+from azure.storage.blob import (
+    BlockBlobService,
+    ContainerPermissions
+)
+from datetime import datetime, timedelta
+import os
+
+account_name = settings.AZURE_ACCOUNT_NAME
+account_key = settings.AZURE_ACCOUNT_KEY
+CONTAINER_NAME= settings.AZURE_CONTAINER
+
+block_blob_service = BlockBlobService(account_name=account_name, account_key=account_key)
+
+class GetSASView(ListAPIView):
+
+    def get(self,request):
+        try:
+            sas_url = block_blob_service.generate_container_shared_access_signature(
+                CONTAINER_NAME,
+                ContainerPermissions.WRITE,
+                datetime.utcnow() + timedelta(hours=1),
+            )
+            base_url=account_name+".blob.core.windows.net/"+CONTAINER_NAME
+            context = {"success": True, "message": "url link", "error": "", "token":sas_url,"base_url":base_url}
+            return Response(context, status=status.HTTP_200_OK)
+
+        except Exception as error:
+            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            
+      
