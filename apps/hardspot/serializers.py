@@ -473,7 +473,7 @@ class HardSpotSerializer(serializers.ModelSerializer):
     hardspot_contributor = serializers.SerializerMethodField()
     class Meta:
         model = HardSpot
-        fields=['id','approved_by','hardspot_contributor','chapter','section','hard_spot','description','points_to_be_covered','useful_to']
+        fields=['id','approved_by','hardspot_contributor','chapter','section','hard_spot','description','points_to_be_covered','useful_to','rating']
 
     def get_hardspot_contributor(self, req):
         contributor = HardSpotContributors.objects.filter(id=req.hardspot_contributor.id).first()

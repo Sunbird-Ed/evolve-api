@@ -5,7 +5,7 @@ from apps.content.models import Content
 from apps.configuration.models import State, Book, Grade, Subject, Medium
 
 class ChapterSerializer(serializers.ModelSerializer):
-	"""Docstring for agegroupserializer."""
+	
 
 	class Meta:
 		model = Chapter
@@ -59,7 +59,7 @@ class SectionNestedSerializer(serializers.ModelSerializer):
 				'active']
 	def get_sub_section(self, req):
 		try:
-			# import pdb; pdb.set_trace()
+			
 			sub_section_data = SubSection.objects.filter(section=req.id)
 			serializer = SubSectionSerializer(sub_section_data, many=True)
 			data = serializer.data
@@ -95,8 +95,8 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
 	section = serializers.SerializerMethodField()
 	hardspot_count = serializers.SerializerMethodField() 
 	content_count = serializers.SerializerMethodField()
-	# id = serializers.SerializerMethodField()
-	# subsection = serializers.SerializerMethodField()
+	
+	
 
 	class Meta:
 		model = Chapter
@@ -110,7 +110,7 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
 
 	def get_section(self, req):
 		try:
-			# import pdb; pdb.set_trace()
+			
 			section_data = Section.objects.filter(chapter=req.id)
 			serializer = SectionNestedSerializer(section_data, many=True)
 			data = serializer.data
@@ -134,8 +134,8 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
 
 class BookNestedSerializer(serializers.ModelSerializer):
 	chapter = serializers.SerializerMethodField()
-	# id = serializers.SerializerMethodField()
-	# subsection = serializers.SerializerMethodField()
+	
+	
 
 	class Meta:
 		model = Book
@@ -146,7 +146,7 @@ class BookNestedSerializer(serializers.ModelSerializer):
 
 	def get_chapter(self, req):
 		try:
-			# import pdb; pdb.set_trace()
+			
 			chapter_data = Chapter.objects.filter(book=req.id)
 			serializer = ChapterNestedSerializer(chapter_data, many=True)
 			data = serializer.data
@@ -200,15 +200,5 @@ class SectionUploadSerializer(serializers.ModelSerializer):
 		model = Section
 		fields = ['section', 'chapter']
 
-class TocUploadSerializer(serializers.ModelSerializer):
-	section = SectionUploadSerializer()
-	class Meta:
-		model = SubSection
-		fields = ['sub_section', 'section']
 
-	def create(self, validated_data):
-		import ipdb; ipdb.set_trace()
 
-class TableUploadSerializer(serializers.Serializer):
-	def create(self, validated_data):
-		import ipdb; ipdb.set_trace()
