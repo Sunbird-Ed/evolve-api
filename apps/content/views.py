@@ -82,7 +82,6 @@ class ContentRetrieveUpdate(RetrieveUpdateAPIView):
     def put(self, request, pk, format=None):
         try:
             try:
-                # 
                 content_list = self.get_object()
 
             except Exception as error:
@@ -91,7 +90,6 @@ class ContentRetrieveUpdate(RetrieveUpdateAPIView):
             serializer = ContentListSerializer(content_list, data=request.data, context={"user":request.user}, partial=True)
 
             if serializer.is_valid():
-                # import ipdb;ipdb.set_trace()
                 serializer.save()
                 context = {"success": True, "message": "Updation Successful", "error": "", "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
@@ -153,7 +151,6 @@ class ContentApprovedList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
-            # import pdb; pdb.set_trace()
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=True)
             elif section_id is not None:
@@ -178,7 +175,6 @@ class ContentPendingList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
-            # import pdb; pdb.set_trace()
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False, approved_by=None)
             elif section_id is not None:
@@ -229,7 +225,6 @@ class ContentRejectedList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
-            # import pdb; pdb.set_trace()
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False).exclude(approved_by=None)
             elif section_id is not None:
@@ -308,24 +303,14 @@ class ApprovedContentDownloadView(ListAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
             book = request.query_params.get('book', None)
-            # chapters=Chapter.objects.all()
             chapters=Chapter.objects.filter(book_id=book)
             serializer = ApprovedContentSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
-                    # if len(d) == 33:
-                    #     final_list.append(d)
-                    # elif len(d) == 11:
-                    #     d.append(" ")
-                    #     d.append(" ")
-                    #     final_list.append(d)
-                    # elif len(d) == 12:
-                    #     d.append(" ")
                     final_list.append(d)
 
             data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords'])
@@ -348,7 +333,6 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
@@ -380,7 +364,6 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
@@ -393,8 +376,6 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
             for data in res_list:
                 for d in res_list:
                     final_list.append(d)
-                # for key, value in data.items():
-                #     final_list.append(value)
 
             data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email', 'textbook_name']).drop_duplicates()
             exists = os.path.isfile('content_contributers.csv')

@@ -23,7 +23,6 @@ class ContentListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        # import ipdb; ipdb.set_trace()
         instance.approved = validated_data.get('approved', instance.approved)
         instance.approved_by=self.context.get('user', None)
         instance.rating = self.validated_data.get('rating', instance.rating)
@@ -39,12 +38,10 @@ class ContentStatusListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Content
-        # fields="__all__"
         fields=('id','hard_spot','content_name','video','approved','rating','comment','chapter','section','sub_section','approved_by','rated_by','content_contributors','chapter_keywords','section_keywords','sub_section_keywords','sas_token')
 
     def get_hard_spot(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             hardspot_data = HardSpot.objects.filter(id=req.hard_spot.id).first()
             serializer = HardSpotCreateSerializer(hardspot_data)
             data = serializer.data
@@ -88,8 +85,6 @@ class SubSectionSerializer(serializers.ModelSerializer):
             contributions_approved=Content.objects.filter(sub_section_id=req.id,approved=True).exclude(approved_by=None).count()
             contributions_pending=Content.objects.filter(sub_section_id=req.id,approved=False,approved_by=None).count()
             return (contributions_approved + contributions_pending)
-            # contributions_count=Content.objects.filter(sub_section_id=req.id).count()
-            # return contributions_count
         except:
             return None
 
@@ -127,9 +122,6 @@ class SectionNestedSerializer(serializers.ModelSerializer):
             contributions_approved=Content.objects.filter(section_id=req.id,approved =True).exclude(approved_by=None).count()
             contributions_pending=Content.objects.filter(section_id=req.id,approved=False,approved_by=None).count()
             return (contributions_approved + contributions_pending)
-
-            # contributions_count=Content.objects.filter(section_id=req.id).count()
-            # return contributions_count
         except:
             return None 
 
@@ -142,7 +134,7 @@ class SubsectionNestedSerializer(serializers.ModelSerializer):
         fields = ['id',
                 'section',
                 'sub_section',]
-# class BookNestedSerializer(serializers.ModelSerializer):
+
 class ChapterNestedSerializer(serializers.ModelSerializer):
     section = serializers.SerializerMethodField()
     hardspot_count=serializers.SerializerMethodField()
@@ -164,8 +156,6 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
             contributions_approved=Content.objects.filter(chapter_id=req.id,approved=True).exclude(approved_by=None).count()
             contributions_pending=Content.objects.filter(chapter_id=req.id,approved=False,approved_by=None).count()
             return (contributions_approved + contributions_pending)
-            # contributions_count=Content.objects.filter(chapter_id=req.id).count()
-            # return contributions_count
         except:
             return None       
 
@@ -189,7 +179,6 @@ class BookNestedSerializer(serializers.ModelSerializer):
                 ]
     def get_chapter(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             chapter_data = Chapter.objects.filter(book=req.id)#.exclude(Q(book__hardspot_only=True) & ~Q(hardspot__isnull=False))
             serializer = ChapterNestedSerializer(chapter_data, many=True)
             data = serializer.data
@@ -272,7 +261,6 @@ class ContentSectionNestedSerializer(serializers.ModelSerializer):
         except:
             return None
     def get_total(self, req):
-        # import ipdb;ipdb.set_trace()
         try:
             count = Content.objects.filter(section=req.id).count()
             return count
@@ -324,7 +312,6 @@ class ContentChapterNestedSerializer(serializers.ModelSerializer):
 
     def get_total(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             count = Content.objects.filter(chapter=req.id).count()
             return count
         except:
@@ -337,7 +324,6 @@ class ContentChapterNestedSerializer(serializers.ModelSerializer):
             return None
     def get_reject(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             chapter_reject = Content.objects.filter(approved=False,chapter=req.id).exclude(approved_by=None).count()
             return chapter_reject 
         except:
@@ -364,7 +350,6 @@ class BookListSerializer(serializers.ModelSerializer):
                 ]
     def get_chapter(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             chapter_data = Chapter.objects.filter(book=req.id)
             serializer = ContentChapterNestedSerializer(chapter_data, many=True)
             data = serializer.data
@@ -389,9 +374,6 @@ class SubSectionKeywordsSerializer(serializers.ModelSerializer):
 
 
 class KeywordSerializer(serializers.ModelSerializer):
-    # chapter_keywords=ChapterKeywordsSerializer(many=True)
-    # section_keywords=SectionKeywordsSerializer(many=True)
-    # sub_section_keywords=SubSectionKeywordsSerializer(many=True)
     keywords = serializers.SerializerMethodField()
     hard_spot = serializers.SerializerMethodField()
     content_contributors = serializers.SerializerMethodField()
@@ -410,7 +392,6 @@ class KeywordSerializer(serializers.ModelSerializer):
 
     def get_hard_spot(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             hardspot_data = HardSpot.objects.filter(id=req.hard_spot.id).first()
             serializer = HardSpotCreateSerializer(hardspot_data)
             data = serializer.data
@@ -420,10 +401,6 @@ class KeywordSerializer(serializers.ModelSerializer):
 
     def get_keywords(self, obj):
         try:
-            # import ipdb;ipdb.set_trace()
-            # chapter_keywords = ChapterKeyword.objects.filter(chapter=obj.chapter)
-            # section_keywords = SectionKeyword.objects.filter(section=obj.section)
-            # sub_section_keywords = SubSectionKeyword.objects.filter(sub_section=obj.sub_section)
             if obj.chapter_keywords.all().exists():
                 k=obj.chapter_keywords.all().values('keyword')
                 listData = [ x for x in k ]
@@ -455,7 +432,6 @@ class KeywordSerializer(serializers.ModelSerializer):
 
     def get_content_contributors(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             content_contributor = ContentContributors.objects.filter(id=req.content_contributors.id).first()
             serializer = ContentContributorSerializer(content_contributor)
             data = serializer.data
@@ -496,7 +472,6 @@ class ContentDownloadSerializer(serializers.ModelSerializer):
         fields=('content_name','video','rating','comment', 'selected_keyword')
 
     def get_selected_keyword(self, obj):
-        # import ipdb; ipdb.set_trace()
         if  obj.chapter_keywords.all().count() != 0:
             linked_keyword = ChapterKeyword.objects.filter(id__in=obj.chapter_keywords.all())
             keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
@@ -522,7 +497,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
 
     def get_chapter(self, req):
         data_str_list = []
-        # import ipdb; ipdb.set_trace()
         chapters=Chapter.objects.filter(chapter=req.chapter).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=True)
@@ -550,7 +524,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                 for i in range(0,(5*(5-no_of_hardspot))):
                     tempList.append("")
             data_str_list.append( tempList )
-                # tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section, sub_section, keyword ]
         else:
             for x in range(1,25):
                 tempList.append("")
@@ -615,13 +588,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 for i in range(0,(5*(5-no_of_hardspot))):
                                     tempList.append("")
                             data_str_list.append( tempList )
-                           
-                            # serializer = ContentDownloadSerializer(sub_sec_content, many=True)
-                            # for data in serializer.data:
-                            #     for key, value in data.items():
-                            #         tempList.append(value)
-                            #     data_str_list.append(tempList)
-                            #     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section, keyword ]
                         else:
                             for x  in range(1,25):
                                 tempList.append("")
@@ -632,15 +598,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
     
 class ContentStatusSerializer(serializers.ModelSerializer):
     chapter=serializers.SerializerMethodField()
-    # section=serializers.SerializerMethodField()
-    # sub_section=serializers.SerializerMethodField()
     class Meta:
         model = Chapter
         fields = ['chapter']
-    # def get_section(self, obj):
-    #     section = section.objects.filter(chapter=obj.id)
+    
     def get_chapter(self, req):
-        # import ipdb; ipdb.set_trace()
         data_str_list = []
         chapters=Chapter.objects.filter(chapter=req.chapter).first()
         sections=Section.objects.filter(chapter=req)
@@ -652,7 +614,6 @@ class ContentStatusSerializer(serializers.ModelSerializer):
                 if sub_section.exists():
                     for sub_section_data in sub_section:
                         tempList.append( sub_section_data.sub_section )
-                        # print(sub_section_data, section_data, chapters)
                         total = Content.objects.filter(sub_section__id=sub_section_data.id).count()
                         approved = Content.objects.filter(sub_section__id=sub_section_data.id, approved=True).count()
                         rejected = Content.objects.filter(sub_section__id=sub_section_data.id, approved=False).exclude(approved_by=None).count()
@@ -698,8 +659,6 @@ class ContentStatusSerializer(serializers.ModelSerializer):
             tempList.append(pending)
             tempList.append(hard_spot)
             data_str_list.append( tempList )
-        # print (data_str_list)
-        # print (data_list)
 
         return data_str_list
 
