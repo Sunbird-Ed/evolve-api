@@ -19,13 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0^q+@03g_-3eh*!ia0_u*j(&%k(wy%3px^%qpw43do5%_emsg8'
+SECRET_KEY = os.environ.get('EVOLVE_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('EVOLVE_DEBUG', False)
 
-ALLOWED_HOSTS = ["localhost", "edf90345.ngrok.io", 'localhost:8080','52.172.196.135']
-
+ALLOWED_HOSTS = ['http://evolve.diksha.gov.in']
 # Application definition
 
 INSTALLED_APPS = [
@@ -91,8 +90,6 @@ CORS_ORIGIN_REGEX_WHITELIST = (
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-print(os.environ.get('EVOLVE_DB_NAME'))
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
