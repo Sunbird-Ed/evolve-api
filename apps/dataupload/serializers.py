@@ -28,7 +28,8 @@ class SubSectionSerializer(serializers.ModelSerializer):
 		'sub_section',
 		'section',
 		'hardspot_count',
-		'content_count']
+		'content_count',
+		'active']
 
 	def get_hardspot_count(self, req):
 		try:
@@ -54,11 +55,12 @@ class SectionNestedSerializer(serializers.ModelSerializer):
 				'section',
 				'hardspot_count',
 				'content_count',
-				'sub_section']
+				'sub_section',
+				'active']
 	def get_sub_section(self, req):
 		try:
 			# import pdb; pdb.set_trace()
-			sub_section_data = SubSection.objects.filter(section=req.id,active=True)
+			sub_section_data = SubSection.objects.filter(section=req.id)
 			serializer = SubSectionSerializer(sub_section_data, many=True)
 			data = serializer.data
 			return data
@@ -103,12 +105,13 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
 				'hardspot_count',
 				'content_count',
 		        'section',
+		        'active'
 				]
 
 	def get_section(self, req):
 		try:
 			# import pdb; pdb.set_trace()
-			section_data = Section.objects.filter(chapter=req.id,active=True)
+			section_data = Section.objects.filter(chapter=req.id)
 			serializer = SectionNestedSerializer(section_data, many=True)
 			data = serializer.data
 			return data
@@ -144,7 +147,7 @@ class BookNestedSerializer(serializers.ModelSerializer):
 	def get_chapter(self, req):
 		try:
 			# import pdb; pdb.set_trace()
-			chapter_data = Chapter.objects.filter(book=req.id,active=True)
+			chapter_data = Chapter.objects.filter(book=req.id)
 			serializer = ChapterNestedSerializer(chapter_data, many=True)
 			data = serializer.data
 			return data
