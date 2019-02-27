@@ -40,7 +40,7 @@ class ContentStatusListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Content
         # fields="__all__"
-        fields=('id','hard_spot','content_name','video','approved','rating','comment','chapter','section','sub_section','aaproved_by','rated_by','content_contributors','chapter_keywords','section_keywords','sub_section_keywords','sas_token')
+        fields=('id','hard_spot','content_name','video','approved','rating','comment','chapter','section','sub_section','aproved_by','rated_by','content_contributors','chapter_keywords','section_keywords','sub_section_keywords','sas_token')
 
     def get_hard_spot(self, req):
         try:
