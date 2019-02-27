@@ -1,0 +1,10 @@
+*.pyc
+*.DS_Store
+*db.sqlite3
+**/**/migrations/0*
+*media
+*static
+*static_root
+.env
+.vscode
+**/**/*.pyc
