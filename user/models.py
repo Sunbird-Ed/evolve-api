@@ -5,11 +5,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from apps.configuration.models import State
 from django.contrib.auth.models import User
-# class EvolveUser(AbstractUser):
-#     pass
 
-# class CustomUser(User):
-#     username_validator = ASCIIUsernameValidator()
     
 class Roles(models.Model):
     rolename=models.CharField(max_length=200)

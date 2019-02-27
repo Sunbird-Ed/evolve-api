@@ -141,7 +141,6 @@ class HardSpotRejectedList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
-            # import pdb; pdb.set_trace()
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False).exclude(approved_by=None)
             elif section_id is not None:
@@ -255,7 +254,6 @@ class ContentVisitorsDownloadView(RetrieveUpdateAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
@@ -268,8 +266,6 @@ class ContentVisitorsDownloadView(RetrieveUpdateAPIView):
             for data in res_list:
                 for d in res_list:
                     final_list.append(d)
-                # for key, value in data.items():
-                #     final_list.append(value)
 
             data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email']).drop_duplicates()
             exists = os.path.isfile('content_contributers.xlsx')
@@ -318,7 +314,6 @@ class ApprovedHardSpotDownloadView(ListAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
@@ -328,14 +323,6 @@ class ApprovedHardSpotDownloadView(ListAPIView):
                 serializer = ApprovedHardSpotSerializer(chapters, many=True)
                 for data in serializer.data:
                     for d in data['chapter']:
-                        # if len(d) == 13:
-                        #     final_list.append(d)
-                        # elif len(d) == 11:
-                        #     d.append(" ")
-                        #     d.append(" ")
-                        #     final_list.append(d)
-                        # elif len(d) == 12:
-                        #     d.append(" ")
                         final_list.append(d)
 
                 data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)'])
@@ -359,7 +346,6 @@ class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile

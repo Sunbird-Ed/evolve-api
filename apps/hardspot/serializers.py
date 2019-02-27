@@ -211,9 +211,6 @@ class HardSpotUpdateSerializer(serializers.ModelSerializer):
 
 
 class HardspotVisitersSerializer(serializers.ModelSerializer):
-    # chapter=serializers.SerializerMethodField()
-    # section=serializers.SerializerMethodField()
-    # sub_section=serializers.SerializerMethodField()
     class Meta:
         model = HardSpotContributors
         fields = ['first_name',
@@ -222,9 +219,6 @@ class HardspotVisitersSerializer(serializers.ModelSerializer):
                 'email']
 
 class ContentVisitersSerializer(serializers.ModelSerializer):
-    # chapter=serializers.SerializerMethodField()
-    # section=serializers.SerializerMethodField()
-    # sub_section=serializers.SerializerMethodField()
     class Meta:
         model = ContentContributors
         fields = ['first_name',
@@ -286,14 +280,8 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                 for data in serializer.data[:5]:
                     for key, value in data.items():
                         tempList.append(value)
-                # for i in range(0,(6*(5-no_of_hardspot))):
-                #     tempList.append("")
             data_str_list.append( tempList )
-            # for data in serializer.data:
-            #     for key, value in data.items():
-            #         tempList.append(value)
-            #     data_str_list.append( tempList )
-            #     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section, sub_section, keyword ]
+           
         else:
             for x in range(1,30):
                 tempList.append("")
@@ -332,11 +320,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                             for key, value in data.items():
                                 tempList.append(value)
                     data_str_list.append( tempList )
-                    # for data in serializer.data:
-                    #     for key, value in data.items():
-                    #         tempList.append(value)
-                    #     data_str_list.append (tempList)
-                    #     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section, keyword]
+                    
                 else:
                     for x in range(1,30):
                         tempList.append("")
@@ -372,11 +356,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                     for key, value in data.items():
                                         tempList.append(value)
                             data_str_list.append( tempList )
-                            # for data in serializer.data:
-                            #     for key, value in data.items():
-                            #         tempList.append(value)
-                            #     data_str_list.append(tempList)
-                            #     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section, keyword ]
                         else:
                             for x in range(1,30):
                                 tempList.append("")
@@ -390,15 +369,11 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
 
 class HardspotStatusSerializer(serializers.ModelSerializer):
     chapter=serializers.SerializerMethodField()
-    # section=serializers.SerializerMethodField()
-    # sub_section=serializers.SerializerMethodField()
     class Meta:
         model = Chapter
         fields = ['chapter']
-    # def get_section(self, obj):
-    #     section = section.objects.filter(chapter=obj.id)
+
     def get_chapter(self, req):
-        # import ipdb; ipdb.set_trace()
         data_str_list = []
         chapters=Chapter.objects.filter(chapter=req.chapter).first()
         sections=Section.objects.filter(chapter=req)
@@ -410,7 +385,6 @@ class HardspotStatusSerializer(serializers.ModelSerializer):
                 if sub_section.exists():
                     for sub_section_data in sub_section:
                         tempList.append( sub_section_data.sub_section )
-                        # print(sub_section_data, section_data, chapters)
                         total = HardSpot.objects.filter(sub_section__id=sub_section_data.id).count()
                         approved = HardSpot.objects.filter(sub_section__id=sub_section_data.id, approval=True).count()
                         rejected = HardSpot.objects.filter(sub_section__id=sub_section_data.id, approval=False).exclude(approved_by=None).count()
@@ -450,8 +424,6 @@ class HardspotStatusSerializer(serializers.ModelSerializer):
             tempList.append(rejected)
             tempList.append(pending)
             data_str_list.append( tempList )
-        # print (data_str_list)
-        # print (data_list)
 
         return data_str_list
 
@@ -469,7 +441,6 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
                 'email',
                 'textbook_name']
     def get_first_name(self, obj):
-        # import ipdb; ipdb.set_trace()
         first_name=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().first_name
         return first_name
     def get_last_name(self, obj):
@@ -483,7 +454,6 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
         return email
     def get_textbook_name(self, obj):
         if obj.chapter is not None:
-            # import ipdb; ipdb.set_trace()
             book = Book.objects.filter(id=obj.chapter.book.id)
             books=','.join([str(x.book) for x in book.all()])
             return books

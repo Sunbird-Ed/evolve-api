@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get('EVOLVE_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('EVOLVE_DEBUG', False)
 
-ALLOWED_HOSTS = [os.environ.get('EVOLVE_ALLOWED_HOSTS')]
+ALLOWED_HOSTS = [os.environ.get('EVOLVE_ALLOWED_HOSTS'), 'localhost']
 # Application definition
 
 INSTALLED_APPS = [

@@ -15,7 +15,6 @@ class UserDetailSerializer(ModelSerializer):
         fields = ['role','user','state']
 
     def get_user(self,req):
-        # import ipdb; ipdb.set_trace()
         user = User.objects.filter(id=req.user.id)
         serializer=UserSerializer(user,many=True)
         return serializer.data

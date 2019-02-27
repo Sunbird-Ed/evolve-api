@@ -28,13 +28,11 @@ class DetailList(ListAPIView):
         try:
             state = request.query_params.get('state', None)
             if state is not None:
-                # import ipdb; ipdb.set_trace()
                 queryset=self.get_queryset().filter(subject__grade__medium__state_id=state,)
                 serializer = DetailListSerializer(queryset, many=True)
             else:
                 queryset = self.get_queryset()
                 serializer = DetailListSerializer(queryset, many=True)
-            # print((serializer))
             context = {"success": True, "message": "List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -48,10 +46,8 @@ class StateList(ListAPIView):
     serializer_class = StateListSerializer
     def get(self, request):
         try:
-            # import pdb; pdb.set_trace()
             queryset = self.get_queryset()
             serializer = StateListSerializer(queryset, many=True)
-            # print((serializer))
             context = {"success": True, "message": "State List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -70,9 +66,7 @@ class MediumList(ListAPIView):
                 queryset=self.get_queryset().filter(state__id=state)
             else:
                 queryset = self.get_queryset()
-            # queryset = self.get_queryset()
             serializer = MediumListSerializer(queryset, many=True)
-            # print((serializer))
             context = {"success": True, "message": "Medium List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -86,12 +80,10 @@ class GradeList(ListAPIView):
         try:
             medium = request.query_params.get('medium', None)
             if medium is not None:
-                # queryset=self.get_queryset().filter(medium__id=medium,subject__book__action=True).distinct()
                 queryset=self.get_queryset().filter(medium__id=medium)
             else:
                 queryset = self.get_queryset()
             serializer = GradeListSerializer(queryset, many=True)
-            # print((serializer))
             context = {"success": True, "message": "Grade List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -106,14 +98,10 @@ class SubjectList(ListAPIView):
         try:
             grade = request.query_params.get('grade', None)
             if grade is not None:
-                # queryset=self.get_queryset().filter(grade__id=grade, book__action=True).distinct()
                 queryset=self.get_queryset().filter(grade__id=grade)
             else:
                 queryset = self.get_queryset()
-            # import pdb; pdb.set_trace()
-            # queryset = self.get_queryset()
             serializer = SubjectListSerializer(queryset, many=True)
-            # print((serializer))
             context = {"success": True, "message": "Subject List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -133,7 +121,6 @@ class BookList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = BookListSerializer(queryset, many=True)
-            # print(serializer)
             context = {"success": True, "message": "book List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
