@@ -37,6 +37,7 @@ class SubSectionSerializer(serializers.ModelSerializer):
         'reject',
         'pending',
         'sub_section',
+        'active'
 
         ]
 
@@ -81,7 +82,8 @@ class SectionNestedSerializer(serializers.ModelSerializer):
                 'approved',
                 'reject',
                 'pending',
-                'sub_section',]
+                'sub_section',
+                'active']
 
     def get_sub_section(self, req):
         try:
@@ -127,7 +129,7 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chapter
-        fields =['id','chapter','total','approved','reject','pending','section']
+        fields =['id','chapter','total','approved','reject','pending','section','active']
 
 
 
