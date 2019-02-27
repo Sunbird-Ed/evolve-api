@@ -20,6 +20,21 @@ import json
 import pandas as pd
 from evolve import settings
 
+from evolve import settings
+from azure.storage.blob import (
+    BlockBlobService,
+    ContainerPermissions
+)
+from datetime import datetime, timedelta
+import os
+
+account_name = settings.AZURE_ACCOUNT_NAME
+account_key = settings.AZURE_ACCOUNT_KEY
+CONTAINER_NAME= settings.AZURE_CONTAINER
+
+block_blob_service = BlockBlobService(account_name=account_name, account_key=account_key)
+
+
 class ContentList(ListCreateAPIView):
     queryset = Content.objects.all()
     serializer_class = KeywordSerializer
@@ -394,19 +409,7 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-from evolve import settings
-from azure.storage.blob import (
-    BlockBlobService,
-    ContainerPermissions
-)
-from datetime import datetime, timedelta
-import os
 
-account_name = settings.AZURE_ACCOUNT_NAME
-account_key = settings.AZURE_ACCOUNT_KEY
-CONTAINER_NAME= settings.AZURE_CONTAINER
-
-block_blob_service = BlockBlobService(account_name=account_name, account_key=account_key)
 
 class GetSASView(ListAPIView):
 
@@ -424,6 +427,8 @@ class GetSASView(ListAPIView):
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
             
       

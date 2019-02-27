@@ -384,6 +384,8 @@ class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@permission_classes((IsAuthenticated,))
 class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
     queryset = HardSpot.objects.all()
     serializer_class = HardSpotCreateSerializer
