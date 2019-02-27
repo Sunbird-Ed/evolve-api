@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get('EVOLVE_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('EVOLVE_DEBUG', False)
 
-ALLOWED_HOSTS = ['http://evolve.diksha.gov.in']
+ALLOWED_HOSTS = ['https://evolve.diksha.gov.in']
 # Application definition
 
 INSTALLED_APPS = [
@@ -78,14 +78,10 @@ WSGI_APPLICATION = 'evolve.wsgi.application'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8000',
-    '52.172.196.135',
-    '52.172.196.135:5000',
+    'https://evolve.diksha.gov.in',
 )
 CORS_ORIGIN_REGEX_WHITELIST = (
-    'localhost:8000',
-    '52.172.196.135',
-    '52.172.196.135:5000',
+    'https://evolve.diksha.gov.in',
 )
 
 # Database
