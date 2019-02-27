@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '0^q+@03g_-3eh*!ia0_u*j(&%k(wy%3px^%qpw43do5%_emsg8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('EVOLVE_DEBUG', False)
 
 ALLOWED_HOSTS = ["localhost", "edf90345.ngrok.io", 'localhost:8080','52.172.196.135']
 
