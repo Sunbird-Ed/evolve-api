@@ -525,7 +525,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                     tempList.append("")
             data_str_list.append( tempList )
         else:
-            for x in range(1,25):
+            for x in range(0,25):
                 tempList.append("")
             data_str_list.append( tempList )
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
@@ -559,7 +559,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                     data_str_list.append( tempList )
                     
                 else:
-                    for x in range(1,25):
+                    for x in range(0,25):
                         tempList.append("")
                     data_str_list.append( tempList )
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
@@ -589,7 +589,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                     tempList.append("")
                             data_str_list.append( tempList )
                         else:
-                            for x  in range(1,25):
+                            for x  in range(0,25):
                                 tempList.append("")
                             data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
