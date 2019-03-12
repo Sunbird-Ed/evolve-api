@@ -70,7 +70,7 @@ class MediumList(ListAPIView):
                     queryset=self.get_queryset().filter(state__id=state, grade__subject__book__content_only=True)
             else:
                 queryset = self.get_queryset()
-            serializer = MediumListSerializer(queryset, many=True)
+            serializer = MediumListSerializer(set(queryset), many=True)
             context = {"success": True, "message": "Medium List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -91,7 +91,7 @@ class GradeList(ListAPIView):
                     queryset=self.get_queryset().filter(medium__id=medium, subject__book__content_only=True)
             else:
                 queryset = self.get_queryset()
-            serializer = GradeListSerializer(queryset, many=True)
+            serializer = GradeListSerializer(set(queryset), many=True)
             context = {"success": True, "message": "Grade List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -113,7 +113,7 @@ class SubjectList(ListAPIView):
                     queryset=self.get_queryset().filter(grade__id=grade, book__content_only=True)#.exclude(book__hardspot_only=True)
             else:
                 queryset = self.get_queryset()
-            serializer = SubjectListSerializer(queryset, many=True)
+            serializer = SubjectListSerializer(set(queryset), many=True)
             context = {"success": True, "message": "Subject List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
