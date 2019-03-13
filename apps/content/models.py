@@ -47,7 +47,7 @@ class Content(models.Model):
     #         storage=MediaStorage(),
     #         blank=True,
     #         null=True,)
-    video = models.URLField(max_length=255, blank=True,null=True)
+    video = models.URLField(max_length=1000, blank=True,null=True)
     approved = models.BooleanField(default=False)
     approved_by = models.ForeignKey(User,
         on_delete=models.CASCADE,

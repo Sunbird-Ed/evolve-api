@@ -283,7 +283,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
             data_str_list.append( tempList )
            
         else:
-            for x in range(1,30):
+            for x in range(0,30):
                 tempList.append("")
        
             data_str_list.append( tempList )
@@ -322,7 +322,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                     data_str_list.append( tempList )
                     
                 else:
-                    for x in range(1,30):
+                    for x in range(0,30):
                         tempList.append("")
                     data_str_list.append( tempList )
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
@@ -357,7 +357,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                         tempList.append(value)
                             data_str_list.append( tempList )
                         else:
-                            for x in range(1,30):
+                            for x in range(0,30):
                                 tempList.append("")
                             data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]

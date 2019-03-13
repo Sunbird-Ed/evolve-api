@@ -62,11 +62,15 @@ class MediumList(ListAPIView):
     def get(self, request):
         try:
             state = request.query_params.get('state', None)
+            req = request.query_params.get('req', None)
             if state is not None:
-                queryset=self.get_queryset().filter(state__id=state)
+                if req is not None and str(req) == 'hardspot':
+                    queryset=self.get_queryset().filter(state__id=state, state__medium__grade__subject__book__hardspot_only=True)
+                elif req is not None and str(req) == 'content':
+                    queryset=self.get_queryset().filter(state__id=state, grade__subject__book__content_only=True)
             else:
                 queryset = self.get_queryset()
-            serializer = MediumListSerializer(queryset, many=True)
+            serializer = MediumListSerializer(set(queryset), many=True)
             context = {"success": True, "message": "Medium List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -79,11 +83,15 @@ class GradeList(ListAPIView):
     def get(self, request):
         try:
             medium = request.query_params.get('medium', None)
+            req = request.query_params.get('req', None)
             if medium is not None:
-                queryset=self.get_queryset().filter(medium__id=medium)
+                if req is not None and str(req) == 'hardspot':
+                    queryset=self.get_queryset().filter(medium__id=medium , subject__book__hardspot_only=True)
+                elif req is not None and str(req) == 'content':
+                    queryset=self.get_queryset().filter(medium__id=medium, subject__book__content_only=True)
             else:
                 queryset = self.get_queryset()
-            serializer = GradeListSerializer(queryset, many=True)
+            serializer = GradeListSerializer(set(queryset), many=True)
             context = {"success": True, "message": "Grade List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -97,11 +105,15 @@ class SubjectList(ListAPIView):
     def get(self, request):
         try:
             grade = request.query_params.get('grade', None)
+            req = request.query_params.get('req', None)
             if grade is not None:
-                queryset=self.get_queryset().filter(grade__id=grade)
+                if req is not None and str(req) == 'hardspot':
+                    queryset=self.get_queryset().filter(grade__id=grade,book__hardspot_only=True)
+                elif req is not None and str(req) == 'content':
+                    queryset=self.get_queryset().filter(grade__id=grade, book__content_only=True)#.exclude(book__hardspot_only=True)
             else:
                 queryset = self.get_queryset()
-            serializer = SubjectListSerializer(queryset, many=True)
+            serializer = SubjectListSerializer(set(queryset), many=True)
             context = {"success": True, "message": "Subject List", "error": "", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
