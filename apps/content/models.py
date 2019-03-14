@@ -2,7 +2,7 @@ from django.db import models
 from apps.configuration.models import Book, Grade, State, Medium, Subject
 from django.contrib.auth.models import User
 # from user.models import EvolveUser
-from apps.dataupload.models import Section,SubSection,Chapter,ChapterKeyword,SectionKeyword,SubSectionKeyword
+from apps.dataupload.models import Section,SubSection,Chapter,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSection,SubSubSectionKeyword
 from apps.hardspot.models import HardSpot
 from django.core.validators import MaxValueValidator
 from evolve.custom_storage import MediaStorage
@@ -21,6 +21,12 @@ class ContentContributors(models.Model):
     mobile =models.CharField(max_length=10,
         blank=False,
         null=False)
+    school_name = models.CharField(max_length=400, 
+        blank=True,
+        null=True)
+    city_name = models.CharField(max_length=200, 
+        blank=True,
+        null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
@@ -42,6 +48,7 @@ class Content(models.Model):
     chapter=models.ForeignKey(Chapter,on_delete=models.CASCADE,null=True,blank=True)
     section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
+    sub_sub_section=models.ForeignKey(SubSubSection,on_delete=models.CASCADE,null=True,blank=True)
     content_name = models.CharField(max_length=200)
     # video = models.FileField(upload_to=format_thumbnail_folder,
     #         storage=MediaStorage(),
@@ -63,6 +70,8 @@ class Content(models.Model):
     chapter_keywords=models.ManyToManyField(ChapterKeyword,blank=True)
     section_keywords=models.ManyToManyField(SectionKeyword,blank=True)
     sub_section_keywords=models.ManyToManyField(SubSectionKeyword,blank=True)
+    sub_sub_section_keywords=models.ManyToManyField(SubSubSectionKeyword,blank=True)
+
     content_contributors=models.ForeignKey(ContentContributors,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

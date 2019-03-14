@@ -1,6 +1,6 @@
 from rest_framework import routers, serializers
 from .models import Content,ContentContributors
-from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword
+from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSection
 from apps.configuration.models import Book
 from apps.hardspot.models import HardSpot
 from apps.hardspot.serializers import HardSpotCreateSerializer
@@ -57,13 +57,31 @@ class ContentStatusListSerializer(serializers.ModelSerializer):
         except:
             return None
             
-        
+class SubSubSectionSerializer(serializers.ModelSerializer):
+    contributions_count=serializers.SerializerMethodField()
+    hardspot_count=serializers.SerializerMethodField()
+
+    def get_hardspot_count(self,req):
+        try:
+            hardspot_count=HardSpot.objects.filter(sub_sub_section_id=req.id, approved=True).count()
+            return hardspot_count
+        except:
+            return None
+    def get_contributions_count(self,req):
+        try:
+            contributions_approved=Content.objects.filter(sub_sub_section_id=req.id,approved=True).exclude(approved_by=None).count()
+            contributions_pending=Content.objects.filter(sub_sub_section_id=req.id,approved=False,approved_by=None).count()
+            return (contributions_approved + contributions_pending)
+        except:
+            return None
+
+
     
 
 class SubSectionSerializer(serializers.ModelSerializer):
     contributions_count=serializers.SerializerMethodField()
     hardspot_count=serializers.SerializerMethodField()
-
+    sub_sub_section=serializers.SerializerMethodField()
     class Meta:
         model = SubSection
         fields = ['id',
@@ -87,6 +105,16 @@ class SubSectionSerializer(serializers.ModelSerializer):
             return (contributions_approved + contributions_pending)
         except:
             return None
+    def sub_sub_section(self,req):
+        try:
+            sub_sub_section_data = SubSubSection.objects.filter(sub_section=req.id)
+            serializer = SubSubSectionSerializer(sub_sub_section_data, many=True)
+            data = serializer.data
+            return data
+        except:
+            return None
+
+
 
 
 
@@ -186,23 +214,82 @@ class BookNestedSerializer(serializers.ModelSerializer):
         except:
             return None
 #<------------------------------------------------------------------>
-
-class ContentSubSectionSerializer(serializers.ModelSerializer):
+class ContentSubSubSectionSerializer(serializers.ModelSerializer):
     total=serializers.SerializerMethodField()
     approved=serializers.SerializerMethodField()
     reject=serializers.SerializerMethodField()
     pending=serializers.SerializerMethodField()
 
     class Meta:
-        model = SubSection
+        model = SubSubSection
         fields = ['id',
-        'section',
+        'sub_sub_section',
         'total',
         'approved',
         'reject',
         'pending',
-        'sub_section',
         ]
+
+
+    
+    def get_total(self, req):
+        try:
+            count = Content.objects.filter(sub_sub_section=req.id).count()
+            return count
+        except:
+            return None
+
+    def get_approved(self, req):
+        try:
+            sub_sec_approved = Content.objects.filter(approved=True,sub_sub_section=req.id).count()
+            return sub_sec_approved
+        except:
+            return None
+
+    def get_reject(self, req):
+        try:
+            sub_sec_reject = Content.objects.filter(approved=False,sub_sub_section=req.id).exclude(approved_by=None).count()
+            return sub_sec_reject 
+        except:
+            return None
+    def get_pending(self, req):
+        try:
+            sub_sec_pending = Content.objects.filter(approved=False,sub_sub_section=req.id,approved_by=None).count()
+            return sub_sec_pending
+        except:
+            return None
+
+
+
+class ContentSubSectionSerializer(serializers.ModelSerializer):
+    total=serializers.SerializerMethodField()
+    approved=serializers.SerializerMethodField()
+    reject=serializers.SerializerMethodField()
+    pending=serializers.SerializerMethodField()
+    sub_sub_section=serializers.SerializerMethodField()
+
+    class Meta:
+        model = SubSection
+        fields = ['id',
+        'sub_section',
+        'total',
+        'approved',
+        'reject',
+        'pending',
+        'sub_sub_section',
+        ]
+
+
+
+
+    def get_sub_sub_section(self, req):
+        try:
+            sub_section_data = SubSubSection.objects.filter(subsection=req.id)
+            serializer = ContentSubSubSectionSerializer(sub_section_data, many=True)
+            data = serializer.data
+            return data
+        except:
+            return None
 
     
     def get_total(self, req):
