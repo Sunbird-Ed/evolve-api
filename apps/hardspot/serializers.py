@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import HardSpot,HardSpotContributors
 from django.contrib.auth.models import User
 # from user.models import EvolveUser
-from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword
+from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSection
 from apps.configuration.models import Book
 from apps.content.models import Content, ContentContributors
 
@@ -22,23 +22,80 @@ class SectionSerializer(serializers.ModelSerializer):
         model = Section
         fields = "__all__"
 
-class SubSectionSerializer(serializers.ModelSerializer):
+#<-------------------------------------------------------------------------->
+class SubSubSectionSerializer(serializers.ModelSerializer):
     total=serializers.SerializerMethodField()
     approved=serializers.SerializerMethodField()
     reject=serializers.SerializerMethodField()
     pending=serializers.SerializerMethodField()
 
     class Meta:
-        model = SubSection
+        model = SubSubSection
         fields = ['id',
-        'section',
+        'sub_sub_section',
         'total',
         'approved',
         'reject',
         'pending',
-        'sub_section',
 
         ]
+
+
+    def get_total(self, req):
+        try:
+            count = HardSpot.objects.filter(sub_sub_section=req.id).count()
+            return count
+        except:
+            return None
+
+    def get_approved(self, req):
+        try:
+            sub_sec_approved = HardSpot.objects.filter(approved=True,sub_sub_section=req.id).count()
+            return sub_sec_approved
+        except:
+            return None
+
+    def get_reject(self, req):
+        try:
+            sub_sec_reject = HardSpot.objects.filter(approved=False,sub_sub_section=req.id).exclude(approved_by=None).count()
+            return sub_sec_reject 
+        except:
+            return None
+    def get_pending(self, req):
+        try:
+            sub_sec_pending = HardSpot.objects.filter(approved=False,sub_sub_section=req.id,approved_by=None).count()
+            return sub_sec_pending
+        except:
+            return None
+
+
+
+class SubSectionSerializer(serializers.ModelSerializer):
+    total=serializers.SerializerMethodField()
+    approved=serializers.SerializerMethodField()
+    reject=serializers.SerializerMethodField()
+    pending=serializers.SerializerMethodField()
+    sub_sub_section=serializers.SerializerMethodField()
+    class Meta:
+        model = SubSection
+        fields = ['id',
+        'sub_section',
+        'total',
+        'approved',
+        'reject',
+        'pending',
+        'sub_sub_section',
+
+        ]
+
+    def get_sub_sub_section(self, req):
+        try:
+            sub_section_data = SubSubSection.objects.filter(subsection=req.id)
+            serializer = SubSubSectionSerializer(sub_section_data, many=True)
+            data = serializer.data
+            return data
+        except:
+            return None
 
     def get_total(self, req):
         try:
@@ -92,7 +149,6 @@ class SectionNestedSerializer(serializers.ModelSerializer):
         except:
             return None
     def get_total(self, req):
-        # import ipdb;ipdb.set_trace()
         try:
             count = HardSpot.objects.filter(section=req.id).count()
             return count
@@ -142,7 +198,6 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
 
     def get_total(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             count = HardSpot.objects.filter(chapter=req.id).count()
             return count
         except:
@@ -155,7 +210,6 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
             return None
     def get_reject(self, req):
         try:
-            # import ipdb;ipdb.set_trace()
             chapter_reject = HardSpot.objects.filter(approved=False,chapter=req.id).exclude(approved_by=None).count()
             return chapter_reject 
         except:
@@ -187,6 +241,7 @@ class BookNestedSerializer(serializers.ModelSerializer):
             return data
         except:
             return None
+#<----------------------------------------------------------------------------->
 
 class HardSpotCreateSerializer(serializers.ModelSerializer):
     class Meta:
