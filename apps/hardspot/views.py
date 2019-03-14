@@ -324,8 +324,8 @@ class ApprovedHardSpotDownloadView(ListAPIView):
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
-
-                data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)'])
+                
+                data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)'])
                 exists = os.path.isfile('ApprovedHardSpot.csv')
                 path = settings.MEDIA_ROOT + '/files/'
                 if exists:
@@ -406,3 +406,14 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
         except Exception as error:
             context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+
+
+
+
+
+
