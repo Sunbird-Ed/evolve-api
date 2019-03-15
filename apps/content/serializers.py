@@ -43,7 +43,7 @@ class ContentStatusListSerializer(serializers.ModelSerializer):
     def get_hard_spot(self, req):
         try:
             hardspot_data = HardSpot.objects.filter(id=req.hard_spot.id).first()
-            serializer = HardSpotCreateSerializer(hardspot_data)
+            serializer = HardSpotCreateSerializer(hardspot_data ,many=True)
             data = serializer.data
             return data
         except:
@@ -491,7 +491,7 @@ class KeywordSerializer(serializers.ModelSerializer):
     def get_hard_spot(self, req):
         try:
             hardspot_data = HardSpot.objects.filter(id=req.hard_spot.id).first()
-            serializer = HardSpotCreateSerializer(hardspot_data)
+            serializer = HardSpotCreateSerializer(hardspot_data ,many=True)
             data = serializer.data
             return data
         except:
