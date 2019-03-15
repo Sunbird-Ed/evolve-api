@@ -1,6 +1,6 @@
 from rest_framework import routers, serializers
 from .models import Content,ContentContributors
-from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSection,SubSubSectionKeyword
+from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSection,SubSubSectionKeyword,SubSubSection
 from apps.configuration.models import Book
 from apps.hardspot.models import HardSpot
 from apps.hardspot.serializers import HardSpotCreateSerializer
@@ -42,21 +42,10 @@ class ContentStatusListSerializer(serializers.ModelSerializer):
 
     def get_hard_spot(self, req):
         try:
-            if req.chapter is not None:
-                hardspot_data = HardSpot.objects.filter(chapter__id=req.chapter.id)
-                serializer = HardSpotCreateSerializer(hardspot_data,many=True)
-                data = serializer.data
-                return data
-            elif req.section is not None:
-                hardspot_data = HardSpot.objects.filter(section__id=req.section.id)
-                serializer = HardSpotCreateSerializer(hardspot_data,many=True )
-                data = serializer.data
-                return data
-            elif req.sub_section is not None:
-                hardspot_data = HardSpot.objects.filter(sub_section__id=req.sub_section.id)
-                serializer = HardSpotCreateSerializer(hardspot_data,many=True)
-                data = serializer.data
-                return data
+            hardspot_data = HardSpot.objects.filter(id=req.hard_spot.id).first()
+            serializer = HardSpotCreateSerializer(hardspot_data)
+            data = serializer.data
+            return data
         except:
             return None
 
@@ -71,16 +60,6 @@ class ContentStatusListSerializer(serializers.ModelSerializer):
 class SubSubSectionSerializer(serializers.ModelSerializer):
     contributions_count=serializers.SerializerMethodField()
     hardspot_count=serializers.SerializerMethodField()
-    class Meta:
-        model = SubSubSection
-        fields = ['id',
-        'subsection',        
-        'sub_sub_section',
-        'contributions_count',
-        'hardspot_count',
-        'active'
-        ]
-
 
     def get_hardspot_count(self,req):
         try:
@@ -110,8 +89,7 @@ class SubSectionSerializer(serializers.ModelSerializer):
         'sub_section',
         'contributions_count',
         'hardspot_count',
-        'active',
-        'sub_sub_section'
+        'active'
 
         ]
     def get_hardspot_count(self,req):
@@ -127,9 +105,9 @@ class SubSectionSerializer(serializers.ModelSerializer):
             return (contributions_approved + contributions_pending)
         except:
             return None
-    def get_sub_sub_section(self,req):
+    def sub_sub_section(self,req):
         try:
-            sub_sub_section_data = SubSubSection.objects.filter(subsection=req.id)
+            sub_sub_section_data = SubSubSection.objects.filter(sub_section=req.id)
             serializer = SubSubSectionSerializer(sub_sub_section_data, many=True)
             data = serializer.data
             return data
@@ -501,22 +479,10 @@ class KeywordSerializer(serializers.ModelSerializer):
 
     def get_hard_spot(self, req):
         try:
-            if req.chapter is not None:
-                hardspot_data = HardSpot.objects.filter(chapter__id=req.chapter.id)
-                serializer = HardSpotCreateSerializer(hardspot_data,many=True)
-                data = serializer.data
-                return data
-            elif req.section is not None:
-                hardspot_data = HardSpot.objects.filter(section__id=req.section.id)
-                serializer = HardSpotCreateSerializer(hardspot_data,many=True)
-                data = serializer.data
-                return data
-            elif req.sub_section is not None:
-                hardspot_data = HardSpot.objects.filter(sub_section__id=req.sub_section.id)
-                serializer = HardSpotCreateSerializer(hardspot_data,many=True)
-                data = serializer.data
-                return data
-
+            hardspot_data = HardSpot.objects.filter(id=req.hard_spot.id).first()
+            serializer = HardSpotCreateSerializer(hardspot_data)
+            data = serializer.data
+            return data
         except:
             return None
 
