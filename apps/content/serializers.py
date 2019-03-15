@@ -1,6 +1,6 @@
 from rest_framework import routers, serializers
 from .models import Content,ContentContributors
-from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSection,SubSubSectionKeyword,SubSubSection
+from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSection,SubSubSectionKeyword
 from apps.configuration.models import Book
 from apps.hardspot.models import HardSpot
 from apps.hardspot.serializers import HardSpotCreateSerializer
@@ -60,6 +60,16 @@ class ContentStatusListSerializer(serializers.ModelSerializer):
 class SubSubSectionSerializer(serializers.ModelSerializer):
     contributions_count=serializers.SerializerMethodField()
     hardspot_count=serializers.SerializerMethodField()
+    class Meta:
+        model = SubSubSection
+        fields = ['id',
+        'subsection',        
+        'sub_sub_section',
+        'contributions_count',
+        'hardspot_count',
+        'active'
+        ]
+
 
     def get_hardspot_count(self,req):
         try:
@@ -89,7 +99,8 @@ class SubSectionSerializer(serializers.ModelSerializer):
         'sub_section',
         'contributions_count',
         'hardspot_count',
-        'active'
+        'active',
+        'sub_sub_section'
 
         ]
     def get_hardspot_count(self,req):
@@ -105,9 +116,9 @@ class SubSectionSerializer(serializers.ModelSerializer):
             return (contributions_approved + contributions_pending)
         except:
             return None
-    def sub_sub_section(self,req):
+    def get_sub_sub_section(self,req):
         try:
-            sub_sub_section_data = SubSubSection.objects.filter(sub_section=req.id)
+            sub_sub_section_data = SubSubSection.objects.filter(subsection=req.id)
             serializer = SubSubSectionSerializer(sub_sub_section_data, many=True)
             data = serializer.data
             return data
