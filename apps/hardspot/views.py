@@ -40,11 +40,11 @@ class HardSpotListOrCreateView(ListCreateAPIView):
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
             if chapter_id is not None:
-                queryset=self.get_queryset().filter(chapter__id=chapter_id)
+                queryset=self.get_queryset().filter(chapter__id=chapter_id,approved=True)
             elif section_id is not None:
-                queryset = self.get_queryset().filter(section__id=section_id)
+                queryset = self.get_queryset().filter(section__id=section_id,approved=True)
             elif sub_section_id is not None:
-                queryset = self.get_queryset().filter(sub_section__id=sub_section_id)
+                queryset = self.get_queryset().filter(sub_section__id=sub_section_id,approved=True)
             else:
                 queryset = self.get_queryset()
             serializer = HardSpotSerializer(queryset, many=True)
