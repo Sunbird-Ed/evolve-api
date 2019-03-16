@@ -39,6 +39,7 @@ class Content(models.Model):
         ('Male', 'Male'),
         ('Female', 'Female'),
     )
+    hard_spot=models.ForeignKey(HardSpot,on_delete=models.CASCADE,null=True,blank=True)
     chapter=models.ForeignKey(Chapter,on_delete=models.CASCADE,null=True,blank=True)
     section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
