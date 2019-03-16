@@ -488,7 +488,7 @@ class KeywordSerializer(serializers.ModelSerializer):
 
     def get_keywords(self, obj):
         try:
-            import ipdb; ipdb.set_trace()
+            # import ipdb; ipdb.set_trace()
             if obj.chapter_keywords.all().exists():
                 k=obj.chapter_keywords.all().values('keyword')
                 listData = [ x for x in k ]
