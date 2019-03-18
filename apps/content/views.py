@@ -153,12 +153,15 @@ class ContentApprovedList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=True)
             elif section_id is not None:
                 queryset = self.get_queryset().filter(section__id=section_id, approved=True)
             elif sub_section_id is not None:
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=True)
+            elif  sub_sub_section_id is not None:
+                queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=True)
             else:
                 queryset = self.get_queryset().filter(approved=True)
             serializer = KeywordSerializer(queryset, many=True)
@@ -177,12 +180,16 @@ class ContentPendingList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section',None)
+
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False, approved_by=None)
             elif section_id is not None:
                 queryset = self.get_queryset().filter(section__id=section_id, approved=False, approved_by=None)
             elif sub_section_id is not None:
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False, approved_by=None)
+            elif sub_sub_section_id is not None:
+                queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=False,approved_by=None)
             else:
                 queryset = self.get_queryset().filter(approved=False, approved_by=None)
             serializer = KeywordSerializer(queryset, many=True)
@@ -227,12 +234,15 @@ class ContentRejectedList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False).exclude(approved_by=None)
             elif section_id is not None:
                 queryset = self.get_queryset().filter(section__id=section_id, approved=False).exclude(approved_by=None)
             elif sub_section_id is not None:
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False).exclude(approved_by=None)
+            elif sub_sub_section_id is not None:
+                queryset =self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id , approved = False).exclude(approved_by=None)
             else:
                 queryset = self.get_queryset().filter(approved=False).exclude(approved_by=None)
             serializer = KeywordSerializer(queryset, many=True)

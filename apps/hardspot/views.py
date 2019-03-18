@@ -64,7 +64,6 @@ class HardSpotApprovedList(ListAPIView):
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
             sub_sub_section_id = request.query_params.get('sub_sub_section',None)
-            # import pdb; pdb.set_trace()
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=True)
             elif section_id is not None:
@@ -228,7 +227,6 @@ class HardspotVisitorsDownloadView(RetrieveUpdateAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
@@ -241,15 +239,13 @@ class HardspotVisitorsDownloadView(RetrieveUpdateAPIView):
             for data in res_list:
                 for d in res_list:
                     final_list.append(d)
-                # for key, value in data.items():
-                #     final_list.append(value)
+
 
             data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email']).drop_duplicates()
             exists = os.path.isfile('hardspot_contributers.xlsx')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
                 os.remove('hardspot_contributers.xlsx')
-            # data_frame.to_excel(path + 'hardspot_contributers.xlsx')
             data_frame.to_csv(path + 'hardspot_contributers.csv', encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspot_contributers.xlsx'}
             return Response(context, status=status.HTTP_200_OK)
@@ -281,7 +277,6 @@ class ContentVisitorsDownloadView(RetrieveUpdateAPIView):
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
                 os.remove('content_contributers.xlsx')
-            # data_frame.to_excel(path + 'content_contributers.xlsx')
             data_frame.to_csv(path + 'content_contributers.csv', encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/content_contributers.xlsx'}
             return Response(context, status=status.HTTP_200_OK)
@@ -371,7 +366,6 @@ class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
                 os.remove('hardspotstatus.csv')
-            # data_frame.to_excel(path + 'hardspotstatus.xlsx')
             data_frame.to_csv(path + 'hardspotstatus.csv', encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspotstatus.csv'}
             return Response(context, status=status.HTTP_200_OK)
@@ -387,7 +381,6 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
 
     def get(self, request):
         try:
-            # import ipdb; ipdb.set_trace()
             final_list = []
             import os
             from shutil import copyfile
@@ -400,15 +393,13 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
             for data in res_list:
                 for d in res_list:
                     final_list.append(d)
-                # for key, value in data.items():
-                #     final_list.append(value)
+
 
             data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email', 'textbook_name']).drop_duplicates()
             exists = os.path.isfile('hard_spot_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
                 os.remove('hard_spot_contributers.csv')
-            # data_frame.to_excel(path + 'hard_spot_contributers.xlsx')
             data_frame.to_csv(path + 'hard_spot_contributers.csv', encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hard_spot_contributers.csv'}
             return Response(context, status=status.HTTP_200_OK)

@@ -459,6 +459,11 @@ class SubSectionKeywordsSerializer(serializers.ModelSerializer):
         model=SubSectionKeyword
         fields='__all__'
 
+class SubSubSectionKeywordsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=SubSubSectionKeyword
+        fields='__all__'
+
 
 class KeywordSerializer(serializers.ModelSerializer):
     keywords = serializers.SerializerMethodField()
@@ -488,7 +493,6 @@ class KeywordSerializer(serializers.ModelSerializer):
 
     def get_keywords(self, obj):
         try:
-            # import ipdb; ipdb.set_trace()
             if obj.chapter_keywords.all().exists():
                 k=obj.chapter_keywords.all().values('keyword')
                 listData = [ x for x in k ]
@@ -513,6 +517,16 @@ class KeywordSerializer(serializers.ModelSerializer):
                     listValues.append( keyvalues['keyword'] )
                 serializer = SubSectionKeywordsSerializer(SubSectionKeyword.objects.filter(keyword__in=listValues, sub_section__id=obj.sub_section_id), many=True)
                 return serializer.data
+            elif obj.sub_sub_section_keywords.all().exists():
+                k=obj.sub_sub_section_keywords.all().values('keyword')
+                listData = [x for x in k ]
+                print(listData)
+                listValues = []
+                for keyvalues in listData:
+                    listValues.append(keyvalues['keyword'])
+                print(listValues)
+                serializer = SubSubSectionKeywordsSerializer(SubSubSectionKeyword.objects.filter(keyword__in=listValues, sub_sub_section__id=obj.sub_sub_section_id), many=True)
+
             else:
                 return None
         except Exception as error:
