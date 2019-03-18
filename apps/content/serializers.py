@@ -407,7 +407,7 @@ class KeywordSerializer(serializers.ModelSerializer):
                 listValues=[]
                 for keyvalues in listData:
                     listValues.append( keyvalues['keyword'] )
-                serializer = ChapterKeywordsSerializer(ChapterKeyword.objects.filter(keyword__in=listValues), many=True)
+                serializer = ChapterKeywordsSerializer(ChapterKeyword.objects.filter(keyword__in=listValues, chapter__id=obj.chapter_id), many=True)
                 return serializer.data
             elif obj.section_keywords.all().exists():
                 k=obj.section_keywords.all().values('keyword')
@@ -415,7 +415,7 @@ class KeywordSerializer(serializers.ModelSerializer):
                 listValues=[]
                 for keyvalues in listData:
                     listValues.append( keyvalues['keyword'] )
-                serializer = SectionKeywordsSerializer(SectionKeyword.objects.filter(keyword__in=listValues), many=True)
+                serializer = SectionKeywordsSerializer(SectionKeyword.objects.filter(keyword__in=listValues, section__id=obj.section_id), many=True)
                 return serializer.data
             elif obj.sub_section_keywords.all().exists():
                 k=obj.sub_section_keywords.all().values('keyword')
@@ -423,7 +423,7 @@ class KeywordSerializer(serializers.ModelSerializer):
                 listValues=[]
                 for keyvalues in listData:
                     listValues.append( keyvalues['keyword'] )
-                serializer = SubSectionKeywordsSerializer(SubSectionKeyword.objects.filter(keyword__in=listValues), many=True)
+                serializer = SubSectionKeywordsSerializer(SubSectionKeyword.objects.filter(keyword__in=listValues, sub_section__id=obj.sub_section_id), many=True)
                 return serializer.data
             else:
                 return None
