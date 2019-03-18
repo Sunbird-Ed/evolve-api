@@ -61,6 +61,17 @@ class SubSubSectionSerializer(serializers.ModelSerializer):
     contributions_count=serializers.SerializerMethodField()
     hardspot_count=serializers.SerializerMethodField()
 
+     class Meta:
+        model = SubSubSection
+        fields = ['id',
+        'subsection',
+        'sub_sub_section',
+        'contributions_count',
+        'hardspot_count',
+        'active'
+
+        ]
+
     def get_hardspot_count(self,req):
         try:
             hardspot_count=HardSpot.objects.filter(sub_sub_section_id=req.id, approved=True).count()
@@ -107,7 +118,7 @@ class SubSectionSerializer(serializers.ModelSerializer):
             return None
     def sub_sub_section(self,req):
         try:
-            sub_sub_section_data = SubSubSection.objects.filter(sub_section=req.id)
+            sub_sub_section_data = SubSubSection.objects.filter(subsection=req.id)
             serializer = SubSubSectionSerializer(sub_sub_section_data, many=True)
             data = serializer.data
             return data
@@ -207,7 +218,7 @@ class BookNestedSerializer(serializers.ModelSerializer):
                 ]
     def get_chapter(self, req):
         try:
-            chapter_data = Chapter.objects.filter(book=req.id)#.exclude(Q(book__hardspot_only=True) & ~Q(hardspot__isnull=False))
+            chapter_data = Chapter.objects.filter(book=req.id)
             serializer = ChapterNestedSerializer(chapter_data, many=True)
             data = serializer.data
             return data
@@ -580,10 +591,15 @@ class ContentDownloadSerializer(serializers.ModelSerializer):
             return keyword_list
         elif obj.section_keywords.all().count() != 0:
             linked_keyword = SectionKeyword.objects.filter(id__in=obj.section_keywords.all())
+            keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
             return linked_keyword.keyword
-        elif obj.sub_section_keywords.all().count() !=0:
+        elif obj.sub_section_keywords.all().count() != 0:
             linked_keyword = SubSectionKeyword.objects.filter(id__in=obj.sub_section_keywords.all())
+            keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
             return linked_keyword.keyword
+        elif obj.sub_sub_section_keywords.all().count() != 0:
+            linked_keyword = SubSubSectionKeyword.objects.filter(id__in=obj.sub_sub_section_keywords.all())
+            keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
         else:
             return None
 
