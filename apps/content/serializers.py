@@ -61,7 +61,7 @@ class SubSubSectionSerializer(serializers.ModelSerializer):
     contributions_count=serializers.SerializerMethodField()
     hardspot_count=serializers.SerializerMethodField()
 
-     class Meta:
+    class Meta:
         model = SubSubSection
         fields = ['id',
         'subsection',
@@ -100,6 +100,7 @@ class SubSectionSerializer(serializers.ModelSerializer):
         'sub_section',
         'contributions_count',
         'hardspot_count',
+        'sub_sub_section',
         'active'
 
         ]
@@ -116,7 +117,7 @@ class SubSectionSerializer(serializers.ModelSerializer):
             return (contributions_approved + contributions_pending)
         except:
             return None
-    def sub_sub_section(self,req):
+    def get_sub_sub_section(self,req):
         try:
             sub_sub_section_data = SubSubSection.objects.filter(subsection=req.id)
             serializer = SubSubSectionSerializer(sub_sub_section_data, many=True)
