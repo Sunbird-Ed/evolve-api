@@ -702,7 +702,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
 
                         sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
                         if sub_sec_content.exists():
-                            serializer = ContentDownloadSerializer(sub_sec_content, many=True)
+                            serializer =    (sub_sec_content, many=True)
                             no_of_hardspot = len(serializer.data)
                             if no_of_hardspot == 5:
                                 for data in serializer.data:
@@ -830,6 +830,8 @@ class ContentContributorsSerializer(serializers.ModelSerializer):
     last_name=serializers.SerializerMethodField()
     mobile=serializers.SerializerMethodField()
     email=serializers.SerializerMethodField()
+    city_name=serializers.SerializerMethodField()
+    school_name=serializers.SerializerMethodField()
     textbook_name=serializers.SerializerMethodField()
     class Meta:
         model = Content
@@ -837,6 +839,8 @@ class ContentContributorsSerializer(serializers.ModelSerializer):
                 'last_name',
                 'mobile',
                 'email',
+                'city_name',
+                'school_name',
                 'textbook_name']
     def get_first_name(self, obj):
         first_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().first_name
@@ -850,6 +854,12 @@ class ContentContributorsSerializer(serializers.ModelSerializer):
     def get_email(self, obj):
         email=ContentContributors.objects.filter(id=obj.content_contributors.id).first().email
         return email
+    def get_school_name(self ,obj):
+        school_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().school_name
+        return school_name
+    def get_city_name(self,obj):
+        city_name = ContentContributors.objects.filter(id=obj.content_contributors.id).first().city_name
+        return city_name
     def get_textbook_name(self, obj):
         if obj.chapter is not None:
             book = Book.objects.filter(id=obj.chapter.book.id)
