@@ -65,7 +65,7 @@ class MediumList(ListAPIView):
             req = request.query_params.get('req', None)
             if state is not None:
                 if req is not None and str(req) == 'hardspot':
-                    queryset=self.get_queryset().filter(state__id=state, state__medium__grade__subject__book__hardspot_only=True)
+                    queryset=self.get_queryset().filter(state__id=state, grade__subject__book__hardspot_only=True)
                 elif req is not None and str(req) == 'content':
                     queryset=self.get_queryset().filter(state__id=state, grade__subject__book__content_only=True)
             else:
