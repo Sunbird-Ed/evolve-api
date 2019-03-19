@@ -574,7 +574,7 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
     def get_school_name(self,obj):
         school_name = HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().school_name
         return school_name
-    def get_city_name(self.obj):
+    def get_city_name(self,obj):
         city_name = HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().city_name
         return city_name
     def get_textbook_name(self, obj):
