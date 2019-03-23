@@ -90,7 +90,7 @@ class SubSectionSerializer(serializers.ModelSerializer):
 
     def get_sub_sub_section(self, req):
         try:
-            sub_section_data = SubSubSection.objects.filter(subsection=req.id)
+            sub_section_data = SubSubSection.objects.filter(subsection=req.id).order_by('id')
             serializer = SubSubSectionSerializer(sub_section_data, many=True)
             data = serializer.data
             return data
@@ -142,7 +142,7 @@ class SectionNestedSerializer(serializers.ModelSerializer):
 
     def get_sub_section(self, req):
         try:
-            sub_section_data = SubSection.objects.filter(section=req.id)
+            sub_section_data = SubSection.objects.filter(section=req.id).order_by('id')
             serializer = SubSectionSerializer(sub_section_data, many=True)
             data = serializer.data
             return data
@@ -189,7 +189,7 @@ class ChapterNestedSerializer(serializers.ModelSerializer):
 
     def get_section(self, req):
         try:
-            section_data = Section.objects.filter(chapter=req.id)
+            section_data = Section.objects.filter(chapter=req.id).order_by('id')
             serializer = SectionNestedSerializer(section_data, many=True)
             data = serializer.data
             return data
@@ -235,7 +235,7 @@ class BookNestedSerializer(serializers.ModelSerializer):
                 ]
     def get_chapter(self, req):
         try:
-            chapter_data = Chapter.objects.filter(book=req.id)
+            chapter_data = Chapter.objects.filter(book=req.id).order_by('id')
             serializer = ChapterNestedSerializer(chapter_data, many=True)
             data = serializer.data
             return data
