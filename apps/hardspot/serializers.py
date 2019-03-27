@@ -288,7 +288,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
        
             data_str_list.append( tempList )
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-        sections=Section.objects.filter(chapter=req)
+        sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
             for section_data in sections:
                 tempList.append(section_data.section)
@@ -326,7 +326,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                         tempList.append("")
                     data_str_list.append( tempList )
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
-                sub_section=SubSection.objects.filter(section__id=section_data.id)
+                sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
                 if sub_section.exists():
                     for sub_section_data in sub_section:
                         tempList.append( sub_section_data.sub_section )

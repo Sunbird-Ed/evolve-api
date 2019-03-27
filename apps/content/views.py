@@ -308,7 +308,7 @@ class ApprovedContentDownloadView(ListAPIView):
             import os
             from shutil import copyfile
             book = request.query_params.get('book', None)
-            chapters=Chapter.objects.filter(book_id=book)
+            chapters=Chapter.objects.filter(book_id=book).order_by('id')
             serializer = ApprovedContentSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
