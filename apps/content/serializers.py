@@ -593,14 +593,15 @@ class ContentDownloadSerializer(serializers.ModelSerializer):
         elif obj.section_keywords.all().count() != 0:
             linked_keyword = SectionKeyword.objects.filter(id__in=obj.section_keywords.all())
             keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
-            return linked_keyword.keyword
+            return keyword_list
         elif obj.sub_section_keywords.all().count() != 0:
             linked_keyword = SubSectionKeyword.objects.filter(id__in=obj.sub_section_keywords.all())
             keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
-            return linked_keyword.keyword
+            return keyword_list
         elif obj.sub_sub_section_keywords.all().count() != 0:
             linked_keyword = SubSubSectionKeyword.objects.filter(id__in=obj.sub_sub_section_keywords.all())
             keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
+            return keyword_list
         else:
             return None
 
