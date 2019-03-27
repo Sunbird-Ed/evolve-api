@@ -17,6 +17,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 import pandas as pd
 from evolve import settings
+from django.db.models import Q
+
 
 class HardSpotListOrCreateView(ListCreateAPIView):
     queryset = HardSpot.objects.all()
@@ -379,10 +381,16 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
     def get(self, request):
         try:
             # import ipdb; ipdb.set_trace()
+            state_id = request.query_params.get('state', None)
             final_list = []
             import os
             from shutil import copyfile
-            queryset = self.get_queryset()
+            if state_id is not None:
+                queryset = HardSpot.objects.filter( Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
+            else:
+                queryset = self.get_queryset()
+
+
             serializer = HardspotContributorsSerializer(queryset, many=True)
             res_list = [] 
             for i in range(len(serializer.data)): 

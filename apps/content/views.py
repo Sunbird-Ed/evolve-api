@@ -27,6 +27,7 @@ from azure.storage.blob import (
 )
 from datetime import datetime, timedelta
 import os
+from django.db.models import Q
 
 account_name = settings.AZURE_ACCOUNT_NAME
 account_key = settings.AZURE_ACCOUNT_KEY
@@ -367,7 +368,13 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
             final_list = []
             import os
             from shutil import copyfile
-            queryset = self.get_queryset()
+            
+            state_id = request.query_params.get('state', None)
+            if state_id is not None:
+                queryset = Content.objects.filter( Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
+            else:
+                queryset = self.get_queryset()
+
             serializer = ContentContributorsSerializer(queryset, many=True)
             res_list = [] 
             for i in range(len(serializer.data)): 
