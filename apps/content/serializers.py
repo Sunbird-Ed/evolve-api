@@ -586,7 +586,6 @@ class ContentDownloadSerializer(serializers.ModelSerializer):
         fields=('content_name','video','rating','comment', 'selected_keyword')
 
     def get_selected_keyword(self, obj):
-        import ipdb;ipdb.set_trace()
         if  obj.chapter_keywords.all().count() != 0:
             linked_keyword = ChapterKeyword.objects.filter(id__in=obj.chapter_keywords.all())
             keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
@@ -617,8 +616,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
     
 
     def get_chapter(self, req):
-        import ipdb;ipdb.set_trace()
-
         data_str_list = []
         chapters=Chapter.objects.filter(chapter=req.chapter).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
