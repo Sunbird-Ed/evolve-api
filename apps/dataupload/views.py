@@ -37,10 +37,12 @@ class TOCUploadView(ListCreateAPIView):
         try:
             for i in json_list:
                 i = self.valid_data(i)
-                if i.get('level 3 textbook unit') is None:
-                    i['level 3 textbook unit']=""
-                    if i.get('level 2 textbook unit') is None:
-                        i['level 2 textbook unit']=""
+                if i.get('level 4 textbook unit') is None:
+                    i['level 4 textbook unit']=""
+                    if i.get('level 3 textbook unit') is None:
+                        i['level 3 textbook unit']=""
+                        if i.get('level 2 textbook unit') is None:
+                            i['level 2 textbook unit']=""
                 
                 
                 state = State.objects.filter(id=state_id).first()
@@ -50,7 +52,7 @@ class TOCUploadView(ListCreateAPIView):
                     Medium.objects.create(medium=i['medium'], state=state)
                 medium = Medium.objects.filter(medium__iexact=i['medium'], state=state).first()
                 
-                grade = Grade.objects.filter(grade__iexact=i['grade'], medium=medium).first()
+                grade = Grade.objects.filter(grade__iexact=str(i['grade']).strip(), medium=medium).first()
                 if grade is None:
                     Grade.objects.create(grade=i['grade'], medium=medium)
                 grade = Grade.objects.filter(grade__iexact=i['grade'], medium=medium).first()

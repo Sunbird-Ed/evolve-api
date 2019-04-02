@@ -318,7 +318,7 @@ class ApprovedContentDownloadView(ListAPIView):
             final_list = []
             import os
             from shutil import copyfile
-            book = request.query_params.get('book', None)
+            book = request.query_params.get('book', None).order_by('id')
             chapters=Chapter.objects.filter(book_id=book)
             serializer = ApprovedContentSerializer(chapters, many=True)
             for data in serializer.data:
@@ -395,7 +395,7 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
                 for d in res_list:
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email', 'textbook_name']).drop_duplicates()
+            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
             exists = os.path.isfile('content_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
