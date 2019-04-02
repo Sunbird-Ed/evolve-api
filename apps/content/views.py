@@ -383,7 +383,7 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
             from shutil import copyfile
             state_id = request.query_params.get('state', None)
             if state_id is not None:
-                queryset = Content.objects.filter( Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
+                queryset = Content.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
             else:
                 queryset = self.get_queryset()
             serializer = ContentContributorsSerializer(queryset, many=True)

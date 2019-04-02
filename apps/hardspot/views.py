@@ -389,7 +389,7 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
             import os
             from shutil import copyfile
             if state_id is not None:
-                queryset = HardSpot.objects.filter( Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
+                queryset = HardSpot.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
             else:
                 queryset = self.get_queryset()
             serializer = HardspotContributorsSerializer(queryset, many=True)
