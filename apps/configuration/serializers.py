@@ -20,26 +20,34 @@ class DetailListSerializer(serializers.ModelSerializer):
         chapter_count=HardSpot.objects.filter(chapter__book__id=req.id).count()
         section_count=HardSpot.objects.filter(section__chapter__book__id=req.id).count()
         subsection_count=HardSpot.objects.filter(sub_section__section__chapter__book__id=req.id).count()
-        return(chapter_count + section_count + subsection_count)
+        subsubsection_count=HardSpot.objects.filter(sub_sub_section__sub_section__section__chapter__book__id=req.id).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
 
     def get_approved_hardspot(self,req):
         chapter_count=HardSpot.objects.filter(chapter__book__id=req.id,approved=True).count()
         section_count=HardSpot.objects.filter(section__chapter__book__id=req.id,approved=True).count()
         subsection_count=HardSpot.objects.filter(sub_section__section__chapter__book__id=req.id,approved=True).count()
-        return(chapter_count + section_count + subsection_count)
+        subsubsection_count=HardSpot.objects.filter(sub_sub_section__sub_section__section__chapter__book__id=req.id,approved=True).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
 
     def get_total_content(self,req):
         chapter_count=Content.objects.filter(chapter__book__id=req.id).count()
         section_count=Content.objects.filter(section__chapter__book__id=req.id).count()
         subsection_count=Content.objects.filter(sub_section__section__chapter__book__id=req.id).count()
-        return(chapter_count + section_count + subsection_count)
+        subsubsection_count=Content.objects.filter(sub_sub_section__sub_section__section__chapter__book__id=req.id).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
         
 
     def get_approved_content(self,req):
         chapter_count=Content.objects.filter(chapter__book__id=req.id,approved=True).count()
         section_count=Content.objects.filter(section__chapter__book__id=req.id,approved=True).count()
         subsection_count=Content.objects.filter(sub_section__section__chapter__book__id=req.id,approved=True).count()
-        return(chapter_count + section_count + subsection_count)
+        subsubsection_count=Content.objects.filter(sub_sub_section__sub_section__section__chapter__book__id=req.id,approved=True).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
 
 
 
