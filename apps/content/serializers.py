@@ -874,5 +874,9 @@ class ContentContributorsSerializer(serializers.ModelSerializer):
             book = Book.objects.filter(id = obj.sub_section.section.chapter.book.id)
             books=','.join([str(x.book) for x in book.all()])
             return books
+        elif obj.sub_sub_section is not None:
+            book = Book.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.id)
+            books=','.join([str(x.book) for x in book.all()])
+            return books
         else:
             return None
