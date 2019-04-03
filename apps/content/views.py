@@ -11,11 +11,11 @@ from rest_framework.decorators import permission_classes
 from apps.configuration.models import Book
 from apps.hardspot.models import  HardSpot
 from .models import Content,ContentContributors
-from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer,ApprovedContentSerializer,ContentStatusSerializer,HardSpotCreateSerializer, ContentContributorsSerializer
+from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer,ApprovedContentSerializer,ContentStatusSerializer,HardSpotCreateSerializer, ContentContributorsSerializer,SubSubSectionKeywordsSerializer
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 from rest_framework.parsers import MultiPartParser
-from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword
+from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSectionKeyword
 import json
 import pandas as pd
 from evolve import settings
@@ -262,6 +262,7 @@ class Keywords(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section', None)
             if chapter_id is not None:
                 queryset=ChapterKeyword.objects.filter(chapter__id = chapter_id)
                 serializer = ChapterKeywordsSerializer(queryset, many=True)
@@ -271,6 +272,9 @@ class Keywords(ListAPIView):
             elif sub_section_id is not None:
                 queryset = SubSectionKeyword.objects.filter(sub_section__id = sub_section_id)
                 serializer = SubSectionKeywordsSerializer(queryset, many=True)
+            elif sub_sub_section_id is not None:
+                queryset = SubSubSectionKeyword.objects.filter(sub_section__id = sub_sub_section_id)
+                serializer = SubSubSectionKeywordsSerializer(queryset, many=True)
             else:   
                 queryset = self.get_queryset()
                 serializer = KeywordSerializer(queryset, many=True)
