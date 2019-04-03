@@ -445,7 +445,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                     keyword = keyword + keys.keyword + ", "
                                 tempList.append(keyword)
 
-                                sub_sub_sec_hardspot = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
+                                sub_sub_sec_hardspot = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True).order_by('id')
                                 if sub_sub_sec_hardspot.exists():
                                     serializer = HardSpotDownloadSerializer(sub_sub_sec_hardspot, many=True)
                                     no_of_hardspot=len(serializer.data)
