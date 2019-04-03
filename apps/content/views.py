@@ -273,7 +273,7 @@ class Keywords(ListAPIView):
                 queryset = SubSectionKeyword.objects.filter(sub_section__id = sub_section_id)
                 serializer = SubSectionKeywordsSerializer(queryset, many=True)
             elif sub_sub_section_id is not None:
-                queryset = SubSubSectionKeyword.objects.filter(sub_section__id = sub_sub_section_id)
+                queryset = SubSubSectionKeyword.objects.filter(sub_sub_section__id = sub_sub_section_id)
                 serializer = SubSubSectionKeywordsSerializer(queryset, many=True)
             else:   
                 queryset = self.get_queryset()
