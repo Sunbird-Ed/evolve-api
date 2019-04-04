@@ -11,11 +11,11 @@ from rest_framework.decorators import permission_classes
 from apps.configuration.models import Book
 from apps.hardspot.models import  HardSpot
 from .models import Content,ContentContributors
-from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer,ApprovedContentSerializer,ContentStatusSerializer,HardSpotCreateSerializer, ContentContributorsSerializer
+from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer,ApprovedContentSerializer,ContentStatusSerializer,HardSpotCreateSerializer, ContentContributorsSerializer,SubSubSectionKeywordsSerializer
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 from rest_framework.parsers import MultiPartParser
-from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword
+from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSectionKeyword
 import json
 import pandas as pd
 from evolve import settings
@@ -27,6 +27,7 @@ from azure.storage.blob import (
 )
 from datetime import datetime, timedelta
 import os
+import itertools
 from django.db.models import Q
 
 account_name = settings.AZURE_ACCOUNT_NAME
@@ -45,10 +46,10 @@ class ContentList(ListCreateAPIView):
         try:
             queryset = self.get_queryset()
             serializer = ContentStatusListSerializer(queryset, many=True)
-            context = {"success": True, "message": "Chapter List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Chapter List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Chapter list.'}
+            context = {'success': "false", 'message': 'Failed to get Chapter list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request,format=None):
@@ -57,12 +58,12 @@ class ContentList(ListCreateAPIView):
             serializer = ContentListSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                context = {"success": True, "message": "Created Successful", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Created Successful", "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
-            context = {"success": False, "message": "Invalid Input Data to create content", "error": str(serializer.errors)}
+            context = {"success": False, "message": "Invalid Input Data to create content"}
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to create content.'}
+            context = {'success': "false", 'message': 'Failed to create content.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @permission_classes((IsAuthenticated,))
@@ -74,10 +75,10 @@ class ContentRetrieveUpdate(RetrieveUpdateAPIView):
         try:
             queryset = self.get_object()
             serializer = ContentListSerializer(queryset, many=True)
-            context = {"success": True, "message": "Chapter List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Chapter List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get content list.'}
+            context = {'success': "false", 'message': 'Failed to get content list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request, pk, format=None):
@@ -86,18 +87,18 @@ class ContentRetrieveUpdate(RetrieveUpdateAPIView):
                 content_list = self.get_object()
 
             except Exception as error:
-                context = {'error': "content Id does not exist", 'success': "false", 'message': 'content Id does not exist.'}
+                context = {'success': "false", 'message': 'content Id does not exist.'}
                 return Response(context, status=status.HTTP_404_NOT_FOUND)
             serializer = ContentListSerializer(content_list, data=request.data, context={"user":request.user}, partial=True)
 
             if serializer.is_valid():
                 serializer.save()
-                context = {"success": True, "message": "Updation Successful", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Updation Successful","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
-            context = {"success": False, "message": "Updation Failed", "error": str(serializer.errors)}
+            context = {"success": False, "message": "Updation Failed"}
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed To Update content Details.'}
+            context = {'success': "false", 'message': 'Failed To Update content Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -116,10 +117,10 @@ class BookNestedList(ListAPIView):
                 else:
                     queryset = self.get_queryset().filter(content_only=True)
                 serializer = BookNestedSerializer(queryset, many=True)
-                context = {"success": True, "message": "Conetent List", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Conetent List","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
-                context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content list.'}
+                context = {'success': "false", 'message': 'Failed to get Content list.'}
                 return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -136,10 +137,10 @@ class BookListView(ListAPIView):
                 else:
                     queryset = self.get_queryset()
                 serializer = BookListSerializer(queryset, many=True)
-                context = {"success": True, "message": "Content List", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Content List","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
-                context = {'error': str(error), 'success': "false", 'message': 'Failed to get Conetent list.'}
+                context = {'success': "false", 'message': 'Failed to get Conetent list.'}
                 return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -152,19 +153,22 @@ class ContentApprovedList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=True)
             elif section_id is not None:
                 queryset = self.get_queryset().filter(section__id=section_id, approved=True)
             elif sub_section_id is not None:
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=True)
+            elif  sub_sub_section_id is not None:
+                queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=True)
             else:
                 queryset = self.get_queryset().filter(approved=True)
             serializer = KeywordSerializer(queryset, many=True)
-            context = {"success": True, "message": "Content Approved List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content Approved List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content Approved list.'}
+            context = {'success': "false", 'message': 'Failed to get Content Approved list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 class ContentPendingList(ListAPIView):
@@ -176,19 +180,23 @@ class ContentPendingList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section',None)
+
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False, approved_by=None)
             elif section_id is not None:
                 queryset = self.get_queryset().filter(section__id=section_id, approved=False, approved_by=None)
             elif sub_section_id is not None:
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False, approved_by=None)
+            elif sub_sub_section_id is not None:
+                queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=False,approved_by=None)
             else:
                 queryset = self.get_queryset().filter(approved=False, approved_by=None)
             serializer = KeywordSerializer(queryset, many=True)
-            context = {"success": True, "message": "Content Pending List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content Pending List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content Pending list.'}
+            context = {'success': "false", 'message': 'Failed to get Content Pending list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -210,10 +218,10 @@ class ContentStatusList(ListCreateAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = ContentListSerializer(queryset, many=True)
-            context = {"success": True, "message": "Content Status List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content Status List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content Status list.'}
+            context = {'success': "false", 'message': 'Failed to get Content Status list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -226,19 +234,22 @@ class ContentRejectedList(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             if chapter_id is not None:
                 queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False).exclude(approved_by=None)
             elif section_id is not None:
                 queryset = self.get_queryset().filter(section__id=section_id, approved=False).exclude(approved_by=None)
             elif sub_section_id is not None:
                 queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False).exclude(approved_by=None)
+            elif sub_sub_section_id is not None:
+                queryset =self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id , approved = False).exclude(approved_by=None)
             else:
                 queryset = self.get_queryset().filter(approved=False).exclude(approved_by=None)
             serializer = KeywordSerializer(queryset, many=True)
-            context = {"success": True, "message": "Content Rejected List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content Rejected List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content Rejected list.'}
+            context = {'success': "false", 'message': 'Failed to get Content Rejected list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -251,6 +262,7 @@ class Keywords(ListAPIView):
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section', None)
             if chapter_id is not None:
                 queryset=ChapterKeyword.objects.filter(chapter__id = chapter_id)
                 serializer = ChapterKeywordsSerializer(queryset, many=True)
@@ -260,14 +272,17 @@ class Keywords(ListAPIView):
             elif sub_section_id is not None:
                 queryset = SubSectionKeyword.objects.filter(sub_section__id = sub_section_id)
                 serializer = SubSectionKeywordsSerializer(queryset, many=True)
+            elif sub_sub_section_id is not None:
+                queryset = SubSubSectionKeyword.objects.filter(sub_sub_section__id = sub_sub_section_id)
+                serializer = SubSubSectionKeywordsSerializer(queryset, many=True)
             else:   
                 queryset = self.get_queryset()
                 serializer = KeywordSerializer(queryset, many=True)
 
-            context = {"success": True, "message": "Content List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content list.'}
+            context = {'success': "false", 'message': 'Failed to get Content list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -283,18 +298,18 @@ class ContentContributorCreateView(ListCreateAPIView):
                     ContentContributors.objects.filter(id=queryset.id).update(email=request.data['email'])
                     queryset.refresh_from_db()
                 serializer = ContentContributorSerializer(queryset)
-                context = {"success": True, "message": "Successful", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Successful",  "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             else:
                 serializer = ContentContributorSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save()
-                    context = {"success": True, "message": "Successful", "error": "", "data": serializer.data}
+                    context = {"success": True, "message": "Successful",  "data": serializer.data}
                     return Response(context, status=status.HTTP_200_OK)
-                context = {"success": False, "message": "Invalid Input Data to create Pesonal details", "error": str(serializer.errors)}
+                context = {"success": False, "message": "Invalid Input Data to create Pesonal details"}
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to Personal Details.'}
+            context = {'success': "false", 'message': 'Failed to Personal Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   
 
@@ -314,17 +329,19 @@ class ApprovedContentDownloadView(ListAPIView):
                 for d in data['chapter']:
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'Keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords','Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords'])
+            repeat_list=['Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords']
+
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
             exists = os.path.isfile('ApprovedContent.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
                 os.remove('ApprovedContent.csv')
             data_frame.to_csv(path + 'ApprovedContent.csv', encoding="utf-8-sig", index=False)
      
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/ApprovedContent.csv'}
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/ApprovedContent.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -352,10 +369,10 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
                 os.remove('contentstatus.csv')
             # data_frame.to_excel(path + 'contentstatus.xlsx')
             data_frame.to_csv(path + 'contentstatus.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/contentstatus.csv'}
+            context = {"success": True, "message": "Activity List","data": 'media/files/contentstatus.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @permission_classes((IsAuthenticated,))
@@ -368,13 +385,11 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
             final_list = []
             import os
             from shutil import copyfile
-            
             state_id = request.query_params.get('state', None)
             if state_id is not None:
-                queryset = Content.objects.filter( Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
+                queryset = Content.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
             else:
                 queryset = self.get_queryset()
-
             serializer = ContentContributorsSerializer(queryset, many=True)
             res_list = [] 
             for i in range(len(serializer.data)): 
@@ -384,17 +399,17 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
                 for d in res_list:
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email', 'textbook_name']).drop_duplicates()
+            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
             exists = os.path.isfile('content_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
                 os.remove('content_contributers.csv')
             # data_frame.to_excel(path + 'content_contributers.xlsx')
             data_frame.to_csv(path + 'content_contributers.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/content_contributers.csv'}
+            context = {"success": True, "message": "Activity List","data": 'media/files/content_contributers.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = { 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -409,11 +424,11 @@ class GetSASView(ListAPIView):
                 datetime.utcnow() + timedelta(hours=1),
             )
             base_url=account_name+".blob.core.windows.net/"+CONTAINER_NAME
-            context = {"success": True, "message": "url link", "error": "", "token":sas_url,"base_url":base_url}
+            context = {"success": True, "message": "url link", "token":sas_url,"base_url":base_url}
             return Response(context, status=status.HTTP_200_OK)
 
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

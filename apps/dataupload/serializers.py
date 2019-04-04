@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Chapter, Section, SubSection
+from .models import Chapter, Section, SubSection,SubSubSection
 from apps.hardspot.models import HardSpot
 from apps.content.models import Content
 from apps.configuration.models import State, Book, Grade, Subject, Medium
@@ -18,10 +18,38 @@ class SectionSerializer(serializers.ModelSerializer):
 		model = Section
 		fields = "__all__"
 
+class SubSubSectionSerializer(serializers.ModelSerializer):
+	hardspot_count = serializers.SerializerMethodField()
+	content_count = serializers.SerializerMethodField()
+	class Meta:
+		model = SubSubSection
+		fields = ['id',
+		'subsection',
+		'sub_sub_section',
+		'hardspot_count',
+		'content_count',
+		'active']
+
+	
+
+	def get_hardspot_count(self, req):
+		try:
+			count = HardSpot.objects.filter(sub_sub_section=req.sub_sub_section.id).count()
+			return count
+		except:
+			return None
+
+	def get_content_count(self, req):
+		try:
+			count = Content.objects.filter(sub_sub_section=req.sub_sub_section.id).count()
+			return count
+		except:
+			return None
+
 class SubSectionSerializer(serializers.ModelSerializer):
 	hardspot_count = serializers.SerializerMethodField()
 	content_count = serializers.SerializerMethodField()
-		
+	sub_sub_section = serializers.SerializerMethodField()
 	class Meta:
 		model = SubSection
 		fields = ['id',
@@ -29,7 +57,17 @@ class SubSectionSerializer(serializers.ModelSerializer):
 		'section',
 		'hardspot_count',
 		'content_count',
-		'active']
+		'active',
+		'sub_sub_section']
+
+	def get_sub_sub_section(self, req):
+		try:
+			sub_sub_section_data = SubSubSection.objects.filter(subsection=req.id).order_by('id')
+			serializer = SubSubSectionSerializer(sub_sub_section_data, many=True)
+			data = serializer.data
+			return data
+		except:
+			return None
 
 	def get_hardspot_count(self, req):
 		try:

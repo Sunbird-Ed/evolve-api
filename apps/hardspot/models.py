@@ -2,7 +2,7 @@ from django.db import models
 from apps.configuration.models import Book, Grade, State, Medium, Subject
 from django.contrib.auth.models import User
 # from user.models import EvolveUser
-from apps.dataupload.models import Chapter,Section,SubSection
+from apps.dataupload.models import Chapter,Section,SubSection,SubSubSection
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 
@@ -19,6 +19,12 @@ class HardSpotContributors(models.Model):
 	mobile =models.CharField(max_length=10,
 		blank=False,
 		null=False)
+	school_name = models.CharField(max_length=400, 
+	    blank=True,
+	    null=True)
+	city_name = models.CharField(max_length=200, 
+	    blank=True,
+	    null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 
@@ -38,6 +44,7 @@ class HardSpot(models.Model):
 	chapter=models.ForeignKey(Chapter,on_delete=models.CASCADE,null=True, blank=True)
 	section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True, blank=True)
 	sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True, blank=True)
+	sub_sub_section=models.ForeignKey(SubSubSection,on_delete=models.CASCADE,null=True, blank=True)
 	hard_spot = models.TextField()
 	description = models.TextField()
 	points_to_be_covered = models.TextField()

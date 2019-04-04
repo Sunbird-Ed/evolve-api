@@ -33,10 +33,10 @@ class DetailList(ListAPIView):
             else:
                 queryset = self.get_queryset()
                 serializer = DetailListSerializer(queryset, many=True)
-            context = {"success": True, "message": "List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Details.'}
+            context = {'success': "false", 'message': 'Failed to get Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -48,10 +48,10 @@ class StateList(ListAPIView):
         try:
             queryset = self.get_queryset()
             serializer = StateListSerializer(queryset, many=True)
-            context = {"success": True, "message": "State List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "State List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get state Details.'}
+            context = {'success': "false", 'message': 'Failed to get state Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -65,16 +65,16 @@ class MediumList(ListAPIView):
             req = request.query_params.get('req', None)
             if state is not None:
                 if req is not None and str(req) == 'hardspot':
-                    queryset=self.get_queryset().filter(state__id=state, state__medium__grade__subject__book__hardspot_only=True)
+                    queryset=self.get_queryset().filter(state__id=state, grade__subject__book__hardspot_only=True)
                 elif req is not None and str(req) == 'content':
                     queryset=self.get_queryset().filter(state__id=state, grade__subject__book__content_only=True)
             else:
                 queryset = self.get_queryset()
             serializer = MediumListSerializer(set(queryset), many=True)
-            context = {"success": True, "message": "Medium List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Medium List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get medium Details.'}
+            context = {'success': "false", 'message': 'Failed to get medium Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GradeList(ListAPIView):
@@ -92,10 +92,10 @@ class GradeList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = GradeListSerializer(set(queryset), many=True)
-            context = {"success": True, "message": "Grade List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Grade List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get grade Details.'}
+            context = {'success': "false", 'message': 'Failed to get grade Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -114,10 +114,10 @@ class SubjectList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = SubjectListSerializer(set(queryset), many=True)
-            context = {"success": True, "message": "Subject List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Subject List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get subject Details.'}
+            context = {'success': "false", 'message': 'Failed to get subject Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -133,10 +133,10 @@ class BookList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = BookListSerializer(queryset, many=True)
-            context = {"success": True, "message": "book List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "book List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get book Details.'}
+            context = {'success': "false", 'message': 'Failed to get book Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
