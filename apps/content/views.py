@@ -46,10 +46,10 @@ class ContentList(ListCreateAPIView):
         try:
             queryset = self.get_queryset()
             serializer = ContentStatusListSerializer(queryset, many=True)
-            context = {"success": True, "message": "Chapter List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Chapter List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Chapter list.'}
+            context = {'success': "false", 'message': 'Failed to get Chapter list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request,format=None):
@@ -58,12 +58,12 @@ class ContentList(ListCreateAPIView):
             serializer = ContentListSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                context = {"success": True, "message": "Created Successful", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Created Successful", "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
-            context = {"success": False, "message": "Invalid Input Data to create content", "error": str(serializer.errors)}
+            context = {"success": False, "message": "Invalid Input Data to create content"}
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to create content.'}
+            context = {'success': "false", 'message': 'Failed to create content.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @permission_classes((IsAuthenticated,))
@@ -75,10 +75,10 @@ class ContentRetrieveUpdate(RetrieveUpdateAPIView):
         try:
             queryset = self.get_object()
             serializer = ContentListSerializer(queryset, many=True)
-            context = {"success": True, "message": "Chapter List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Chapter List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get content list.'}
+            context = {'success': "false", 'message': 'Failed to get content list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request, pk, format=None):
@@ -87,18 +87,18 @@ class ContentRetrieveUpdate(RetrieveUpdateAPIView):
                 content_list = self.get_object()
 
             except Exception as error:
-                context = {'error': "content Id does not exist", 'success': "false", 'message': 'content Id does not exist.'}
+                context = {'success': "false", 'message': 'content Id does not exist.'}
                 return Response(context, status=status.HTTP_404_NOT_FOUND)
             serializer = ContentListSerializer(content_list, data=request.data, context={"user":request.user}, partial=True)
 
             if serializer.is_valid():
                 serializer.save()
-                context = {"success": True, "message": "Updation Successful", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Updation Successful","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
-            context = {"success": False, "message": "Updation Failed", "error": str(serializer.errors)}
+            context = {"success": False, "message": "Updation Failed"}
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed To Update content Details.'}
+            context = {'success': "false", 'message': 'Failed To Update content Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -117,10 +117,10 @@ class BookNestedList(ListAPIView):
                 else:
                     queryset = self.get_queryset().filter(content_only=True)
                 serializer = BookNestedSerializer(queryset, many=True)
-                context = {"success": True, "message": "Conetent List", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Conetent List","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
-                context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content list.'}
+                context = {'success': "false", 'message': 'Failed to get Content list.'}
                 return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -137,10 +137,10 @@ class BookListView(ListAPIView):
                 else:
                     queryset = self.get_queryset()
                 serializer = BookListSerializer(queryset, many=True)
-                context = {"success": True, "message": "Content List", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Content List","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
-                context = {'error': str(error), 'success': "false", 'message': 'Failed to get Conetent list.'}
+                context = {'success': "false", 'message': 'Failed to get Conetent list.'}
                 return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -165,10 +165,10 @@ class ContentApprovedList(ListAPIView):
             else:
                 queryset = self.get_queryset().filter(approved=True)
             serializer = KeywordSerializer(queryset, many=True)
-            context = {"success": True, "message": "Content Approved List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content Approved List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content Approved list.'}
+            context = {'success': "false", 'message': 'Failed to get Content Approved list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 class ContentPendingList(ListAPIView):
@@ -193,10 +193,10 @@ class ContentPendingList(ListAPIView):
             else:
                 queryset = self.get_queryset().filter(approved=False, approved_by=None)
             serializer = KeywordSerializer(queryset, many=True)
-            context = {"success": True, "message": "Content Pending List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content Pending List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content Pending list.'}
+            context = {'success': "false", 'message': 'Failed to get Content Pending list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -218,10 +218,10 @@ class ContentStatusList(ListCreateAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = ContentListSerializer(queryset, many=True)
-            context = {"success": True, "message": "Content Status List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content Status List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content Status list.'}
+            context = {'success': "false", 'message': 'Failed to get Content Status list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -246,10 +246,10 @@ class ContentRejectedList(ListAPIView):
             else:
                 queryset = self.get_queryset().filter(approved=False).exclude(approved_by=None)
             serializer = KeywordSerializer(queryset, many=True)
-            context = {"success": True, "message": "Content Rejected List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content Rejected List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content Rejected list.'}
+            context = {'success': "false", 'message': 'Failed to get Content Rejected list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -279,10 +279,10 @@ class Keywords(ListAPIView):
                 queryset = self.get_queryset()
                 serializer = KeywordSerializer(queryset, many=True)
 
-            context = {"success": True, "message": "Content List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Content List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Content list.'}
+            context = {'success': "false", 'message': 'Failed to get Content list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -298,18 +298,18 @@ class ContentContributorCreateView(ListCreateAPIView):
                     ContentContributors.objects.filter(id=queryset.id).update(email=request.data['email'])
                     queryset.refresh_from_db()
                 serializer = ContentContributorSerializer(queryset)
-                context = {"success": True, "message": "Successful", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Successful",  "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             else:
                 serializer = ContentContributorSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save()
-                    context = {"success": True, "message": "Successful", "error": "", "data": serializer.data}
+                    context = {"success": True, "message": "Successful",  "data": serializer.data}
                     return Response(context, status=status.HTTP_200_OK)
-                context = {"success": False, "message": "Invalid Input Data to create Pesonal details", "error": str(serializer.errors)}
+                context = {"success": False, "message": "Invalid Input Data to create Pesonal details"}
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to Personal Details.'}
+            context = {'success': "false", 'message': 'Failed to Personal Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   
 
@@ -338,10 +338,10 @@ class ApprovedContentDownloadView(ListAPIView):
                 os.remove('ApprovedContent.csv')
             data_frame.to_csv(path + 'ApprovedContent.csv', encoding="utf-8-sig", index=False)
      
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/ApprovedContent.csv'}
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/ApprovedContent.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -369,10 +369,10 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
                 os.remove('contentstatus.csv')
             # data_frame.to_excel(path + 'contentstatus.xlsx')
             data_frame.to_csv(path + 'contentstatus.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/contentstatus.csv'}
+            context = {"success": True, "message": "Activity List","data": 'media/files/contentstatus.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @permission_classes((IsAuthenticated,))
@@ -406,10 +406,10 @@ class ContentContributorsDownloadView(RetrieveUpdateAPIView):
                 os.remove('content_contributers.csv')
             # data_frame.to_excel(path + 'content_contributers.xlsx')
             data_frame.to_csv(path + 'content_contributers.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/content_contributers.csv'}
+            context = {"success": True, "message": "Activity List","data": 'media/files/content_contributers.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = { 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -424,11 +424,11 @@ class GetSASView(ListAPIView):
                 datetime.utcnow() + timedelta(hours=1),
             )
             base_url=account_name+".blob.core.windows.net/"+CONTAINER_NAME
-            context = {"success": True, "message": "url link", "error": "", "token":sas_url,"base_url":base_url}
+            context = {"success": True, "message": "url link", "token":sas_url,"base_url":base_url}
             return Response(context, status=status.HTTP_200_OK)
 
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

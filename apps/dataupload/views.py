@@ -161,18 +161,16 @@ class TOCUploadView(ListCreateAPIView):
                 
             elif file.name.endswith('.csv'):
                 df = pd.read_csv(fs.path(file.name),skipinitialspace=True)
-                # df.dropna(axis=0, how='any', thresh=None, subset=None, inplace=False)
-                # import ipdb;ipdb.set_trace()
 
                 json_list = df.to_dict('resource')
                 context, res_status=self.upload(json_list, stateid)
                 
             else:
-                context = {"success": False, "message": "Please upload CSV OR EXCEL file", "error": ""}
+                context = {"success": False, "message": "Please upload CSV OR EXCEL file"}
                 res_status = status.HTTP_500_INTERNAL_SERVER_ERROR
             return Response(context, status=res_status)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to create data.'}
+            context = {'success': "false", 'message': 'Failed to create data.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)     
 
 
@@ -187,28 +185,10 @@ class ChapterList(ListCreateAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = BookNestedSerializer(queryset, many=True)
-            context = {"success": True, "message": "Chapter List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "Chapter List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Chapter list.'}
+            context = {'success': "false", 'message': 'Failed to get Chapter list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     
-    def post(self, request):
-        try:
-            serializer = Agegroupserializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                context = {"success": True, "message": "Created Successful", "error": "", "data": serializer.data}
-                return Response(context, status=status.HTTP_200_OK)
-            error = serializer.errors['non_field_errors'][0].code
-            if error == "unique":
-                
-               
-                context = {"success": False, "message": "Age group already exist", "error": str(error)}
-                return Response(context, status=status.HTTP_400_BAD_REQUEST)
-            context = {"success": False, "message": "Invalid Input Data to create Age Group", "error": str(serializer.errors)}
-            return Response(context, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to create Age Group.'}
-            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

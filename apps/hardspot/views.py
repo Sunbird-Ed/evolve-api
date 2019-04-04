@@ -26,12 +26,12 @@ class HardSpotListOrCreateView(ListCreateAPIView):
             serializer = HardSpotCreateSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                context = {"success": True, "message": "Thank you for the submission.\nWe will review and get back to you", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Thank you for the submission.\nWe will review and get back to you", "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
-            context = {"success": False, "message": "Invalid Input Data to create Pesonal details", "error": str(serializer.errors)}
+            context = {"success": False, "message": "Invalid Input Data to create Pesonal details",}
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to Personal Details.'}
+            context = {'success': "false", 'message': 'Failed to Personal Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   
     def get(self, request):
@@ -51,10 +51,10 @@ class HardSpotListOrCreateView(ListCreateAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = HardSpotSerializer(queryset, many=True)
-            context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "HardSpot List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get HardSpot list.'}
+            context = {'success': "false", 'message': 'Failed to get HardSpot list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class HardSpotApprovedList(ListAPIView):
@@ -78,10 +78,10 @@ class HardSpotApprovedList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = HardSpotSerializer(queryset, many=True)
-            context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "HardSpot List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get HardSpot list.'}
+            context = {'success': "false", 'message': 'Failed to get HardSpot list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class HardSpotPendingList(ListAPIView):
@@ -105,10 +105,10 @@ class HardSpotPendingList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = HardSpotSerializer(queryset, many=True)
-            context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "HardSpot List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get HardSpot list.'}
+            context = {'success': "false", 'message': 'Failed to get HardSpot list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -132,10 +132,10 @@ class HardSpotStatusList(ListCreateAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = HardSpotSerializer(queryset, many=True)
-            context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "HardSpot List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get HardSpot list.'}
+            context = {'success': "false", 'message': 'Failed to get HardSpot list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -161,10 +161,10 @@ class HardSpotRejectedList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = HardSpotSerializer(queryset, many=True)
-            context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "HardSpot List",  "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get HardSpot list.'}
+            context = {'success': "false", 'message': 'Failed to get HardSpot list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -180,10 +180,10 @@ class BookNestedList(ListAPIView):
                 else:
                     queryset = self.get_queryset().filter(hardspot_only=True)
                 serializer = BookNestedSerializer(queryset, many=True)
-                context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "HardSpot List",  "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
-                context = {'error': str(error), 'success': "false", 'message': 'Failed to get HardSpot list.'}
+                context = {'success': "false", 'message': 'Failed to get HardSpot list.'}
                 return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @permission_classes((IsAuthenticated,))
@@ -195,10 +195,10 @@ class HardSpotUpdateView(RetrieveUpdateAPIView):
         try:
             queryset = self.get_object()
             serializer = HardSpotSerializer(queryset)
-            context = {"success": True, "message": "HardSpot List", "error": "", "data": serializer.data}
+            context = {"success": True, "message": "HardSpot List",  "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get HardSpot list.'}
+            context = {'success': "false", 'message': 'Failed to get HardSpot list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request, pk, format=None):
@@ -207,7 +207,7 @@ class HardSpotUpdateView(RetrieveUpdateAPIView):
                 hardspot_detail = self.get_object()
 
             except Exception as error:
-                context = {'error': "Hardsport Id does not exist", 'success': "false", 'message': 'Hardsport Id does not exist.'}
+                context = { 'success': "false", 'message': 'Hardsport Id does not exist.'}
                 return Response(context, status=status.HTTP_404_NOT_FOUND)
             if request.data['approved']:
                 serializer = HardSpotUpdateSerializer(hardspot_detail, data=request.data, context={"user":request.user}, partial=True)
@@ -215,12 +215,12 @@ class HardSpotUpdateView(RetrieveUpdateAPIView):
                 serializer = HardSpotUpdateSerializer(hardspot_detail, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                context = {"success": True, "message": "Updation Successful", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Updation Successful", "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
-            context = {"success": False, "message": "Updation Failed", "error": str(serializer.errors)}
+            context = {"success": False, "message": "Updation Failed"}
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed To Update Hardsport Details.'}
+            context = {'success': "false", 'message': 'Failed To Update Hardsport Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -250,10 +250,10 @@ class HardspotVisitorsDownloadView(RetrieveUpdateAPIView):
             if exists:
                 os.remove('hardspot_contributers.xlsx')
             data_frame.to_csv(path + 'hardspot_contributers.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspot_contributers.xlsx'}
+            context = {"success": True, "message": "Activity List", "data": 'media/files/hardspot_contributers.xlsx'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ContentVisitorsDownloadView(RetrieveUpdateAPIView):
@@ -281,10 +281,10 @@ class ContentVisitorsDownloadView(RetrieveUpdateAPIView):
             if exists:
                 os.remove('content_contributers.xlsx')
             data_frame.to_csv(path + 'content_contributers.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/content_contributers.xlsx'}
+            context = {"success": True, "message": "Activity List","data": 'media/files/content_contributers.xlsx'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -300,18 +300,18 @@ class HardSpotContributorCreateView(ListCreateAPIView):
                     HardSpotContributors.objects.filter(id=queryset.id).update(email=request.data['email'])
                     queryset.refresh_from_db()
                 serializer = HardSpotContributorSerializer(queryset)
-                context = {"success": True, "message": "Successful", "error": "", "data": serializer.data}
+                context = {"success": True, "message": "Successful", "data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             else:
                 serializer = HardSpotContributorSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save()
-                    context = {"success": True, "message": "Successful", "error": "", "data": serializer.data}
+                    context = {"success": True, "message": "Successful",  "data": serializer.data}
                     return Response(context, status=status.HTTP_200_OK)
-                context = {"success": False, "message": "Invalid Input Data to create Pesonal details", "error": str(serializer.errors)}
+                context = {"success": False, "message": "Invalid Input Data to create Pesonal details"}
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to Personal Details.'}
+            context = {'success': "false", 'message': 'Failed to Personal Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -339,10 +339,10 @@ class ApprovedHardSpotDownloadView(ListAPIView):
                     os.remove('ApprovedHardSpot.csv')
                 data_frame.to_csv(path + 'ApprovedHardSpot.csv', encoding="utf-8-sig", index=False)
         
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/ApprovedHardSpot.csv'}
+            context = {"success": True, "message": "Activity List", "data": 'media/files/ApprovedHardSpot.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -370,10 +370,10 @@ class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
             if exists:
                 os.remove('hardspotstatus.csv')
             data_frame.to_csv(path + 'hardspotstatus.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hardspotstatus.csv'}
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/hardspotstatus.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = { 'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -408,10 +408,10 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
             if exists:
                 os.remove('hard_spot_contributers.csv')
             data_frame.to_csv(path + 'hard_spot_contributers.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List", "error": "", "data": 'media/files/hard_spot_contributers.csv'}
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/hard_spot_contributers.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'error': str(error), 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
