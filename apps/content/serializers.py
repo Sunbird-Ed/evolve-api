@@ -538,7 +538,7 @@ class KeywordSerializer(serializers.ModelSerializer):
                     listValues.append(keyvalues['keyword'])
                 print(listValues)
                 serializer = SubSubSectionKeywordsSerializer(SubSubSectionKeyword.objects.filter(keyword__in=listValues, sub_sub_section__id=obj.sub_sub_section_id), many=True)
-
+                return serializer.data
             else:
                 return None
         except Exception as error:

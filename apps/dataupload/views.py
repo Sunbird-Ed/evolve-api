@@ -46,7 +46,6 @@ class TOCUploadView(ListCreateAPIView):
                 
                 
                 state = State.objects.filter(id=state_id).first()
-                # import ipdb;ipdb.set_trace()
                 if str(i['medium']).lower() != 'nan' and str(i['grade']).lower() != 'nan' and str(i['subject']).lower() != 'nan' and str(i['textbook name']).lower() != 'nan':
                     
                     medium = Medium.objects.filter(medium__iexact=i['medium'], state=state).first()
