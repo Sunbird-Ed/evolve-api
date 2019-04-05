@@ -308,7 +308,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
         data_str_list = []
         chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-        chapter_hardspot = HardSpot.    .filter(chapter__id=chapters.id,approved=True)
+        chapter_hardspot = HardSpot.objects.filter(chapter__id=chapters.id,approved=True)
         section = ""
         sub_section = ""
         sub_sub_section= ""
