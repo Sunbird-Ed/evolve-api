@@ -31,7 +31,7 @@ urlpatterns = [
     path('content/', include('apps.content.urls')),
     path('toc/', include('apps.dataupload.urls')),
     path('user/', include('user.urls')),
-    path('othercontent/',include('othercontent.urls')),
+    path('othercontents/',include('apps.othercontents.urls')),
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
