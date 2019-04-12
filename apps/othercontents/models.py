@@ -28,7 +28,7 @@ class Tags(models.Model):
 
 class OtherContributors(models.Model):
 
-    tags = models.ForeignKey(Tags,on_delete=models.CASCADE,null=True,blank=True)
+    tags = models.ForeignKey(Tags,on_delete=models.CASCADE)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200, 
         blank=True,
@@ -55,7 +55,7 @@ class OtherContributors(models.Model):
 
 class OtherContent(models.Model):
 
-    tags = models.ForeignKey(Tags,on_delete=models.CASCADE,null=True,blank=True)
+    tags = models.ForeignKey(Tags,on_delete=models.CASCADE)
     # hard_spot=models.ForeignKey(HardSpot,on_delete=models.CASCADE,null=True,blank=True)
     chapter=models.ForeignKey(Chapter,on_delete=models.CASCADE,null=True,blank=True)
     section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
@@ -84,8 +84,22 @@ class OtherContent(models.Model):
     content_contributors=models.ForeignKey(OtherContributors,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+    def save(self, *args, **kwargs):
+        # import ipdb;ipdb.set_trace()
+        if self.documents == None and self.text == "":
+            raise ValueError("document_url and text ,Both null values are Not allowed")
+        elif self.documents != None and self.text != "":
+            raise ValueError("document_url and text ,Both values are Not allowed")
+        else:
+            super().save(*args, **kwargs)
+        
+     
+ 
     def __str__(self):
         return self.content_name
+
 
     class Meta:
         verbose_name='Other Content'
