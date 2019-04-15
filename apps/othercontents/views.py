@@ -16,7 +16,7 @@ class OtherContributorCreateView(ListCreateAPIView):
     serializer_class = OtherContributorSerializer
     def post(self, request):      
         try:
-            queryset = OtherContributors.objects.filter(first_name__iexact=request.data['first_name'].strip(),last_name__iexact=request.data['last_name'].strip(), mobile=request.data['mobile'].strip(), tag__id=request.data['tag']).first()
+            queryset = OtherContributors.objects.filter(first_name__iexact=request.data['first_name'].strip(),last_name__iexact=request.data['last_name'].strip(), mobile=request.data['mobile'].strip(), tags__id=request.data['tags']).first()
             if queryset is not None:
                 if str(queryset.email) == "" and request.data['email'] is not None:
                     ContentContributors.objects.filter(id=queryset.id).update(email=request.data['email'])
