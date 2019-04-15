@@ -7,7 +7,8 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveUpdateAPIView,)
 from rest_framework.response import Response
-from .serializers import OtherContributorSerializer
+from .serializers import OtherContributorSerializer, OtherContentListSerializer
+from .models import OtherContent, OtherContributors
 
 # Create your views here.
 class OtherContributorCreateView(ListCreateAPIView):
@@ -38,7 +39,7 @@ class OtherContributorCreateView(ListCreateAPIView):
 class OtherContentList(ListCreateAPIView):
     queryset = OtherContent.objects.all()
     serializer_class = OtherContentListSerializer
-    parser_classes = (MultiPartParser,)
+    # parser_classes = (MultiPartParser,)
 
     def get(self, request):
         try:
