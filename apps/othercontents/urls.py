@@ -3,4 +3,5 @@ from apps.othercontents import views
 
 urlpatterns = [
     path('othercontributors', views.OtherContributorCreateView.as_view(), name = 'OtherContributorCreateView'),
+    path('othercontent', views.OtherContentList.as_view(), name = 'OtherContentList'),
     ]

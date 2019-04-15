@@ -34,3 +34,31 @@ class OtherContributorCreateView(ListCreateAPIView):
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to Personal Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class OtherContentList(ListCreateAPIView):
+    queryset = OtherContent.objects.all()
+    serializer_class = OtherContentListSerializer
+    parser_classes = (MultiPartParser,)
+
+    def get(self, request):
+        try:
+            queryset = self.get_queryset()
+            serializer = OtherContentListSerializer(queryset, many=True)
+            context = {"success": True, "message": "Chapter List","data": serializer.data}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get Chapter list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request,format=None):
+        try:
+            serializer = OtherContentListSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                context = {"success": True, "message": "Created Successful", "data": serializer.data}
+                return Response(context, status=status.HTTP_200_OK)
+            context = {"success": False, "message": "Invalid Input Data to create content"}
+            return Response(context, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to create content.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
