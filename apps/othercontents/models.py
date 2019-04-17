@@ -56,7 +56,7 @@ class OtherContributors(models.Model):
 class OtherContent(models.Model):
 
     tags = models.ForeignKey(Tags,on_delete=models.CASCADE)
-    # hard_spot=models.ForeignKey(HardSpot,on_delete=models.CASCADE,null=True,blank=True)
+    hard_spot=models.ForeignKey(HardSpot,on_delete=models.CASCADE,null=True,blank=True)
     chapter=models.ForeignKey(Chapter,on_delete=models.CASCADE,null=True,blank=True)
     section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
@@ -87,7 +87,7 @@ class OtherContent(models.Model):
 
 
     def save(self, *args, **kwargs):
-        # import ipdb;ipdb.set_trace()
+        import ipdb;ipdb.set_trace()
         if self.documents == None and self.text == "":
             raise ValueError("document_url and text ,Both null values are Not allowed")
         elif self.documents != None and self.text != "":
