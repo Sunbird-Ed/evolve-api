@@ -8,9 +8,9 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,)
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
-from .serializers import OtherContributorSerializer, OtherContentListSerializer
+from .serializers import OtherContributorSerializer, OtherContentListSerializer,BookNestedSerializer
 from .models import OtherContent, OtherContributors
-
+from apps.configuration.models import Book
 # Create your views here.
 class OtherContributorCreateView(ListCreateAPIView):
     queryset = OtherContributors.objects.all()
@@ -64,3 +64,27 @@ class OtherContentList(ListCreateAPIView):
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to create content.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+class BookNestedList(ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookNestedSerializer
+
+    def get(self, request):
+            try:
+                subject = request.query_params.get('subject', None)
+                tag = request.query_params.get('tag', None)
+                if subject is not None :
+                    queryset=self.get_queryset().filter(subject__id=subject, content_only=True)
+                else:
+                    queryset = self.get_queryset().filter(content_only=True)
+                if tag is not None:
+                    serializer = BookNestedSerializer(queryset, many=True,context = {"tagname" : tag})
+                context = {"success": True, "message": "Conetent List","data": serializer.data}
+                return Response(context, status=status.HTTP_200_OK)
+            except Exception as error:
+                context = {'success': "false", 'message': 'Failed to get Content list.'}
+                return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
