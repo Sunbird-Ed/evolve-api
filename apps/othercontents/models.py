@@ -87,7 +87,6 @@ class OtherContent(models.Model):
 
 
     def save(self, *args, **kwargs):
-        import ipdb;ipdb.set_trace()
         if self.documents == None and self.text == "":
             raise ValueError("document_url and text ,Both null values are Not allowed")
         elif self.documents != None and self.text != "":
