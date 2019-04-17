@@ -82,7 +82,7 @@ class BookNestedList(ListAPIView):
                 else:
                     queryset = self.get_queryset().filter(content_only=True)
                 if tag is not None:
-                    serializer = BookNestedSerializer(queryset, many=True,context = {"tagname" : tag})
+                    serializer = BookNestedSerializer(queryset, many=True, context = {"tagname" : tag})
                 context = {"success": True, "message": "Conetent List","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
