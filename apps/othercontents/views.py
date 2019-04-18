@@ -34,7 +34,7 @@ class OtherContributorCreateView(ListCreateAPIView):
                 context = {"success": False, "message": "Invalid Input Data to create Pesonal details"}
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'success': "false", 'message': 'Failed to Personal Details.'}
+            context = {'success': "false", 'message': 'Failed to Personal Details.' 'error' : str(error)}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class OtherContentList(ListCreateAPIView):
