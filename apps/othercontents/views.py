@@ -20,7 +20,7 @@ class OtherContributorCreateView(ListCreateAPIView):
             queryset = OtherContributors.objects.filter(first_name__iexact=request.data['first_name'].strip(),last_name__iexact=request.data['last_name'].strip(), mobile=request.data['mobile'].strip(), tags__id=request.data['tags']).first()
             if queryset is not None:
                 if str(queryset.email) == "" and request.data['email'] is not None:
-                    ContentContributors.objects.filter(id=queryset.id).update(email=request.data['email'])
+                    OtherContributors.objects.filter(id=queryset.id).update(email=request.data['email'])
                     queryset.refresh_from_db()
                 serializer = OtherContributorSerializer(queryset)
                 context = {"success": True, "message": "Successful",  "data": serializer.data}
@@ -34,7 +34,7 @@ class OtherContributorCreateView(ListCreateAPIView):
                 context = {"success": False, "message": "Invalid Input Data to create Pesonal details"}
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'success': "false", 'message': 'Failed to Personal Details.' 'error' : str(error)}
+            context = {'success': "false", 'message': 'Failed to Personal Details.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class OtherContentList(ListCreateAPIView):
