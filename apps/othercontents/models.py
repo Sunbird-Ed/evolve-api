@@ -88,9 +88,9 @@ class OtherContent(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if self.documents == None and self.text == "" and self.video == "":
+        if self.documents == None and self.text == "" and self.video == None:
             raise ValueError("document url, video url and text ,all null values are Not allowed")
-        elif self.documents != None and self.text != "" and self.video != "":
+        elif self.documents != None and self.text != "" and self.video != None:
             raise ValueError("document url, video url and text ,all values are Not allowed")
         else:
             super().save(*args, **kwargs)
