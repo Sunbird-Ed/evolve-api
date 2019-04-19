@@ -62,6 +62,7 @@ class OtherContent(models.Model):
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
     sub_sub_section=models.ForeignKey(SubSubSection,on_delete=models.CASCADE,null=True,blank=True)
     content_name = models.CharField(max_length=200)
+    video = models.URLField(max_length=1000, blank=True,null=True)
     documents = models.URLField(max_length=1000, blank=True,null=True)
     text = models.TextField(blank=True,null=True)
     approved = models.BooleanField(default=False)
