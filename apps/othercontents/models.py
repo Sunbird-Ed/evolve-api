@@ -88,12 +88,17 @@ class OtherContent(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if self.documents == None and self.text == "":
-            raise ValueError("document_url and text ,Both null values are Not allowed")
-        elif self.documents != None and self.text != "":
-            raise ValueError("document_url and text ,Both values are Not allowed")
-        else:
+        if self.documents is not None and self.text == "" and self.video == None:
             super().save(*args, **kwargs)
+        elif self.documents is None and self.text != "" and self.video is None:
+            super().save(*args, **kwargs)
+        elif self.documents is None and self.text == "" and self.video is not None:
+            super().save(*args, **kwargs)
+        elif self.documents is None and self.text == "" and self.video is None:
+            raise ValueError("document_url,text and video_url null not allowed")
+
+        else:
+            raise ValueError("document_url,text and video_url only one field allowed to enter")
         
      
  
