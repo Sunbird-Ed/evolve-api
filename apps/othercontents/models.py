@@ -94,9 +94,10 @@ class OtherContent(models.Model):
             super().save(*args, **kwargs)
         elif self.documents is None and self.text == "" and self.video is not None:
             super().save(*args, **kwargs)
-        elif self.documents is None and self.text == "" and self.video is None:
-            raise ValueError("document_url,text and video_url null not allowed")
-
+        elif self.documents == None and self.text == "" and self.video == None:
+            raise ValueError("document url, video url and text ,all null values are Not allowed")
+        elif self.documents != None and self.text != "" and self.video != None:
+            raise ValueError("document url, video url and text ,all values are Not allowed")
         else:
             raise ValueError("document_url,text and video_url only one field allowed to enter")
         
