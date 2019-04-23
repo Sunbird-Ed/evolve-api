@@ -56,14 +56,14 @@ class OtherContributors(models.Model):
 class OtherContent(models.Model):
 
     tags = models.ForeignKey(Tags,on_delete=models.CASCADE)
-    hard_spot=models.ForeignKey(HardSpot,on_delete=models.CASCADE,null=True,blank=True)
+    # hard_spot=models.ForeignKey(HardSpot,on_delete=models.CASCADE,null=True,blank=True)
     chapter=models.ForeignKey(Chapter,on_delete=models.CASCADE,null=True,blank=True)
     section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
     sub_sub_section=models.ForeignKey(SubSubSection,on_delete=models.CASCADE,null=True,blank=True)
     content_name = models.CharField(max_length=200)
-    video = models.URLField(max_length=1000, blank=True,null=True)
-    documents = models.URLField(max_length=1000, blank=True,null=True)
+    # video = models.URLField(max_length=1000, blank=True,null=True)
+    file_url = models.URLField(max_length=1000, blank=True,null=True)
     text = models.TextField(blank=True,null=True)
     approved = models.BooleanField(default=False)
     approved_by = models.ForeignKey(User,
