@@ -87,20 +87,12 @@ class OtherContent(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-    # def save(self, *args, **kwargs):
-    #     if self.documents is not None and self.text == "" and self.video == None:
-    #         super().save(*args, **kwargs)
-    #     elif self.documents is None and self.text != "" and self.video is None:
-    #         super().save(*args, **kwargs)
-    #     elif self.documents is None and self.text == "" and self.video is not None:
-    #         super().save(*args, **kwargs)
-    #     elif self.documents == None and self.text == "" and self.video == None:
-    #         raise ValueError("document url, video url and text ,all null values are Not allowed")
-    #     elif self.documents != None and self.text != "" and self.video != None:
-    #         raise ValueError("document url, video url and text ,all values are Not allowed")
-    #     else:
-    #         raise ValueError("document_url,text and video_url only one field allowed to enter")
-        
+    def save(self, *args, **kwargs):
+        if self.file_url == None and self.text == "":
+            raise ValueError("document url and text ,both null values are Not allowed")
+        elif self.file_url != None and self.text != "":
+            raise ValueError("document url and text ,both values are Not allowed")
+
      
  
     def __str__(self):
