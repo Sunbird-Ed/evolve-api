@@ -62,8 +62,8 @@ class OtherContent(models.Model):
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
     sub_sub_section=models.ForeignKey(SubSubSection,on_delete=models.CASCADE,null=True,blank=True)
     content_name = models.CharField(max_length=200)
-    # video = models.URLField(max_length=1000, blank=True,null=True)
     file_url = models.URLField(max_length=1000, blank=True,null=True)
+    # file_url = models.URLField(max_length=1000, blank=True,null=True)
     text = models.TextField(blank=True,null=True)
     approved = models.BooleanField(default=False)
     approved_by = models.ForeignKey(User,
@@ -87,19 +87,19 @@ class OtherContent(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-    def save(self, *args, **kwargs):
-        if self.documents is not None and self.text == "" and self.video == None:
-            super().save(*args, **kwargs)
-        elif self.documents is None and self.text != "" and self.video is None:
-            super().save(*args, **kwargs)
-        elif self.documents is None and self.text == "" and self.video is not None:
-            super().save(*args, **kwargs)
-        elif self.documents == None and self.text == "" and self.video == None:
-            raise ValueError("document url, video url and text ,all null values are Not allowed")
-        elif self.documents != None and self.text != "" and self.video != None:
-            raise ValueError("document url, video url and text ,all values are Not allowed")
-        else:
-            raise ValueError("document_url,text and video_url only one field allowed to enter")
+    # def save(self, *args, **kwargs):
+    #     if self.documents is not None and self.text == "" and self.video == None:
+    #         super().save(*args, **kwargs)
+    #     elif self.documents is None and self.text != "" and self.video is None:
+    #         super().save(*args, **kwargs)
+    #     elif self.documents is None and self.text == "" and self.video is not None:
+    #         super().save(*args, **kwargs)
+    #     elif self.documents == None and self.text == "" and self.video == None:
+    #         raise ValueError("document url, video url and text ,all null values are Not allowed")
+    #     elif self.documents != None and self.text != "" and self.video != None:
+    #         raise ValueError("document url, video url and text ,all values are Not allowed")
+    #     else:
+    #         raise ValueError("document_url,text and video_url only one field allowed to enter")
         
      
  
