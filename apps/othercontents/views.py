@@ -62,7 +62,7 @@ class OtherContentList(ListCreateAPIView):
             context = {"success": False, "message": "Invalid Input Data to create content"}
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
-            context = {'success': "false", 'message': 'Failed to create content.'}
+            context = {'success': "false", 'message': 'Failed to create content.', "error": str(error)}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
