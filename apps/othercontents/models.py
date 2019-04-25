@@ -24,10 +24,10 @@ class Tags(models.Model):
    
 
 
-# class SchoolName(models.Model):
-#     school_name = models.CharField(max_length=500)
-#     def __str__(self):
-#         return self.school_name
+class SchoolName(models.Model):
+    school_name = models.CharField(max_length=500)
+    def __str__(self):
+        return self.school_name
 
 
 
