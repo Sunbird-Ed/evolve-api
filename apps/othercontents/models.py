@@ -43,7 +43,7 @@ class OtherContributors(models.Model):
     mobile =models.CharField(max_length=10,
         blank=False,
         null=False)
-    school_name= models.ForeignKey(SchoolName,on_delete=models.CASCADE)
+    # school_name= models.ForeignKey(SchoolName,on_delete=models.CASCADE)
     city_name = models.CharField(max_length=200, 
         blank=True,
         null=True)
