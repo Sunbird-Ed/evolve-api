@@ -1,5 +1,5 @@
 from rest_framework import routers, serializers
-from .models import OtherContributors,OtherContent
+from .models import OtherContributors,OtherContent,SchoolName
 from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSection,SubSubSectionKeyword,SubSubSection
 from apps.configuration.models import Book
 from apps.hardspot.models import HardSpot
@@ -10,6 +10,10 @@ class OtherContributorSerializer(serializers.ModelSerializer):
 		model=OtherContributors
 		fields='__all__'
 
+class SchoolNameSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=SchoolName
+		fields='__all__'
 
 
 class OtherContentListSerializer(serializers.ModelSerializer):

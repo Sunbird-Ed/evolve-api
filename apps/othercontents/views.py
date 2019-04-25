@@ -8,8 +8,8 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,)
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
-from .serializers import OtherContributorSerializer, OtherContentListSerializer,BookNestedSerializer
-from .models import OtherContent, OtherContributors
+from .serializers import OtherContributorSerializer, OtherContentListSerializer,BookNestedSerializer,SchoolNameSerializer
+from .models import OtherContent, OtherContributors,SchoolName
 from apps.configuration.models import Book
 # Create your views here.
 class OtherContributorCreateView(ListCreateAPIView):
@@ -83,8 +83,27 @@ class BookNestedList(ListAPIView):
                     queryset = self.get_queryset().filter(content_only=True)
                 if tag is not None:
                     serializer = BookNestedSerializer(queryset, many=True, context = {"tagname" : tag})
-                context = {"success": True, "message": "Conetent List","data": serializer.data}
+                context = {"success": True, "message": "Content List","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
                 context = {'success': "false", 'message': 'Failed to get Content list.'}
+                return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+class SchoolNameList(ListAPIView):
+    queryset = SchoolName.objects.all()
+    serializer_class = SchoolNameSerializer
+
+    def get(self, request):
+            try:
+                # import ipdb;ipdb.set_trace()
+                queryset = self.get_queryset()
+                serializer = SchoolNameSerializer(queryset, many=True)
+                context = {"success": True, "message": "Schools List","data": serializer.data}
+                return Response(context, status=status.HTTP_200_OK)
+            except Exception as error:
+                context = {'success': "false", 'message': 'Failed to get Schools list.'}
                 return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
