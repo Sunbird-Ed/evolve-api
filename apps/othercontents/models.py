@@ -24,6 +24,12 @@ class Tags(models.Model):
    
 
 
+class SchoolName(models.Model):
+    school_name = models.CharField(max_length=500)
+    def __str__(self):
+        return self.school_name
+
+
 
 
 class OtherContributors(models.Model):
@@ -37,9 +43,7 @@ class OtherContributors(models.Model):
     mobile =models.CharField(max_length=10,
         blank=False,
         null=False)
-    school_name = models.CharField(max_length=400, 
-        blank=True,
-        null=True)
+    school_name= models.ForeignKey(SchoolName,on_delete=models.CASCADE)
     city_name = models.CharField(max_length=200, 
         blank=True,
         null=True)
