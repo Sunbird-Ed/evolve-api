@@ -65,7 +65,7 @@ class OtherContent(models.Model):
     section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
     sub_sub_section=models.ForeignKey(SubSubSection,on_delete=models.CASCADE,null=True,blank=True)
-    content_name = models.CharField(max_length=200)
+    content_name = models.TextField(blank=True,null=True)
     file_url = models.URLField(max_length=1000, blank=True,null=True)
     # file_url = models.URLField(max_length=1000, blank=True,null=True)
     text = models.TextField(blank=True,null=True)

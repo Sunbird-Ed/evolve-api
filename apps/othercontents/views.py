@@ -99,7 +99,6 @@ class SchoolNameList(ListAPIView):
 
     def get(self, request):
             try:
-                # import ipdb;ipdb.set_trace()
                 queryset = self.get_queryset()
                 serializer = SchoolNameSerializer(queryset, many=True)
                 context = {"success": True, "message": "Schools List","data": serializer.data}
