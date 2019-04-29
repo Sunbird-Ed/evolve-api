@@ -94,7 +94,7 @@ class OtherContent(models.Model):
     def save(self, *args, **kwargs):
         if (self.file_url == None or self.file_url=='') and self.text == "" :
             raise ValueError("document url and text ,both null values are Not allowed")
-        elif (self.file_url != None or self.file_url=='') and self.text != "":
+        elif (self.file_url != None or self.file_url!='') and self.text != "":
             raise ValueError("document url and text ,both values are Not allowed")
         else:
             super().save(*args, **kwargs)
