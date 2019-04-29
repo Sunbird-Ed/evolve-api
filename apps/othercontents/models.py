@@ -91,13 +91,13 @@ class OtherContent(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-    # def save(self, *args, **kwargs):
-    #     if self.file_url == None and self.text == "":
-    #         raise ValueError("document url and text ,both null values are Not allowed")
-    #     elif self.file_url != None and self.text != "":
-    #         raise ValueError("document url and text ,both values are Not allowed")
-    #     else:
-    #         super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if self.file_url == None and self.text == None:
+            raise ValueError("document url and text ,both null values are Not allowed")
+        elif self.file_url != None and self.text != None:
+            raise ValueError("document url and text ,both values are Not allowed")
+        else:
+            super().save(*args, **kwargs)
 
      
  
