@@ -75,11 +75,11 @@ class OtherContent(models.Model):
         related_name='%(class)s_approved_by',
         null=True,
         blank=True)
-    rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
-        blank=True,null=True)
-    rated_by = models.ForeignKey(User,
-        on_delete=models.CASCADE,
-        related_name='%(class)s_rated_by',null=True,blank=True)
+    # rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
+    #     blank=True,null=True)
+    # rated_by = models.ForeignKey(User,
+    #     on_delete=models.CASCADE,
+    #     related_name='%(class)s_rated_by',null=True,blank=True)
     comment = models.CharField(max_length=200, null=True, blank=True)
     chapter_keywords=models.ManyToManyField(ChapterKeyword,blank=True)
     section_keywords=models.ManyToManyField(SectionKeyword,blank=True)
