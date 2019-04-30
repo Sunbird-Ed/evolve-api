@@ -16,5 +16,12 @@ urlpatterns = [
     path('approvedcontentdownload', views.ApprovedContentDownloadView.as_view(), name= "ApprovedContentDownload"),
     path('contentstatusdownload', views.ContentStatusDownloadView.as_view(), name= "ContentStatusDownloadView"),
     path('contentcontributorslist', views.ContentContributorsDownloadView.as_view(), name= "ContentContributorsDownloadView"),
-    path('getsas',views.GetSASView.as_view(),name="GetSASView")
+    path('getsas',views.GetSASView.as_view(),name="GetSASView"),
+
+
+
+
+
+    
+
     ]

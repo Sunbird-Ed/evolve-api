@@ -12,7 +12,7 @@ from datetime import datetime
 
 class Tags(models.Model):
     tag_name = models.CharField(max_length=200)
-    code_name = models.SlugField(max_length=200)
+    code_name = models.SlugField(max_length=200,unique=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -92,9 +92,9 @@ class OtherContent(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if self.file_url == None and self.text == None :
+        if self.file_url == None and self.text == None and self.approved_by==None:
             raise ValueError("document url and text ,both null values are Not allowed")
-        elif self.file_url != None and self.text != None:
+        elif (self.file_url != None and self.text != None and self.approved_by == None):
             raise ValueError("document url and text ,both values are Not allowed")
         else:
             super().save(*args, **kwargs)

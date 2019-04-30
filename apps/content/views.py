@@ -11,11 +11,35 @@ from rest_framework.decorators import permission_classes
 from apps.configuration.models import Book
 from apps.hardspot.models import  HardSpot
 from .models import Content,ContentContributors
-from .serializers import ContentListSerializer,BookNestedSerializer,BookListSerializer, ContentStatusListSerializer,SectionKeywordSerializer,SubSectionKeywordSerializer,SectionKeywordsSerializer,ChapterKeywordsSerializer,SubSectionKeywordsSerializer,KeywordSerializer,ContentContributorSerializer,ApprovedContentSerializer,ContentStatusSerializer,HardSpotCreateSerializer, ContentContributorsSerializer,SubSubSectionKeywordsSerializer
+from .serializers import (
+    ContentListSerializer,
+    BookNestedSerializer,
+    BookListSerializer, 
+    ContentStatusListSerializer,
+    SectionKeywordSerializer,
+    SubSectionKeywordSerializer,
+    SectionKeywordsSerializer,
+    ChapterKeywordsSerializer,
+    SubSectionKeywordsSerializer,
+    KeywordSerializer,
+    ContentContributorSerializer,
+    ApprovedContentSerializer,
+    ContentStatusSerializer,
+    HardSpotCreateSerializer, 
+    ContentContributorsSerializer,
+    SubSubSectionKeywordsSerializer,)
+
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
 from rest_framework.parsers import MultiPartParser
-from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,SectionKeyword,SubSectionKeyword,SubSubSectionKeyword
+from apps.dataupload.models import (Chapter,
+    Section,
+    SubSection,
+    ChapterKeyword,
+    SectionKeyword,
+    SubSectionKeyword,
+    SubSubSectionKeyword,
+    )
 import json
 import pandas as pd
 from evolve import settings
@@ -430,6 +454,11 @@ class GetSASView(ListAPIView):
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
 
 
 

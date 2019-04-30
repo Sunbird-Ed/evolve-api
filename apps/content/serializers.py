@@ -4,6 +4,7 @@ from apps.dataupload.models import Chapter,Section,SubSection,ChapterKeyword,Sec
 from apps.configuration.models import Book
 from apps.hardspot.models import HardSpot
 from apps.hardspot.serializers import HardSpotCreateSerializer
+from apps.othercontents.models import OtherContent 
 from django.db.models import Q
 from datetime import datetime, timedelta
 import os
@@ -896,3 +897,7 @@ class ContentContributorsSerializer(serializers.ModelSerializer):
             return books
         else:
             return None
+
+
+
+
