@@ -22,6 +22,11 @@ from .serializers import (OtherContributorSerializer,
     )
 from .models import OtherContent, OtherContributors,SchoolName
 from apps.configuration.models import Book
+from django.db.models import Q
+import pandas as pd
+from evolve import settings
+
+
 # Create your views here.
 class OtherContributorCreateView(ListCreateAPIView):
     queryset = OtherContributors.objects.all()
@@ -298,12 +303,12 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             from shutil import copyfile
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
-            if state_id is not None:
-                queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
+            import ipdb;ipdb.set_trace()
+            if state_id is not None and tag is not None:
+                queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
             else:
                 queryset = self.get_queryset()
-            if tag is not None:
-                serializer = OtherContentContributorsSerializer(queryset, many=True ,context = {'tag_name':tag})
+            serializer = OtherContentContributorsSerializer(queryset, many=True )
             res_list = [] 
             for i in range(len(serializer.data)): 
                 if serializer.data[i] not in serializer.data[i + 1:]: 
@@ -312,7 +317,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 for d in res_list:
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
+            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name']).drop_duplicates()
             exists = os.path.isfile('content_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:

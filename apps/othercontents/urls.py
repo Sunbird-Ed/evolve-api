@@ -16,6 +16,8 @@ urlpatterns = [
     path('otherrejectedlist',views.OtherContentRejectedList.as_view(),name="OtherContentRejectedListView"),
     path('othercontentupdate/<int:pk>',views.UpdateOtherContentView.as_view(),name="UpdateOtherContentView"),
     path('othercontentdetaillist',views.OtherContentDetailList.as_view(),name="OtherContentDetailListView"),
+    path('othercontributorsdownload',views.OtherContentContributorsDownloadView.as_view(),name="OtherContentContributorsDownloadView"),
+
 
 
 

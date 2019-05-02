@@ -22,7 +22,6 @@ accountName = settings.AZURE_ACCOUNT_NAME
 accountKey = settings.AZURE_ACCOUNT_KEY
 containerName= settings.AZURE_CONTAINER
 
-
 class OtherContributorSerializer(serializers.ModelSerializer):
     class Meta:
         model=OtherContributors
@@ -446,7 +445,10 @@ class SubSubSectionKeywordsSerializer(serializers.ModelSerializer):
         model=SubSubSectionKeyword
         fields='__all__'
 
-
+class OtherContentContributorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OtherContributors
+        fields='__all__'
 
 class OtherContentBookListSerializer(serializers.ModelSerializer):
     chapter=serializers.SerializerMethodField()
@@ -487,8 +489,8 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
 
     def get_content_contributors(self, req):
         try:
-            content_contributor = ContentContributors.objects.filter(id=req.content_contributors.id).first()
-            serializer = ContentContributorSerializer(content_contributor)
+            content_contributor = OtherContributors.objects.filter(id=req.content_contributors.id).first()
+            serializer = OtherContentContributorSerializer(content_contributor)
             data = serializer.data
             return data
         except:
@@ -497,6 +499,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
 
     def get_keywords(self, obj):
         try:
+
             if obj.chapter_keywords.all().exists():
                 k=obj.chapter_keywords.all().values('keyword')
                 listData = [ x for x in k ]
@@ -506,6 +509,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                 serializer = ChapterKeywordsSerializer(ChapterKeyword.objects.filter(keyword__in=listValues, chapter__id=obj.chapter_id), many=True)
                 return serializer.data
             elif obj.section_keywords.all().exists():
+                # import ipdb;ipdb.set_trace()
                 k=obj.section_keywords.all().values('keyword')
                 listData = [ x for x in k ]
                 listValues=[]
@@ -598,7 +602,7 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
     last_name=serializers.SerializerMethodField()
     mobile=serializers.SerializerMethodField()
     email=serializers.SerializerMethodField()
-    city_name=serializers.SerializerMethodField()
+    # city_name=serializers.SerializerMethodField()
     school_name=serializers.SerializerMethodField()
     textbook_name=serializers.SerializerMethodField()
     class Meta:
@@ -607,27 +611,28 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
                 'last_name',
                 'mobile',
                 'email',
-                'city_name',
                 'school_name',
                 'textbook_name']
+
     def get_first_name(self, obj):
-        first_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().first_name
+        first_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().first_name
         return first_name
     def get_last_name(self, obj):
-        last_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().last_name
+        last_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().last_name
         return last_name
     def get_mobile(self, obj):
-        mobile=ContentContributors.objects.filter(id=obj.content_contributors.id).first().mobile
+        mobile=OtherContributors.objects.filter(id=obj.content_contributors.id).first().mobile
         return mobile
     def get_email(self, obj):
-        email=ContentContributors.objects.filter(id=obj.content_contributors.id).first().email
+        email=OtherContributors.objects.filter(id=obj.content_contributors.id).first().email
+        print(email)
         return email
+
     def get_school_name(self ,obj):
-        school_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().school_name
+
+        school_name=SchoolName.objects.filter(id=obj.content_contributors.school_name.id ).first().school_name         
         return school_name
-    def get_city_name(self,obj):
-        city_name = ContentContributors.objects.filter(id=obj.content_contributors.id).first().city_name
-        return city_name
+  
     def get_textbook_name(self, obj):
         if obj.chapter is not None:
             book = Book.objects.filter(id=obj.chapter.book.id)
