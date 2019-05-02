@@ -13,6 +13,7 @@ urlpatterns = [
     path('otherbooklist',views.OtherBookListView.as_view(),name="OtherBookListView"),
     path('otherapprovedlist',views.OtherContentApprovedList.as_view(),name="OtherContentApprovedListView"),
     path('otherpendinglist',views.OtherContentPendingList.as_view(),name="OtherContentPendingListView"),
+    path('otherrejectedlist',views.OtherContentRejectedList.as_view(),name="OtherContentRejectedListView"),
     path('othercontentupdate/<int:pk>',views.UpdateOtherContentView.as_view(),name="UpdateOtherContentView"),
     path('othercontentdetaillist',views.OtherContentDetailList.as_view(),name="OtherContentDetailListView"),
 

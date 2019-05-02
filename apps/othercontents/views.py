@@ -183,15 +183,15 @@ class OtherContentApprovedList(ListAPIView):
             sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             tag = request .query_params.get('tag',None)
             if chapter_id is not None and tag is not None:
-                queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=True,tags__code_name=tag)
+                queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=True,tags__id=tag)
             elif section_id is not None and tag is not None:
-                queryset = self.get_queryset().filter(section__id=section_id, approved=True,tags__code_name=tag)
+                queryset = self.get_queryset().filter(section__id=section_id, approved=True,tags__id=tag)
             elif sub_section_id is not None and tag is not None:
-                queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=True,tags__code_name=tag)
+                queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=True,tags__id=tag)
             elif  sub_sub_section_id is not None and tag is not None: 
-                queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=True,tags__code_name=tag)
+                queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=True,tags__id=tag)
             else:
-                queryset = self.get_queryset().filter(approved=True,tags__code_name=tag)
+                queryset = self.get_queryset().filter(approved=True,tags__id=tag)
             serializer = OtherContentStatusSerializer(queryset, many=True)
             context = {"success": True, "message": "OtherContent Approved List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
@@ -218,20 +218,48 @@ class OtherContentPendingList(ListAPIView):
             tag = request.query_params.get('tag',None)
 
             if chapter_id is not None and tag is not None:
-                queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False, approved_by=None,tags__code_name=tag)
+                queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False, approved_by=None,tags__id=tag)
             elif section_id is not None and tag is not None:
-                queryset = self.get_queryset().filter(section__id=section_id, approved=False, approved_by=None,tags__code_name=tag)
+                queryset = self.get_queryset().filter(section__id=section_id, approved=False, approved_by=None,tags__id=tag)
             elif sub_section_id is not None and tag is not None:
-                queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False, approved_by=None,tags__code_name=tag)
+                queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False, approved_by=None,tags__id=tag)
             elif sub_sub_section_id is not None and tag is not None:
-                queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=False,approved_by=None,tags__code_name=tag)
+                queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=False,approved_by=None,tags__id=tag)
             else:
-                queryset = self.get_queryset().filter(approved=False, approved_by=None,tags__code_name=tag)
+                queryset = self.get_queryset().filter(approved=False, approved_by=None,tags__id=tag)
             serializer = OtherContentStatusSerializer(queryset, many=True)
             context = {"success": True, "message": "OtherContent Pending List","data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get OtherContent Pending list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class OtherContentRejectedList(ListAPIView):
+    queryset = OtherContent.objects.all()
+    serializer_class = OtherContentStatusSerializer
+  
+    def get(self, request):
+        try:
+            chapter_id = request.query_params.get('chapter', None)
+            section_id = request.query_params.get('section', None)
+            sub_section_id = request.query_params.get('sub_section', None)
+            sub_sub_section_id = request.query_params.get('sub_sub_section',None)
+            tag = request.query_params.get('tag',None)
+            if chapter_id is not None:
+                queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False,tags__id=tag).exclude(approved_by=None)
+            elif section_id is not None:
+                queryset = self.get_queryset().filter(section__id=section_id, approved=False,tags__id=tag).exclude(approved_by=None)
+            elif sub_section_id is not None:
+                queryset = self.get_queryset().filter(sub_section__id=sub_section_id, approved=False,tags__id=tag).exclude(approved_by=None)
+            elif sub_sub_section_id is not None:
+                queryset =self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id , approved = False,tags__id=tag).exclude(approved_by=None)
+            else:
+                queryset = self.get_queryset().filter(approved=False).exclude(approved_by=None,tags__id=tag)
+            serializer = OtherContentStatusSerializer(queryset, many=True)
+            context = {"success": True, "message": "Content Rejected List","data": serializer.data}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get Content Rejected list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
