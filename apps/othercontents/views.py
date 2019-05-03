@@ -19,13 +19,17 @@ from .serializers import (OtherContributorSerializer,
     OtherContentStatusSerializer,
     OtherContentDetailListSerializer,
     OtherContentContributorsSerializer,
+    ApprovedOtherContentSerializer,
     )
 from .models import OtherContent, OtherContributors,SchoolName
 from apps.configuration.models import Book
 from django.db.models import Q
 import pandas as pd
 from evolve import settings
-
+import os
+from shutil import copyfile
+import itertools
+from apps.dataupload.models import Chapter
 
 # Create your views here.
 class OtherContributorCreateView(ListCreateAPIView):
@@ -299,8 +303,6 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
     def get(self, request):
         try:
             final_list = []
-            import os
-            from shutil import copyfile
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
             # import ipdb;ipdb.set_trace()
@@ -328,4 +330,39 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = { 'success': "false", 'message': 'Failed to get Activity list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+# @permission_classes((IsAuthenticated,))
+class ApprovedOtherContentDownload(ListAPIView):
+    queryset = Book.objects.all()
+
+    def get(self, request):
+        try:
+            final_list = []
+            
+            book = request.query_params.get('book', None)
+
+            chapters=Chapter.objects.filter(book_id=book).order_by('id')
+
+            serializer = ApprovedOtherContentSerializer(chapters, many=True)
+            for data in serializer.data:
+                for d in data['chapter']:
+                    final_list.append(d)
+            print(len(final_list[0]))
+            print(final_list[1])
+
+            repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+            exists = os.path.isfile('ApprovedContent.csv')
+            path = settings.MEDIA_ROOT + '/files/'
+            if exists:
+                os.remove('ApprovedContent.csv')
+            data_frame.to_csv(path + 'ApprovedContent.csv', encoding="utf-8-sig", index=False)
+     
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/ApprovedContent.csv'}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

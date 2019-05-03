@@ -629,7 +629,6 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
         return email
 
     def get_school_name(self ,obj):
-
         school_name=SchoolName.objects.filter(id=obj.content_contributors.school_name.id ).first().school_name         
         return school_name
   
@@ -652,5 +651,208 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
             return books
         else:
             return None
+
+
+class OtherContentDownloadSerializer(serializers.ModelSerializer):
+    selected_keyword = serializers.SerializerMethodField()
+    class Meta:
+        model=OtherContent
+        fields=('content_name','file_url','text','selected_keyword')
+
+    def get_selected_keyword(self, obj):
+        if  obj.chapter_keywords.all().count() != 0:
+            linked_keyword = ChapterKeyword.objects.filter(id__in=obj.chapter_keywords.all())
+            keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
+            return keyword_list
+        elif obj.section_keywords.all().count() != 0:
+            linked_keyword = SectionKeyword.objects.filter(id__in=obj.section_keywords.all())
+            keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
+            return keyword_list
+        elif obj.sub_section_keywords.all().count() != 0:
+            linked_keyword = SubSectionKeyword.objects.filter(id__in=obj.sub_section_keywords.all())
+            keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
+            return keyword_list
+        elif obj.sub_sub_section_keywords.all().count() != 0:
+            linked_keyword = SubSubSectionKeyword.objects.filter(id__in=obj.sub_sub_section_keywords.all())
+            keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
+            return keyword_list
+        else:
+            return None
+
+
+
+class ApprovedOtherContentSerializer(serializers.ModelSerializer):
+    chapter=serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Chapter
+       
+        fields = ['chapter']
+
+    
+
+    def get_chapter(self, req):
+
+        # import ipdb;ipdb.set_trace()
+        data_str_list = []
+        chapters=Chapter.objects.filter(id=req.id).first()
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=True)
+        section = ""
+        sub_section = ""
+        sub_sub_section=""
+        tempList.append(section)
+        tempList.append(sub_section)
+        tempList.append(sub_sub_section)
+        keyword = ""
+        chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id)
+        for keys in chapter_keyword:
+            keyword =  keyword + keys.keyword + ", "
+        tempList.append(keyword)
+        
+        if chapter_content.exists():
+            serializer = OtherContentDownloadSerializer(chapter_content, many=True)
+            no_of_content = len(serializer.data)
+            if no_of_content == 5:
+                for data in serializer.data:
+                    for key, value in data.items():
+                        tempList.append(value)
+            elif no_of_content < 5:
+                for data in serializer.data[:no_of_content]:
+                    for key, value in data.items():
+                        tempList.append(value)
+                for i in range(0,(4*(5-no_of_content))):
+                    tempList.append("")
+            else:
+                for data in serializer.data[:5]:
+                    for key, value in data.items():
+                        tempList.append(value)
+            data_str_list.append( tempList )
+        else:
+            for x in range(0,20):
+                tempList.append("")
+            data_str_list.append( tempList )
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        sections=Section.objects.filter(chapter=req).order_by('id')
+        if sections.exists():
+            for section_data in sections:
+                tempList.append(section_data.section)
+                sec_content = OtherContent.objects.filter(section__id=section_data.id,approved=True)
+                sub_section = ""
+                sub_sub_section = ""
+                tempList.append(sub_section)
+                tempList.append(sub_sub_section)
+                keyword = ""
+                section_keyword = SectionKeyword.objects.filter(section__id=section_data.id)
+                for keys in section_keyword:
+                    keyword = keyword + keys.keyword + ", "
+                tempList.append(keyword)
+
+                if sec_content.exists():
+                    serializer = OtherContentDownloadSerializer(sec_content, many=True)
+
+                    no_of_content = len(serializer.data)
+                    if no_of_content == 5:
+                        for data in serializer.data:
+                            for key, value in data.items():
+                                tempList.append(value)
+                    elif no_of_content < 5:
+                        for data in serializer.data[:no_of_content]:
+                            for key, value in data.items():
+                                tempList.append(value)
+                        for i in range(0,(4*(5-no_of_content))):
+                            tempList.append("")
+                    else:
+                        for data in serializer.data[:5]:
+                            for key, value in data.items():
+                                tempList.append(value)
+                    data_str_list.append( tempList )
+                    
+                else:
+                    for x in range(0,20):
+                        tempList.append("")
+                    data_str_list.append( tempList )
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                
+                sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
+                if sub_section.exists():
+                    for sub_section_data in sub_section:
+                        tempList.append( sub_section_data.sub_section )
+                        sub_sub_section = ""
+                        keyword = ""
+                        tempList.append(sub_sub_section)
+
+                        sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id)
+                        for keys in sub_section_keyword:
+                            keyword = keyword + keys.keyword + ", "
+                        tempList.append(keyword)
+
+                        sub_sec_content = OtherContent.objects.filter(sub_section__id=sub_section_data.id,approved=True)
+                        if sub_sec_content.exists():
+                            serializer =   OtherContentDownloadSerializer(sub_sec_content, many=True)
+                            no_of_content = len(serializer.data)
+                            if no_of_content == 5:
+                                for data in serializer.data:
+                                    for key, value in data.items():
+                                        tempList.append(value)
+                            elif no_of_content < 5:
+                                for data in serializer.data[:no_of_content]:
+                                    for key, value in data.items():
+                                        tempList.append(value)
+                                for i in range(0,(4*(5-no_of_content))):
+                                    tempList.append("")
+                            else:
+                                for data in serializer.data[:5]:
+                                    for key, value in data.items():
+                                        tempList.append(value)
+                            data_str_list.append( tempList )
+                        else:
+                            for x  in range(0,20):
+                                tempList.append("")
+                            data_str_list.append( tempList )
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                        
+                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
+                        if sub_sub_sections.exists():
+                            for sub_sub_section in sub_sub_sections:
+                                tempList.append( sub_sub_section.sub_sub_section )
+                                keyword = ""
+                                sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id)
+                                for keys in sub_sub_section_keyword:
+                                    keyword = keyword + keys.keyword + ", "
+                                tempList.append(keyword)
+
+                                sub_sub_sec_content = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
+                                if sub_sub_sec_content.exists():
+                                    serializer = OtherContentDownloadSerializer(sub_sub_sec_content, many=True)
+                                    no_of_content = len(serializer.data)
+                                    if no_of_content == 5:
+                                        for data in serializer.data:
+                                            for key, value in data.items():
+                                                tempList.append(value)
+                                    elif no_of_content < 5:
+                                        for data in serializer.data[:no_of_content]:
+                                            for key, value in data.items():
+                                                tempList.append(value)
+                                        for i in range(0,(4*(5-no_of_content))):
+                                            tempList.append("")
+                                    else:
+                                        for data in serializer.data[:5]:
+                                            for key, value in data.items():
+                                                tempList.append(value)
+                                    data_str_list.append( tempList )
+                                else:
+                                    for x  in range(0,20):
+                                        tempList.append("")
+                                    data_str_list.append( tempList )
+
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
+        for i in data_str_list:
+            print(i)
+            print(len(i))
+        return data_str_list
+
 
 
