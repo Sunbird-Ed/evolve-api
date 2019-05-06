@@ -446,9 +446,16 @@ class SubSubSectionKeywordsSerializer(serializers.ModelSerializer):
         fields='__all__'
 
 class OtherContentContributorSerializer(serializers.ModelSerializer):
+    school_name = serializers.SerializerMethodField()
     class Meta:
         model = OtherContributors
         fields='__all__'
+
+    def get_school_name(self,req):
+        school_name=SchoolName.objects.filter(id=req.school_name.id ).first().school_name
+        return school_name         
+
+
 
 class OtherContentBookListSerializer(serializers.ModelSerializer):
     chapter=serializers.SerializerMethodField()
