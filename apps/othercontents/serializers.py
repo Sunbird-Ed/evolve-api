@@ -474,6 +474,8 @@ class OtherContentBookListSerializer(serializers.ModelSerializer):
 class OtherContentStatusSerializer(serializers.ModelSerializer):
     keywords = serializers.SerializerMethodField()
     sas_token=serializers.SerializerMethodField()
+    content_contributors = serializers.SerializerMethodField()
+    
     class Meta:
         model = OtherContent
         fields = ('id','chapter','section','sub_section','content_name','keywords','file_url','text','approved','approved_by','comment', 'content_contributors','sas_token')
