@@ -185,7 +185,6 @@ class OtherContentApprovedList(ListAPIView):
   
     def get(self, request):
         try:
-            # import ipdb;ipdb.set_trace()
             chapter_id = request.query_params.get('chapter', None)
             section_id = request.query_params.get('section', None)
             sub_section_id = request.query_params.get('sub_section', None)
@@ -343,18 +342,35 @@ class ApprovedOtherContentDownload(ListAPIView):
             final_list = []
             
             book = request.query_params.get('book', None)
-
+            tag = request.query_params.get('tag',None)
             chapters=Chapter.objects.filter(book_id=book).order_by('id')
 
-            serializer = ApprovedOtherContentSerializer(chapters, many=True)
+            serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag})
             for data in serializer.data:
                 for d in data['chapter']:
                     final_list.append(d)
-            print(len(final_list[0]))
-            print(final_list[1])
-
+          
             repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
-            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+            data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+            if (tag is "2") or (tag is "9"):
+                # video and pdf
+                data_frame=(data_frame1.drop(['text','Content Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Content Document/Video Link"})
+                # data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
+            elif tag is "8":
+                # question answer
+                data_frame=(data_frame1.drop(['Content Link/Video Link'], axis=1)).rename(index=str, columns={"Content Name": "Question","text":"Answer"})
+
+            elif tag is "7":
+                # description
+                data_frame=(data_frame1.drop(['Content Link/Video Link','Content Name'], axis=1)).rename(index=str, columns={"text":"Description"})
+
+            elif tag is "11":
+                # only pdf
+                data_frame=(data_frame1.drop(['text','Content Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link/Document Link"})
+
+            else:
+                data_frame=data_frame1
+
             exists = os.path.isfile('ApprovedContent.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:

@@ -485,7 +485,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = OtherContent
-        fields = ('id','chapter','section','sub_section','content_name','keywords','file_url','text','approved','approved_by','comment', 'content_contributors','sas_token')
+        fields = ('id','chapter','section','sub_section','sub_sub_sections','content_name','keywords','file_url','text','approved','approved_by','comment', 'content_contributors','sas_token')
     
     def get_sas_token(self,req):
         try:
@@ -570,21 +570,6 @@ class OtherContentDetailListSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth=3
 
-    def get_total_hardspot(self,req):
-        chapter_count=HardSpot.objects.filter(chapter__book__id=req.id).count()
-        section_count=HardSpot.objects.filter(section__chapter__book__id=req.id).count()
-        subsection_count=HardSpot.objects.filter(sub_section__section__chapter__book__id=req.id).count()
-        subsubsection_count=HardSpot.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id).count()
-
-        return(chapter_count + section_count + subsection_count + subsubsection_count)
-
-    def get_approved_hardspot(self,req):
-        chapter_count=HardSpot.objects.filter(chapter__book__id=req.id,approved=True).count()
-        section_count=HardSpot.objects.filter(section__chapter__book__id=req.id,approved=True).count()
-        subsection_count=HardSpot.objects.filter(sub_section__section__chapter__book__id=req.id,approved=True).count()
-        subsubsection_count=HardSpot.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id,approved=True).count()
-
-        return(chapter_count + section_count + subsection_count + subsubsection_count)
 
     def get_total_content(self,req):
         tag=self.context['code_name']
@@ -702,11 +687,10 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
 
     def get_chapter(self, req):
 
-        # import ipdb;ipdb.set_trace()
         data_str_list = []
         chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-        chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=True)
+        chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=True,tags__id=self.context['tag_id'])
         section = ""
         sub_section = ""
         sub_sub_section=""
@@ -746,7 +730,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
         if sections.exists():
             for section_data in sections:
                 tempList.append(section_data.section)
-                sec_content = OtherContent.objects.filter(section__id=section_data.id,approved=True)
+                sec_content = OtherContent.objects.filter(section__id=section_data.id,approved=True,tags__id=self.context['tag_id'])
                 sub_section = ""
                 sub_sub_section = ""
                 tempList.append(sub_section)
@@ -796,7 +780,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                             keyword = keyword + keys.keyword + ", "
                         tempList.append(keyword)
 
-                        sub_sec_content = OtherContent.objects.filter(sub_section__id=sub_section_data.id,approved=True)
+                        sub_sec_content = OtherContent.objects.filter(sub_section__id=sub_section_data.id,approved=True,tags__id=self.context['tag_id'])
                         if sub_sec_content.exists():
                             serializer =   OtherContentDownloadSerializer(sub_sec_content, many=True)
                             no_of_content = len(serializer.data)
@@ -831,7 +815,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                     keyword = keyword + keys.keyword + ", "
                                 tempList.append(keyword)
 
-                                sub_sub_sec_content = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
+                                sub_sub_sec_content = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True,tags__id=self.context['tag_id'])
                                 if sub_sub_sec_content.exists():
                                     serializer = OtherContentDownloadSerializer(sub_sub_sec_content, many=True)
                                     no_of_content = len(serializer.data)
@@ -858,9 +842,6 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
-        for i in data_str_list:
-            print(i)
-            print(len(i))
         return data_str_list
 
 
