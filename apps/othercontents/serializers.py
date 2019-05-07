@@ -485,7 +485,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = OtherContent
-        fields = ('id','chapter','section','sub_section','sub_sub_sections','content_name','keywords','file_url','text','approved','approved_by','comment', 'content_contributors','sas_token')
+        fields = ('id','chapter','section','sub_section','sub_sub_section','content_name','keywords','file_url','text','approved','approved_by','comment', 'content_contributors','sas_token')
     
     def get_sas_token(self,req):
         try:
