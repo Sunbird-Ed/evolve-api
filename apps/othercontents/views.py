@@ -352,22 +352,22 @@ class ApprovedOtherContentDownload(ListAPIView):
           
             repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
             data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
-            if (tag is "10") or (tag is "9"):
+            if tag == "10" or tag == "9":
                 # video and pdf
-                data_frame=(data_frame1.drop(['text','Content Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Content Document/Video Link"})
+                data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Content Document/Video Link"})
                 # data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
-            elif tag is "8":
+            elif tag == "8":
                 # question answer
                 data_frame=(data_frame1.drop(['Content Link/Video Link'], axis=1)).rename(index=str, columns={"Content Name": "Question","text":"Answer"})
 
-            elif tag is "7":
+            elif tag == "7":
                 # description
                 data_frame=(data_frame1.drop(['Content Link/Video Link','Content Name'], axis=1)).rename(index=str, columns={"text":"Description"})
 
-            elif tag is "11":
+            elif tag == "11":
                 # only pdf
                 data_frame=(data_frame1.drop(['text','Content Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link/Document Link"})
-
+                print(data_frame)
             else:
                 data_frame=data_frame1
 
