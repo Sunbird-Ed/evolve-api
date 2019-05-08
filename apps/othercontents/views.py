@@ -366,7 +366,7 @@ class ApprovedOtherContentDownload(ListAPIView):
 
             elif tag == "11":
                 # only pdf
-                data_frame=(data_frame1.drop(['text','Content Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link/Document Link"})
+                data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link/Document Link"})
                 print(data_frame)
             else:
                 data_frame=data_frame1
