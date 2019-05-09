@@ -9,6 +9,8 @@ from apps.dataupload.models import (Chapter,
     SubSubSection,
     SubSubSectionKeyword,
     SubSubSection,)
+from apps.hardspot.models import HardSpot
+from apps.content.models import Content
 from apps.configuration.models import Book
 from apps.hardspot.models import HardSpot
 from datetime import datetime, timedelta
@@ -846,3 +848,58 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
 
 
 
+class HardSpotDetailListSerializer(serializers.ModelSerializer):
+    total_content=serializers.SerializerMethodField()
+    approved_content=serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Book
+        fields = '__all__'
+        depth=3
+
+    def get_total_content(self,req):
+        chapter_count=HardSpot.objects.filter(chapter__book__id=req.id).count()
+        section_count=HardSpot.objects.filter(section__chapter__book__id=req.id).count()
+        subsection_count=HardSpot.objects.filter(sub_section__section__chapter__book__id=req.id).count()
+        subsubsection_count=HardSpot.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
+
+    def get_approved_content(self,req):
+        chapter_count=HardSpot.objects.filter(chapter__book__id=req.id,approved=True).count()
+        section_count=HardSpot.objects.filter(section__chapter__book__id=req.id,approved=True).count()
+        subsection_count=HardSpot.objects.filter(sub_section__section__chapter__book__id=req.id,approved=True).count()
+        subsubsection_count=HardSpot.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id,approved=True).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
+
+
+
+
+
+class ContentDetailListSerializer(serializers.ModelSerializer):
+    total_content=serializers.SerializerMethodField()
+    approved_content=serializers.SerializerMethodField()
+    class Meta:
+        model = Book
+        fields = '__all__'
+        depth=3
+
+   
+
+    def get_total_content(self,req):
+        chapter_count=Content.objects.filter(chapter__book__id=req.id).count()
+        section_count=Content.objects.filter(section__chapter__book__id=req.id).count()
+        subsection_count=Content.objects.filter(sub_section__section__chapter__book__id=req.id).count()
+        subsubsection_count=Content.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
+        
+
+    def get_approved_content(self,req):
+        chapter_count=Content.objects.filter(chapter__book__id=req.id,approved=True).count()
+        section_count=Content.objects.filter(section__chapter__book__id=req.id,approved=True).count()
+        subsection_count=Content.objects.filter(sub_section__section__chapter__book__id=req.id,approved=True).count()
+        subsubsection_count=Content.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id,approved=True).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)

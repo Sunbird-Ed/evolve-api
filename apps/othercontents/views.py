@@ -20,9 +20,11 @@ from .serializers import (OtherContributorSerializer,
     OtherContentDetailListSerializer,
     OtherContentContributorsSerializer,
     ApprovedOtherContentSerializer,
+    HardSpotDetailListSerializer,
+    ContentDetailListSerializer,
     )
-from .models import OtherContent, OtherContributors,SchoolName
-from apps.configuration.models import Book
+from .models import OtherContent, OtherContributors,SchoolName,Tags
+from apps.configuration.models import Book,State
 from django.db.models import Q
 import pandas as pd
 from evolve import settings
@@ -273,7 +275,7 @@ class OtherContentRejectedList(ListAPIView):
 
 
 
-@permission_classes((IsAuthenticated,))
+# @permission_classes((IsAuthenticated,))
 class OtherContentDetailList(ListAPIView):
     queryset = Book.objects.all()
     serializer_class = OtherContentDetailListSerializer
@@ -283,7 +285,12 @@ class OtherContentDetailList(ListAPIView):
             tag = request.query_params.get('tag',None)
             if state is not None and tag is not None:
                 queryset=self.get_queryset().filter(subject__grade__medium__state_id=state,)
-                serializer = OtherContentDetailListSerializer(queryset, many=True, context={'code_name': tag})
+                if tag == "1":
+                    serializer = ContentDetailListSerializer(queryset, many=True, context={'code_name': tag})
+                elif tag == "2": 
+                    serializer = HardSpotDetailListSerializer(queryset, many=True)
+                else:
+                    serializer = OtherContentDetailListSerializer(queryset, many=True, context={'code_name': tag})
             else:
                 queryset = self.get_queryset()
                 serializer = OtherContentDetailListSerializer(queryset, many=True)
@@ -294,7 +301,7 @@ class OtherContentDetailList(ListAPIView):
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@permission_classes((IsAuthenticated,))
+# @permission_classes((IsAuthenticated,))
 class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
     queryset = OtherContent.objects.all()
     serializer_class = OtherContentContributorsSerializer
@@ -304,7 +311,6 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             final_list = []
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
-            # import ipdb;ipdb.set_trace()
             if state_id is not None and tag is not None:
                 queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
             else:
@@ -319,13 +325,14 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                     final_list.append(d)
 
             data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name']).drop_duplicates()
-            exists = os.path.isfile('content_contributers.csv')
+            state_name=State.objects.get(id=state_id).state
+            exists = os.path.isfile(str(state_name)+'_content_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove('content_contributers.csv')
+                os.remove(str(state_name)+'_content_contributers.csv')
             # data_frame.to_excel(path + 'content_contributers.xlsx')
-            data_frame.to_csv(path + 'content_contributers.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List","data": 'media/files/content_contributers.csv'}
+            data_frame.to_csv(path +str(state_name)+ '_content_contributers.csv', encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List","data": 'media/files/{}_content_contributers.csv'.format(str(state_name))}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = { 'success': "false", 'message': 'Failed to get Activity list.'}
@@ -340,7 +347,7 @@ class ApprovedOtherContentDownload(ListAPIView):
     def get(self, request):
         try:
             final_list = []
-            
+            state_id = request.query_params.get('state', None)
             book = request.query_params.get('book', None)
             tag = request.query_params.get('tag',None)
             chapters=Chapter.objects.filter(book_id=book).order_by('id')
@@ -352,32 +359,36 @@ class ApprovedOtherContentDownload(ListAPIView):
           
             repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
             data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+            tag_name=""
             if tag == "10" or tag == "9":
                 # video and pdf
+                tag_name = Tags.objects.get(id=tag).tag_name
                 data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Content Document/Video Link"})
                 # data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
             elif tag == "8":
                 # question answer
+                tag_name = Tags.objects.get(id=tag).tag_name
                 data_frame=(data_frame1.drop(['Content Link/Video Link'], axis=1)).rename(index=str, columns={"Content Name": "Question","text":"Answer"})
 
             elif tag == "7":
                 # description
+                tag_name = Tags.objects.get(id=tag).tag_name
                 data_frame=(data_frame1.drop(['Content Link/Video Link','Content Name'], axis=1)).rename(index=str, columns={"text":"Description"})
 
             elif tag == "11":
                 # only pdf
+                tag_name = Tags.objects.get(id=tag).tag_name
                 data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link/Document Link"})
-                print(data_frame)
             else:
                 data_frame=data_frame1
-
-            exists = os.path.isfile('ApprovedContent.csv')
+            state_name=State.objects.get(id=state_id).state
+            exists = os.path.isfile(str(state_name)+"_"+str(tag_name)+'_ApprovedContent.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove('ApprovedContent.csv')
-            data_frame.to_csv(path + 'ApprovedContent.csv', encoding="utf-8-sig", index=False)
+                os.remove(str(state_name)+"_"+str(tag_name)+'_ApprovedContent.csv')
+            data_frame.to_csv(path + str(state_name) +"_"+str(tag_name)+'_ApprovedContent.csv', encoding="utf-8-sig", index=False)
      
-            context = {"success": True, "message": "Activity List",  "data": 'media/files/ApprovedContent.csv'}
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/{}_{}_ApprovedContent.csv'.format(str(state_name),str(tag_name))}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.'}
