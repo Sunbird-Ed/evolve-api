@@ -32,7 +32,7 @@ import os
 from shutil import copyfile
 import itertools
 from apps.dataupload.models import Chapter
-
+from apps.content.serializers import ApprovedContentSerializer
 # Create your views here.
 class OtherContributorCreateView(ListCreateAPIView):
     queryset = OtherContributors.objects.all()
@@ -351,19 +351,28 @@ class ApprovedOtherContentDownload(ListAPIView):
             book = request.query_params.get('book', None)
             tag = request.query_params.get('tag',None)
             chapters=Chapter.objects.filter(book_id=book).order_by('id')
-
-            serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag})
-            for data in serializer.data:
-                for d in data['chapter']:
-                    final_list.append(d)
-          
-            repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
-            data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+            if tag == "1":
+                serializer = ApprovedContentSerializer(chapters, many=True)
+                for data in serializer.data:
+                    for d in data['chapter']:
+                        final_list.append(d)
+                
+                repeat_list=['Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords']
+                data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+ 
+            else:
+                serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag})
+                for data in serializer.data:
+                    for d in data['chapter']:
+                        final_list.append(d)
+              
+                repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
+                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
             tag_name=""
             if tag == "10" or tag == "9":
                 # video and pdf
                 tag_name = Tags.objects.get(id=tag).tag_name
-                data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Document Link/Video Link"})
+                data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Document Link/Video, Link"})
                 # data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
             elif tag == "8":
                 # question answer
