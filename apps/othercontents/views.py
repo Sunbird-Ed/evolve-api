@@ -32,7 +32,10 @@ import os
 from shutil import copyfile
 import itertools
 from apps.dataupload.models import Chapter
-from apps.content.serializers import ApprovedContentSerializer
+from apps.content.serializers import ApprovedContentSerializer,ContentContributorsSerializer
+from apps.hardspot.serializers import HardspotContributorsSerializer
+from apps.hardspot.models import HardSpot
+from apps.content.models import Content
 # Create your views here.
 class OtherContributorCreateView(ListCreateAPIView):
     queryset = OtherContributors.objects.all()
@@ -311,20 +314,41 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             final_list = []
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
-            if state_id is not None and tag is not None:
-                queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
-            else:
-                queryset = self.get_queryset()
-            serializer = OtherContentContributorsSerializer(queryset, many=True )
-            res_list = [] 
-            for i in range(len(serializer.data)): 
-                if serializer.data[i] not in serializer.data[i + 1:]: 
-                    res_list.append(serializer.data[i])
-            for data in res_list:
-                for d in res_list:
-                    final_list.append(d)
+            if state_id is not None and tag =="1":
+                queryset = Content.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
+                serializer = ContentContributorsSerializer(queryset, many=True)
+                res_list = [] 
+                for i in range(len(serializer.data)): 
+                    if serializer.data[i] not in serializer.data[i + 1:]: 
+                        res_list.append(serializer.data[i])
+                for data in res_list:
+                    for d in res_list:
+                        final_list.append(d)
+                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
+            
 
-            data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name']).drop_duplicates()
+            elif tag =="2":
+                queryset = HardSpot.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
+                serializer = HardspotContributorsSerializer(queryset, many=True)
+                res_list = [] 
+                for i in range(len(serializer.data)): 
+                    if serializer.data[i] not in serializer.data[i + 1:]: 
+                        res_list.append(serializer.data[i])
+                for data in res_list:
+                    for d in res_list:
+                        final_list.append(d)
+                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
+            else:
+                queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
+                serializer = OtherContentContributorsSerializer(queryset, many=True )
+                res_list = [] 
+                for i in range(len(serializer.data)): 
+                    if serializer.data[i] not in serializer.data[i + 1:]: 
+                        res_list.append(serializer.data[i])
+                for data in res_list:
+                    for d in res_list:
+                        final_list.append(d)
+                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name']).drop_duplicates()
             state_name=State.objects.get(id=state_id).state
             exists = os.path.isfile(str(state_name)+'_content_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
