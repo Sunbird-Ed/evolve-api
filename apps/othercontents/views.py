@@ -286,14 +286,14 @@ class OtherContentDetailList(ListAPIView):
             if state is not None and tag is not None:
                 queryset=self.get_queryset().filter(subject__grade__medium__state_id=state,)
                 if tag == "1":
-                    serializer = ContentDetailListSerializer(queryset, many=True, context={'code_name': tag})
+                    serializer = ContentDetailListSerializer(queryset, many=True)
                 elif tag == "2": 
                     serializer = HardSpotDetailListSerializer(queryset, many=True)
                 else:
                     serializer = OtherContentDetailListSerializer(queryset, many=True, context={'code_name': tag})
             else:
                 queryset = self.get_queryset()
-                serializer = OtherContentDetailListSerializer(queryset, many=True)
+                serializer = OtherContentDetailListSerializer   (queryset, many=True)
             context = {"success": True, "message": "List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
