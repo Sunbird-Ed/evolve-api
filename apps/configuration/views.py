@@ -109,11 +109,11 @@ class SubjectList(ListAPIView):
             req = request.query_params.get('req', None)
             if grade is not None:
                 if req is not None and str(req) == 'hardspot':
-                    queryset=self.get_queryset().filter(grade__id=grade,book__hardspot_only=True).order_by('subject')
+                    queryset=self.get_queryset().filter(grade__id=grade,book__hardspot_only=True).order_by('Subject')
                 elif req is not None and str(req) == 'content':
-                    queryset=self.get_queryset().filter(grade__id=grade, book__content_only=True).order_by('subject')
+                    queryset=self.get_queryset().filter(grade__id=grade, book__content_only=True).order_by('Subject')
             else:
-                queryset = self.get_queryset().order_by('subject')
+                queryset = self.get_queryset().order_by('Subject')
             serializer = SubjectListSerializer(set(queryset), many=True)
             context = {"success": True, "message": "Subject List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
