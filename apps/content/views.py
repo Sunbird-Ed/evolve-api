@@ -355,21 +355,23 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
             import os
             from shutil import copyfile
             book_id = request.query_params.get('book', None)
+            book_name=""
             if book_id is not None:
-                chapters=Chapter.objects.filter(book__id=book_id)
+                book_name=Book.objects.get(id=book_id)
+                chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
             serializer = ContentStatusSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_contents', 'rejected_contents', 'pending_contents', 'hard_spots'])
-            exists = os.path.isfile('contentstatus.csv')
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'total', 'approved_contents', 'rejected_contents', 'pending_contents', 'hard_spots'])
+            exists = os.path.isfile('{}_contentstatus.csv'.format(book_name))
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove('contentstatus.csv')
+                os.remove('{}_contentstatus.csv'.format(book_name))
             # data_frame.to_excel(path + 'contentstatus.xlsx')
-            data_frame.to_csv(path + 'contentstatus.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List","data": 'media/files/contentstatus.csv'}
+            data_frame.to_csv(path + str(book_name)+'_contentstatus.csv', encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List","data": 'media/files/{}_contentstatus.csv'.format(book_name)}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.'}
