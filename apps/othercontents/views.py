@@ -314,6 +314,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             final_list = []
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
+            tag_name=""
             if state_id is not None and tag =="1":
                 queryset = Content.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
                 serializer = ContentContributorsSerializer(queryset, many=True)
@@ -325,6 +326,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                     for d in res_list:
                         final_list.append(d)
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
+                tag_name="hardspot"
             elif tag =="2":
                 queryset = HardSpot.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
                 serializer = HardspotContributorsSerializer(queryset, many=True)
@@ -336,7 +338,10 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                     for d in res_list:
                         final_list.append(d)
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
+                tag_name="content"
             else:
+                if tag is not None:
+                    tag_name=str(Tags.objects.get(id=tag).tag_name)+"_content"
                 queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
                 serializer = OtherContentContributorsSerializer(queryset, many=True )
                 res_list = [] 
@@ -348,13 +353,13 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                         final_list.append(d)
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name']).drop_duplicates()
             state_name=State.objects.get(id=state_id).state
-            exists = os.path.isfile(str(state_name)+'_content_contributers.csv')
+            exists = os.path.isfile(str(state_name)+'_{}_contributers.csv'.format(tag_name))
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove(str(state_name)+'_content_contributers.csv')
+                os.remove(str(state_name)+'_{}_contributers.csv'.format(tag_name))
             # data_frame.to_excel(path + 'content_contributers.xlsx')
-            data_frame.to_csv(path +str(state_name)+ '_content_contributers.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List","data": 'media/files/{}_content_contributers.csv'.format(str(state_name))}
+            data_frame.to_csv(path +str(state_name)+ '_{}_contributers.csv'.format(tag_name), encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name)}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = { 'success': "false", 'message': 'Failed to get Activity list.'}
