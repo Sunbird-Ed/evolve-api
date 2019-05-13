@@ -18,7 +18,7 @@ from .serializers  import (
     SubjectListSerializer,
     BookListSerializer,
     )
-
+import re
 
 @permission_classes((IsAuthenticated,))
 class DetailList(ListAPIView):
@@ -92,8 +92,8 @@ class GradeList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = GradeListSerializer((set(queryset)) , many=True)
-            # sorted_data=(sorted(serializer.data, key = lambda i: int(i['grade'].split(" ")[1])))
-            context = {"success": True, "message": "Grade List","data": serializer.data}
+            sorted_data=(sorted(serializer.data, key = lambda i: int(i['grade'].strip().split(" ")[1])))
+            context = {"success": True, "message": "Grade List","data": sorted_data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get grade Details.'}
@@ -115,7 +115,9 @@ class SubjectList(ListAPIView):
             else:
                 queryset = self.get_queryset().order_by('Subject')
             serializer = SubjectListSerializer(set((queryset).order_by('Subject')), many=True)
-            context = {"success": True, "message": "Subject List", "data": serializer.data}
+            # import ipdb;ipdb.set_trace()
+            sorted_data=(sorted(serializer.data, key = lambda i: re.sub('[^A-Za-z]+', '', str(i['grade']).strip())))
+            context = {"success": True, "message": "Subject List", "data": sorted_data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get subject Details.'}

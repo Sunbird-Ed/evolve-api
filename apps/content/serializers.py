@@ -855,11 +855,11 @@ class ContentStatusSerializer(serializers.ModelSerializer):
                         if sub_sub_sections.exists():
                             for sub_sub_section_data in sub_sub_sections:
                                 tempList.append(sub_sub_section_data.sub_sub_section)
-                                total = Content.objects.filter(sub_sub_section__id=sub_section_data.id).count()
-                                approved = Content.objects.filter(sub_sub_section__id=sub_section_data.id, approved=True).count()
-                                rejected = Content.objects.filter(sub_sub_section__id=sub_section_data.id, approved=False).exclude(approved_by=None).count()
-                                pending = Content.objects.filter(sub_sub_section__id=sub_section_data.id, approved=False, approved_by=None).count()
-                                hard_spot = HardSpot.objects.filter(sub_sub_section__id=sub_section_data.id).count()
+                                total = Content.objects.filter(sub_sub_section__id=sub_sub_section_data.id).count()
+                                approved = Content.objects.filter(sub_sub_section__id=sub_sub_section_data.id, approved=True).count()
+                                rejected = Content.objects.filter(sub_sub_section__id=sub_sub_section_data.id, approved=False).exclude(approved_by=None).count()
+                                pending = Content.objects.filter(sub_sub_section__id=sub_sub_section_data.id, approved=False, approved_by=None).count()
+                                hard_spot = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section_data.id).count()
                                 tempList.append(total)
                                 tempList.append(approved)
                                 tempList.append(rejected)

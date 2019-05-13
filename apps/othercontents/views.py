@@ -394,7 +394,7 @@ class ApprovedOtherContentDownload(ListAPIView):
             if tag == "10" or tag == "9":
                 # video and pdf
                 tag_name = Tags.objects.get(id=tag).tag_name
-                data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Document Link/Video, Link"})
+                data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Content Link"})
                 # data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
             elif tag == "8":
                 # question answer
@@ -409,7 +409,7 @@ class ApprovedOtherContentDownload(ListAPIView):
             elif tag == "11":
                 # only pdf
                 tag_name = Tags.objects.get(id=tag).tag_name
-                data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link/Document Link"})
+                data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link"})
             else:
                 data_frame=data_frame1
             state_name=State.objects.get(id=state_id).state
