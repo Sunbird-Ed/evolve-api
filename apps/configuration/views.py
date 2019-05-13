@@ -97,7 +97,7 @@ class GradeList(ListAPIView):
             context = {"success": True, "message": "Grade List","data": sorted_data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'success': "false", 'message': 'Failed to get grade Details.'}
+            context = {'success': "false", 'message': 'Failed to get grade Details.',"error":error}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
