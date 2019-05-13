@@ -364,7 +364,7 @@ class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
                 for d in data['chapter']:
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_Hardspot', 'rejected_hardspot', 'pending_hardspot'])
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'total', 'approved_Hardspot', 'rejected_hardspot', 'pending_hardspot'])
             exists = os.path.isfile('hardspotstatus.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
