@@ -71,7 +71,8 @@ class MediumList(ListAPIView):
             else:
                 queryset = self.get_queryset().order_by('medium')
             serializer = MediumListSerializer(set(queryset), many=True)
-            context = {"success": True, "message": "Medium List","data": serializer.data}
+            sorted_data=(sorted(serializer.data, key = lambda i: re.sub('[^A-Za-z]+', '', str(i['medium']).strip())))
+            context = {"success": True, "message": "Medium List","data": sorted_data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get medium Details.'}
@@ -116,7 +117,7 @@ class SubjectList(ListAPIView):
                 queryset = self.get_queryset().order_by('Subject')
             serializer = SubjectListSerializer(set((queryset).order_by('Subject')), many=True)
             # import ipdb;ipdb.set_trace()
-            sorted_data=(sorted(serializer.data, key = lambda i: re.sub('[^A-Za-z]+', '', str(i['grade']).strip())))
+            sorted_data=(sorted(serializer.data, key = lambda i: re.sub('[^A-Za-z]+', '', str(i['Subject']).strip())))
             context = {"success": True, "message": "Subject List", "data": sorted_data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
