@@ -380,7 +380,7 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
             from shutil import copyfile
             book_id = request.query_params.get('book', None)
             if book_id is not None:
-                chapters=Chapter.objects.filter(book__id=book_id)
+                chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
             serializer = ContentStatusSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
