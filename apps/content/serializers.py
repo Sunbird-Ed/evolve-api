@@ -792,6 +792,8 @@ class ContentStatusSerializer(serializers.ModelSerializer):
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         section = " "
         sub_section = " "
+        sub_sub_section = " "
+        tempList.append(sub_sub_section)
         tempList.append(section)
         tempList.append(sub_section)
         total = Content.objects.filter(chapter__id=chapters.id).count()
@@ -813,6 +815,8 @@ class ContentStatusSerializer(serializers.ModelSerializer):
                 tempList.append( section_data.section )
                 sub_section = " "
                 tempList.append(sub_section)
+                sub_sub_section = " "
+                tempList.append(sub_sub_section)
                 total = Content.objects.filter(section__id=section_data.id).count()
                 approved = Content.objects.filter(section__id=section_data.id, approved=True).count()
                 rejected = Content.objects.filter(section__id=section_data.id, approved=False).exclude(approved_by=None).count()
@@ -832,6 +836,8 @@ class ContentStatusSerializer(serializers.ModelSerializer):
                 if sub_section.exists():
                     for sub_section_data in sub_section:
                         tempList.append( sub_section_data.sub_section )
+                        sub_sub_section = " "
+                        tempList.append(sub_sub_section)
                         total = Content.objects.filter(sub_section__id=sub_section_data.id).count()
                         approved = Content.objects.filter(sub_section__id=sub_section_data.id, approved=True).count()
                         rejected = Content.objects.filter(sub_section__id=sub_section_data.id, approved=False).exclude(approved_by=None).count()
@@ -843,10 +849,28 @@ class ContentStatusSerializer(serializers.ModelSerializer):
                         tempList.append(pending)
                         tempList.append(hard_spot)
                         data_str_list.append( tempList )
-                        # print("3:>>"+str(len(tempList)))
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+                        # print("3:>>"+str(len(tempList)))                       
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
+                        if sub_sub_sections.exists():
+                            for sub_sub_section_data in sub_sub_sections:
+                                tempList.append(sub_sub_section_data.sub_sub_section)
+                                total = Content.objects.filter(sub_sub_section__id=sub_section_data.id).count()
+                                approved = Content.objects.filter(sub_sub_section__id=sub_section_data.id, approved=True).count()
+                                rejected = Content.objects.filter(sub_sub_section__id=sub_section_data.id, approved=False).exclude(approved_by=None).count()
+                                pending = Content.objects.filter(sub_sub_section__id=sub_section_data.id, approved=False, approved_by=None).count()
+                                hard_spot = HardSpot.objects.filter(sub_sub_section__id=sub_section_data.id).count()
+                                tempList.append(total)
+                                tempList.append(approved)
+                                tempList.append(rejected)
+                                tempList.append(pending)
+                                tempList.append(hard_spot)
+                                data_str_list.append( tempList )
 
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
+    
         return data_str_list
     
 # class ContentStatusSerializer(serializers.ModelSerializer):

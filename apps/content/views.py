@@ -386,7 +386,7 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
                 for d in data['chapter']:
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_contents', 'rejected_contents', 'pending_contents', 'hard_spots'])
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'total', 'approved_contents', 'rejected_contents', 'pending_contents', 'hard_spots'])
             exists = os.path.isfile('contentstatus.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
