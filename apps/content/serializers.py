@@ -787,7 +787,7 @@ class ContentStatusSerializer(serializers.ModelSerializer):
     def get_chapter(self, req):
         data_str_list = []
         # import ipdb;ipdb.set_trace()
-        chapters=Chapter.objects.filter(id=req.id).first().order_by('id')
+        chapters=Chapter.objects.filter(id=req.id).first()
         # chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         section = " "
