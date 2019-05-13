@@ -381,7 +381,7 @@ class ContentStatusDownloadView(RetrieveUpdateAPIView):
             book_id = request.query_params.get('book', None)
             book_name=""
             if book_id is not None:
-                book_name=Book.objects.filter(id=book_id)
+                book_name=Book.objects.get(id=book_id)
                 chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
             serializer = ContentStatusSerializer(chapters, many=True)
             for data in serializer.data:
