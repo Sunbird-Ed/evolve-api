@@ -29,6 +29,7 @@ from django.db.models import Q
 import pandas as pd
 from evolve import settings
 import os
+import re
 from shutil import copyfile
 import itertools
 from apps.dataupload.models import Chapter
