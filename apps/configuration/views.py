@@ -93,7 +93,7 @@ class GradeList(ListAPIView):
             else:
                 queryset = self.get_queryset()
             serializer = GradeListSerializer((set(queryset)) , many=True)
-            sorted_data=(sorted(serializer.data, key = lambda i: int(i['grade'].strip().split(" ")[1])))
+            sorted_data=(sorted(serializer.data, key = lambda i: (i['grade'].strip().split(" ")[1])))
             context = {"success": True, "message": "Grade List","data": sorted_data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
