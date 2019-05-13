@@ -114,7 +114,7 @@ class SubjectList(ListAPIView):
                     queryset=self.get_queryset().filter(grade__id=grade, book__content_only=True).order_by('subject')
             else:
                 queryset = self.get_queryset().order_by('subject')
-            serializer = SubjectListSerializer(set(queryset), many=True).
+            serializer = SubjectListSerializer(set(queryset), many=True)
             context = {"success": True, "message": "Subject List", "data": serializer.data}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
