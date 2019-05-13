@@ -404,7 +404,7 @@ class ApprovedOtherContentDownload(ListAPIView):
             elif tag == "7":
                 # description
                 tag_name = Tags.objects.get(id=tag).tag_name
-                data_frame=(data_frame1.drop(['Content Link/Video Link','Content Name'], axis=1)).rename(index=str, columns={"text":"Description"})
+                data_frame=(data_frame1.drop(['Content Link/Video Link','Content Name'], axis=1)).rename(index=str, columns={"text":"Learning Outcome Definition"})
 
             elif tag == "11":
                 # only pdf
