@@ -358,13 +358,13 @@ class HardSpotStatusDownloadView(RetrieveUpdateAPIView):
             from shutil import copyfile
             book_id = request.query_params.get('book', None)
             if book_id is not None:
-                chapters=Chapter.objects.filter(book__id=book_id)
+                chapters=Chapter.objects.filter(book__id=book_id).order_by("id")
             serializer = HardspotStatusSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
                     final_list.append(d)
 
-            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit', 'total', 'approved_Hardspot', 'rejected_hardspot', 'pending_hardspot'])
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'total', 'approved_Hardspot', 'rejected_hardspot', 'pending_hardspot'])
             exists = os.path.isfile('hardspotstatus.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
