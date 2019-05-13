@@ -126,7 +126,9 @@ class SchoolNameList(ListAPIView):
             try:
                 queryset = self.get_queryset().order_by('school_name')
                 serializer = SchoolNameSerializer(queryset, many=True)
-                context = {"success": True, "message": "Schools List","data": serializer.data}
+                sorted_data=(sorted(serializer.data, key = lambda i: re.sub('[^A-Za-z]+', '', str(i['school_name']).strip())))
+
+                context = {"success": True, "message": "Schools List","data": sorted_data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
                 context = {'success': "false", 'message': 'Failed to get Schools list.'}
