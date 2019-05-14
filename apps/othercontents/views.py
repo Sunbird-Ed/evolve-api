@@ -318,8 +318,8 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
             tag_name=""
-            if state_id is not None and tag =="1":
-                queryset = Content.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
+            if state_id is not None and tag == "1":
+                queryset = Content.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
                 serializer = ContentContributorsSerializer(queryset, many=True)
                 res_list = [] 
                 for i in range(len(serializer.data)): 
