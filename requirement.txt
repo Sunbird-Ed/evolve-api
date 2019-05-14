@@ -10,3 +10,4 @@ pandas==0.24.1
 xlrd==1.2.0
 Pillow==5.4.1
 psycopg2-binary==2.7.7
+

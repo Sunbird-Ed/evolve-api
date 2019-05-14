@@ -65,21 +65,21 @@ class OtherContent(models.Model):
     section=models.ForeignKey(Section,on_delete=models.CASCADE,null=True,blank=True)
     sub_section=models.ForeignKey(SubSection,on_delete=models.CASCADE,null=True,blank=True)
     sub_sub_section=models.ForeignKey(SubSubSection,on_delete=models.CASCADE,null=True,blank=True)
-    content_name = models.TextField(blank=True,null=True)
+    content_name = models.TextField()
     file_url = models.URLField(max_length=1000, blank=True,null=True)
     # file_url = models.URLField(max_length=1000, blank=True,null=True)
-    text = models.TextField()
+    text = models.TextField(blank=True,null=True)
     approved = models.BooleanField(default=False)
     approved_by = models.ForeignKey(User,
         on_delete=models.CASCADE,
         related_name='%(class)s_approved_by',
         null=True,
         blank=True)
-    rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
-        blank=True,null=True)
-    rated_by = models.ForeignKey(User,
-        on_delete=models.CASCADE,
-        related_name='%(class)s_rated_by',null=True,blank=True)
+    # rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)],
+    #     blank=True,null=True)
+    # rated_by = models.ForeignKey(User,
+    #     on_delete=models.CASCADE,
+    #     related_name='%(class)s_rated_by',null=True,blank=True)
     comment = models.CharField(max_length=200, null=True, blank=True)
     chapter_keywords=models.ManyToManyField(ChapterKeyword,blank=True)
     section_keywords=models.ManyToManyField(SectionKeyword,blank=True)

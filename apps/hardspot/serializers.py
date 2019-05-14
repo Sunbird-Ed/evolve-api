@@ -489,56 +489,94 @@ class HardspotStatusSerializer(serializers.ModelSerializer):
 
     def get_chapter(self, req):
         data_str_list = []
-        chapters=Chapter.objects.filter(chapter=req.chapter).first()
-        sections=Section.objects.filter(chapter=req)
+
+        # import ipdb;ipdb.set_trace()
+        chapters=Chapter.objects.filter(id=req.id).first()
+        # chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        section = " "
+        sub_section = " "
+        sub_sub_section = " "
+        tempList.append(sub_sub_section)
+        tempList.append(section)
+        tempList.append(sub_section)
+        total = HardSpot.objects.filter(chapter__id=chapters.id).count()
+        approved = HardSpot.objects.filter(chapter__id=chapters.id, approved=True).count()
+        rejected = HardSpot.objects.filter(chapter__id=chapters.id, approved=False).exclude(approved_by=None).count()
+        pending = HardSpot.objects.filter(chapter__id=chapters.id, approved=False, approved_by=None).count()
+        # hard_spot = HardSpot.objects.filter(chapter__id=chapters.id).count()
+        tempList.append(total)
+        tempList.append(approved)
+        tempList.append(rejected)
+        tempList.append(pending)
+        # tempList.append(hard_spot)
+        data_str_list.append( tempList)
+        # print("1:>>"+str(len(tempList)))
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
             for section_data in sections:
-                sub_section=SubSection.objects.filter(section__id=section_data.id)
                 tempList.append( section_data.section )
+                sub_section = " "
+                tempList.append(sub_section)
+                sub_sub_section = " "
+                tempList.append(sub_sub_section)
+                total = HardSpot.objects.filter(section__id=section_data.id).count()
+                approved = HardSpot.objects.filter(section__id=section_data.id, approved=True).count()
+                rejected = HardSpot.objects.filter(section__id=section_data.id, approved=False).exclude(approved_by=None).count()
+                pending = HardSpot.objects.filter(section__id=section_data.id, approved=False, approved_by=None).count()
+                # hard_spot = HardSpot.objects.filter(section__id=section_data.id).count()
+                tempList.append(total)
+                tempList.append(approved)
+                tempList.append(rejected)
+                tempList.append(pending)
+                # tempList.append(hard_spot)
+                data_str_list.append( tempList )
+                # print("2:>>"+str(len(tempList)))
+
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+
+                sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
                 if sub_section.exists():
                     for sub_section_data in sub_section:
                         tempList.append( sub_section_data.sub_section )
-                        total = HardSpot.objects.filter(sub_section__id=sub_section_data.id).count()
-                        approved = HardSpot.objects.filter(sub_section__id=sub_section_data.id, approval=True).count()
-                        rejected = HardSpot.objects.filter(sub_section__id=sub_section_data.id, approval=False).exclude(approved_by=None).count()
-                        pending = HardSpot.objects.filter(sub_section__id=sub_section_data.id, approval=False, approved_by=None).count()
+                        sub_sub_section = " "
+                        tempList.append(sub_sub_section)
+                        total = Content.objects.filter(sub_section__id=sub_section_data.id).count()
+                        approved = Content.objects.filter(sub_section__id=sub_section_data.id, approved=True).count()
+                        rejected = Content.objects.filter(sub_section__id=sub_section_data.id, approved=False).exclude(approved_by=None).count()
+                        pending = Content.objects.filter(sub_section__id=sub_section_data.id, approved=False, approved_by=None).count()
+                        hard_spot = HardSpot.objects.filter(sub_section__id=sub_section_data.id).count()
+
                         tempList.append(total)
                         tempList.append(approved)
                         tempList.append(rejected)
                         tempList.append(pending)
-                        data_str_list.append( tempList )
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
-                else:
-                    sub_section = " "
-                    tempList.append(sub_section)
-                    total = HardSpot.objects.filter(section__id=section_data.id).count()
-                    approved = HardSpot.objects.filter(section__id=section_data.id, approval=True).count()
-                    rejected = HardSpot.objects.filter(section__id=section_data.id, approval=False).exclude(approved_by=None).count()
-                    pending = HardSpot.objects.filter(section__id=section_data.id, approval=False, approved_by=None).count()
-                    tempList.append(total)
-                    tempList.append(approved)
-                    tempList.append(rejected)
-                    tempList.append(pending)
-                    data_str_list.append( tempList )
-                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-        else:
-            section = " "
-            sub_section = " "
-            
-            tempList.append(section)
-            tempList.append(sub_section)
-            total = HardSpot.objects.filter(chapter__id=chapters.id).count()
-            approved = HardSpot.objects.filter(chapter__id=chapters.id, approval=True).count()
-            rejected = HardSpot.objects.filter(chapter__id=chapters.id, approval=False).exclude(approved_by=None).count()
-            pending = HardSpot.objects.filter(chapter__id=chapters.id, approval=False, approved_by=None).count()
-            tempList.append(total)
-            tempList.append(approved)
-            tempList.append(rejected)
-            tempList.append(pending)
-            data_str_list.append( tempList )
 
+                        # tempList.append(hard_spot)
+                        data_str_list.append( tempList )
+                        # print("3:>>"+str(len(tempList)))                       
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
+                        if sub_sub_sections.exists():
+                            for sub_sub_section_data in sub_sub_sections:
+                                tempList.append(sub_sub_section_data.sub_sub_section)
+                                total = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section_data.id).count()
+                                approved = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section_data.id, approved=True).count()
+                                rejected = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section_data.id, approved=False).exclude(approved_by=None).count()
+                                pending = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section_data.id, approved=False, approved_by=None).count()
+                                # hard_spot = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section_data.id).count()
+                                tempList.append(total)
+                                tempList.append(approved)
+                                tempList.append(rejected)
+                                tempList.append(pending)
+                                # tempList.append(hard_spot)
+                                data_str_list.append( tempList )
+
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
+    
         return data_str_list
 
 class HardspotContributorsSerializer(serializers.ModelSerializer):

@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'apps.configuration',
     'apps.hardspot',
     'apps.content',
-    'apps.othercontents',
     'apps.dataupload',
+    'apps.othercontents',
     'rest_framework',
     'user',
 ]
