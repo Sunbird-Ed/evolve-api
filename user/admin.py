@@ -9,6 +9,8 @@ from .models import Roles, UserDetails
 
 class UserDetailInline(admin.StackedInline):
     model = UserDetails
+
+
     #readonly_fields = ('data', 'user') #Bonus question later
 
 
@@ -19,7 +21,20 @@ class UserAdmin(BaseUserAdmin):
     inlines = [
         UserDetailInline,
     ]
-    list_display = ['id', 'username', 'email', 'is_staff']
+    list_display = ['id', 'username','state','role','email', 'is_staff']
+
+    def state(req,self):
+        try:
+            return self.userdetails.state.state 
+        except:
+            return None
+    def role(req,self):
+        try:
+            return self.userdetails.role.rolename 
+        except:
+            return None
+
+
 # admin.site.register(UserDetails, UserAdmin)
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
