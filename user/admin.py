@@ -7,6 +7,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import Roles, UserDetails
 
+from django.contrib.auth.models import Group
+
+
+class GroupsAdmin(admin.ModelAdmin):
+    list_display = ["name", "pk"]
+    class Meta:
+        model = Group
+
+
 class UserDetailInline(admin.StackedInline):
     model = UserDetails
 
@@ -40,3 +49,6 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Roles)
 admin.site.register(UserDetails)
+admin.site.unregister(Group)
+
+admin.site.register(Group, GroupsAdmin)
