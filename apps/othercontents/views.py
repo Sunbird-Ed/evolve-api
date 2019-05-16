@@ -376,6 +376,7 @@ class ApprovedOtherContentDownload(ListAPIView):
 
     def get(self, request):
         try:
+
             final_list = []
             state_id = request.query_params.get('state', None)
             book = request.query_params.get('book', None)
@@ -389,15 +390,18 @@ class ApprovedOtherContentDownload(ListAPIView):
                 
                 repeat_list=['Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords']
                 data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
- 
+                # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link/Video Link','text'])
+
             else:
                 serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag})
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
-              
-                repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
-                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+                
+                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format'])
+
+                # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
+                # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
             tag_name=""
             if tag == "10" or tag == "9":
                 # video and pdf
@@ -432,3 +436,4 @@ class ApprovedOtherContentDownload(ListAPIView):
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
