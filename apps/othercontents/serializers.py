@@ -748,9 +748,9 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                 if sec_content.exists():
                     for section_content_data in sec_content:
                         keyword=self.getkeywords(section_keyword)
-                        tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,chapter_content_data.content_name,chapter_content_data.file_url,chapter_content_data.text]
+                        tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,section_content_data.file_url,section_content_data.text]
                         keyword=""
-                        lastname=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
+                        lastname=OtherContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                         if lastname is None  :
                             lastname=""
                         tempList.append(str(OtherContributors.objects.get(id=section_content_data.content_contributors_id).first_name) + " "+ str(lastname)  )
@@ -787,9 +787,9 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                         if sub_sec_content.exists():
                             for sub_section_content_data in sub_sec_content:
                                 keyword = self.getkeywords(sub_section_keyword)
-                                tempList = tempList + [sub_sections,sub_sub_section,keyword,chapter_content_data.content_name,chapter_content_data.file_url,chapter_content_data.text]
+                                tempList = tempList + [sub_sections,sub_sub_section,keyword,sub_section_content_data.content_name,sub_section_content_data.file_url,sub_section_content_data.text]
                                 keyword = ""
-                                lastname=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
+                                lastname=OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                 if lastname is None  :
                                     lastname=""
                                 tempList.append(str(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).first_name) + " "+ lastname  )
@@ -827,7 +827,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
 
                                     for sub_sub_sec_content_data in sub_sub_sec_content:
                                         keyword = self.getkeywords(sub_sub_section_keyword)
-                                        tempList = tempList + [sub_sub_sections_1,keyword,chapter_content_data.content_name,chapter_content_data.file_url,chapter_content_data.text]
+                                        tempList = tempList + [sub_sub_sections_1,keyword,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.file_url,sub_sub_sec_content_data.text]
                                         keyword = ""
                                         lastname=OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                         if lastname is None  :
