@@ -700,6 +700,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
         section,sub_section,sub_sub_section,content_name,file_url,text,keyword = "","","","","","",""
         chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id).order_by("id")
         if chapter_content.exists():
+            
             for chapter_content_data in chapter_content:
                 # import ipdb;ipdb.set_trace()
                 # if  chapter_content_data.chapter_keywords.all().count() != 0:
