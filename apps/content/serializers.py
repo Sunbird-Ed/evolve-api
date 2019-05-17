@@ -614,166 +614,218 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
        
         fields = ['chapter']
 
-    
+    def getkeywords(self, keywords):
+        keyword = ""
+        for keys in keywords:
+            keyword =  keyword + keys.keyword + ", "
+        return keyword    
 
     def get_chapter(self, req):
         data_str_list = []
+        # import ipdb;ipdb.set_trace()
         chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=True)
-        section = ""
-        sub_section = ""
-        sub_sub_section=""
-        tempList.append(section)
-        tempList.append(sub_section)
-        tempList.append(sub_sub_section)
-        keyword = ""
+        section, sub_section, sub_sub_section, content_name,file_url, keyword, keyword_list = "","","","","","",""
         chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id)
-        for keys in chapter_keyword:
-            keyword =  keyword + keys.keyword + ", "
-        tempList.append(keyword)
-        
         if chapter_content.exists():
-            serializer = ContentDownloadSerializer(chapter_content, many=True)
-            no_of_hardspot = len(serializer.data)
-            if no_of_hardspot == 5:
-                for data in serializer.data:
-                    for key, value in data.items():
-                        tempList.append(value)
-            elif no_of_hardspot < 5:
-                for data in serializer.data[:no_of_hardspot]:
-                    for key, value in data.items():
-                        tempList.append(value)
-                for i in range(0,(5*(5-no_of_hardspot))):
-                    tempList.append("")
-            else:
-                for data in serializer.data[:5]:
-                    for key, value in data.items():
-                        tempList.append(value)
-            data_str_list.append( tempList )
+            for chapter_content_data in chapter_content:
+                if  chapter_content_data.chapter_keywords.all().count() != 0:
+                    linked_keyword = ChapterKeyword.objects.filter(id__in=chapter_content_data.chapter_keywords.all())
+                    keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                    
+                else:
+                    keyword_list = ""
+                keyword=self.getkeywords(chapter_keyword)
+                tempList = tempList + [section,sub_section,sub_sub_section,keyword,chapter_content_data.content_name,chapter_content_data.video]
+                keyword = ""
+                tempList.append(chapter_content_data.rating)
+
+                lastname=ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
+                if lastname is None  :
+                    lastname=""
+                tempList.append(str(ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).first_name) + " "+ lastname  )
+                school_name=ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name
+                if school_name is None:
+                    school_name = ""
+                # tempList.append(school_name) 
+                fileurl = chapter_content_data.video
+                # if fileurl is not None and fileurl !="" :
+                #     path,ext = os.path.splitext(fileurl)
+                #     tempList.append(ext.replace(".",""))
+                # else:
+                #     tempList.append("")
+                tempList.append(keyword_list)
+                data_str_list.append( tempList)
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         else:
-            for x in range(0,25):
+            keyword=self.getkeywords(chapter_keyword)
+            tempList = tempList + [section,sub_section,sub_sub_section,keyword]
+            keyword = ""
+            for _ in range(5):
                 tempList.append("")
             data_str_list.append( tempList )
+            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+
+
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+
         sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
             for section_data in sections:
-                tempList.append(section_data.section)
+                sections_1 = (section_data.section)
                 sec_content = Content.objects.filter(section__id=section_data.id,approved=True)
-                sub_section = ""
-                sub_sub_section = ""
-                tempList.append(sub_section)
-                tempList.append(sub_sub_section)
-                keyword = ""
+                sub_section,sub_sub_section,content_name,file_url,keyword,keyword_list = "","","","","",""
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id)
-                for keys in section_keyword:
-                    keyword = keyword + keys.keyword + ", "
-                tempList.append(keyword)
+              
 
                 if sec_content.exists():
-                    serializer = ContentDownloadSerializer(sec_content, many=True)
+                    for section_content_data in sec_content:
+                        keyword=self.getkeywords(section_keyword)
+                        if  section_content_data.section_keywords.all().count() != 0:
+                            linked_keyword = SectionKeyword.objects.filter(id__in=section_content_data.section_keywords.all())
+                            keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                            
+                        else:
+                            keyword_list = ""
+                        tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,section_content_data.video]
+                        keyword=""
+                        tempList.append(section_content_data.rating)
+                        lastname=ContentContributors.objects.get(id=section_content_data.content_contributors_id).last_name
+                        if lastname is None  :
+                            lastname=""
+                        tempList.append(str(ContentContributors.objects.get(id=section_content_data.content_contributors_id).first_name) + " "+ str(lastname)  )
+                        school_name = ContentContributors.objects.get(id=section_content_data.content_contributors_id).school_name
+                        if school_name is None or school_name == "":
+                            school_name = ""
 
-                    no_of_hardspot = len(serializer.data)
-                    if no_of_hardspot == 5:
-                        for data in serializer.data:
-                            for key, value in data.items():
-                                tempList.append(value)
-                    elif no_of_hardspot < 5:
-                        for data in serializer.data[:no_of_hardspot]:
-                            for key, value in data.items():
-                                tempList.append(value)
-                        for i in range(0,(5*(5-no_of_hardspot))):
-                            tempList.append("")
-                    else:
-                        for data in serializer.data[:5]:
-                            for key, value in data.items():
-                                tempList.append(value)
-                    data_str_list.append( tempList )
-                    
+                        # tempList.append(school_name)
+                        fileurl = section_content_data.video
+                        # if fileurl is not None and fileurl !="" :
+                        #     path,ext = os.path.splitext(fileurl)
+                        #     tempList.append(ext.replace(".",""))
+                        # else:
+                        #     tempList.append("")
+                        tempList.append(keyword_list)
+                        data_str_list.append( tempList )
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
                 else:
-                    for x in range(0,25):
+                    keyword = self.getkeywords(section_keyword)
+                    tempList = tempList + [sections_1,sub_section ,sub_sub_section,keyword]
+                    keyword=""
+                    for _ in range(5):
                         tempList.append("")
+      
                     data_str_list.append( tempList )
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
-                
+                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]
+
                 sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
                 if sub_section.exists():
                     for sub_section_data in sub_section:
-                        tempList.append( sub_section_data.sub_section )
-                        sub_sub_section = ""
-                        keyword = ""
-                        tempList.append(sub_sub_section)
+                        sub_sections=sub_section_data.sub_section 
+                        sub_sub_section,content_name,file_url,keyword,keyword_list = "","","","",""
 
                         sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id)
-                        for keys in sub_section_keyword:
-                            keyword = keyword + keys.keyword + ", "
-                        tempList.append(keyword)
-
+                      
                         sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
                         if sub_sec_content.exists():
-                            serializer =   ContentDownloadSerializer(sub_sec_content, many=True)
-                            no_of_hardspot = len(serializer.data)
-                            if no_of_hardspot == 5:
-                                for data in serializer.data:
-                                    for key, value in data.items():
-                                        tempList.append(value)
-                            elif no_of_hardspot < 5:
-                                for data in serializer.data[:no_of_hardspot]:
-                                    for key, value in data.items():
-                                        tempList.append(value)
-                                for i in range(0,(5*(5-no_of_hardspot))):
-                                    tempList.append("")
-                            else:
-                                for data in serializer.data[:5]:
-                                    for key, value in data.items():
-                                        tempList.append(value)
-                            data_str_list.append( tempList )
+                            for sub_section_content_data in sub_sec_content:
+                                keyword = self.getkeywords(sub_section_keyword)
+                                if  sub_section_content_data.sub_section_keywords.all().count() != 0:
+                                    linked_keyword = SubSectionKeyword.objects.filter(id__in=sub_section_content_data.sub_section_keywords.all())
+                                    keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                                    
+                                else:
+                                    keyword_list = ""
+                                
+                                tempList = tempList + [sub_sections,sub_sub_section,keyword,sub_section_content_data.content_name,sub_section_content_data.video]
+                                keyword = ""
+                                tempList.append(sub_section_content_data.rating)
+                                lastname=ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
+                                if lastname is None  :
+                                    lastname=""
+                                tempList.append(str(ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).first_name) + " "+ lastname  )
+                                school_name  = ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name
+                                if school_name is None or school_name == "":
+                                    school_name = ""
+                                # tempList.append(school_name)
+                                fileurl = sub_section_content_data.video
+                                # if fileurl is not None and fileurl !="" :
+                                #     path,ext = os.path.splitext(fileurl)
+                                #     tempList.append(ext.replace(".",""))
+                                # else:
+                                #     tempList.append("")
+                                tempList.append(keyword_list)
+                                data_str_list.append( tempList )
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                         else:
-                            for x  in range(0,25):
+                            keyword = self.getkeywords(sub_section_keyword)
+                            tempList = tempList + [sub_sections,sub_sub_section,keyword]
+                            keyword = ""
+                            for _ in range(5):
                                 tempList.append("")
+                
                             data_str_list.append( tempList )
+                            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
-                        
                         sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
                         if sub_sub_sections.exists():
                             for sub_sub_section in sub_sub_sections:
-                                tempList.append( sub_sub_section.sub_sub_section )
+                                sub_sub_sections_1=( sub_sub_section.sub_sub_section )
                                 keyword = ""
                                 sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id)
-                                for keys in sub_sub_section_keyword:
-                                    keyword = keyword + keys.keyword + ", "
-                                tempList.append(keyword)
+                                # for keys in sub_sub_section_keyword:
+                                #     keyword = keyword + keys.keyword + ", "
+                                # tempList.append(keyword)
 
                                 sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
                                 if sub_sub_sec_content.exists():
-                                    serializer = ContentDownloadSerializer(sub_sub_sec_content, many=True)
-                                    no_of_hardspot = len(serializer.data)
-                                    if no_of_hardspot == 5:
-                                        for data in serializer.data:
-                                            for key, value in data.items():
-                                                tempList.append(value)
-                                    elif no_of_hardspot < 5:
-                                        for data in serializer.data[:no_of_hardspot]:
-                                            for key, value in data.items():
-                                                tempList.append(value)
-                                        for i in range(0,(5*(5-no_of_hardspot))):
-                                            tempList.append("")
-                                    else:
-                                        for data in serializer.data[:5]:
-                                            for key, value in data.items():
-                                                tempList.append(value)
-                                    data_str_list.append( tempList )
+                                   for sub_sub_sec_content_data in sub_sub_sec_content:
+                                        keyword = self.getkeywords(sub_sub_section_keyword)
+                                        if  sub_sub_sec_content_data.sub_sub_section_keywords.all().count() != 0:
+                                            linked_keyword = SubSubSectionKeyword.objects.filter(id__in=sub_sub_sec_content_data.sub_sub_section_keywords.all())
+                                            keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                                            
+                                        else:
+                                            keyword_list = ""
+                                        tempList = tempList + [sub_sub_sections_1,keyword,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.video]
+                                        keyword = ""
+                                        tempList.append(sub_sub_sec_content_data.rating)
+                                        lastname=ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
+                                        if lastname is None  :
+                                            lastname=""
+                                        tempList.append(str(ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).first_name) + " "+ lastname  )
+                                        school_name = ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).school_name
+                                        if school_name is None or school_name == "":
+                                            school_name = ""
+                                        # tempList.append(school_name)
+                                        fileurl = sub_sub_sec_content_data.video
+                                        # if fileurl is not None and fileurl !="" :
+                                        #     path,ext = os.path.splitext(fileurl)
+                                        #     tempList.append(ext.replace(".",""))
+                                        # else:
+                                        #     tempList.append("")
+                                        tempList.append(keyword_list)                
+                                        data_str_list.append( tempList )
+                                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+
                                 else:
-                                    for x  in range(0,25):
+                                    keyword = self.getkeywords(sub_sub_section_keyword)
+                                    tempList = tempList + [sub_sub_sections_1,keyword]
+                                    keyword = ""
+                                    for _ in range(5):
                                         tempList.append("")
                                     data_str_list.append( tempList )
+                                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
 
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
         for i in data_str_list:
-            print(i)
+            # print(i)
             print(len(i))
         return data_str_list
 
