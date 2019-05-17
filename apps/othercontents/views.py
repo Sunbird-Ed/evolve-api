@@ -405,22 +405,22 @@ class ApprovedOtherContentDownload(ListAPIView):
             tag_name=""
             if tag == "10" or tag == "9":
                 # video and pdf
-                # tag_name = Tags.objects.get(id=tag).tag_name
+                tag_name = Tags.objects.get(id=tag).tag_name
                 data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Content Link"})
                 # data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
             elif tag == "8":
                 # question answer
-                # tag_name = Tags.objects.get(id=tag).tag_name
+                tag_name = Tags.objects.get(id=tag).tag_name
                 data_frame=(data_frame1.drop(['Content Link/Video Link'], axis=1)).rename(index=str, columns={"Content Name": "Question","text":"Answer"})
 
             elif tag == "7":
                 # description
-                # tag_name = Tags.objects.get(id=tag).tag_name
+                tag_name = Tags.objects.get(id=tag).tag_name
                 data_frame=(data_frame1.drop(['Content Link/Video Link','Content Name'], axis=1)).rename(index=str, columns={"text":"Learning Outcome Definition"})
 
             elif tag == "11":
                 # only pdf
-                # tag_name = Tags.objects.get(id=tag).tag_name
+                tag_name = Tags.objects.get(id=tag).tag_name
                 data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link"})
             else:
                 data_frame=data_frame1
