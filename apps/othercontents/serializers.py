@@ -723,13 +723,15 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                     lastname=""
                 tempList.append(str(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).first_name) + " "+ lastname  )
                 tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name.school_name) 
-                if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                     fileurl = chapter_content_data.file_url
                     if fileurl is not None and fileurl !="" :
                         path,ext = os.path.splitext(fileurl)
                         tempList.append(ext.replace(".",""))
                     else:
                         tempList.append("Text")
+                else:
+                    tempList.append("Text")
                 tempList.append(keyword_list)
                 data_str_list.append( tempList)
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
@@ -770,13 +772,15 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                             lastname=""
                         tempList.append(str(OtherContributors.objects.get(id=section_content_data.content_contributors_id).first_name) + " "+ str(lastname)  )
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name)
-                        if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                        if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                             fileurl = section_content_data.file_url
                             if fileurl is not None and fileurl !="" :
                                 path,ext = os.path.splitext(fileurl)
                                 tempList.append(ext.replace(".",""))
                             else:
                                 tempList.append("Text")
+                        else:
+                            tempList.append("Text")
                         tempList.append(keyword_list)
                         data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
@@ -820,13 +824,15 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                     lastname=""
                                 tempList.append(str(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).first_name) + " "+ lastname  )
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name)
-                                if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                                if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                                     fileurl = sub_section_content_data.file_url
                                     if fileurl is not None and fileurl !="" :
                                         path,ext = os.path.splitext(fileurl)
                                         tempList.append(ext.replace(".",""))
                                     else:
                                         tempList.append("Text")
+                                else:
+                                    tempList.append("Text")
                                 tempList.append(keyword_list)
                                 data_str_list.append( tempList )
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
@@ -872,13 +878,15 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                             lastname=""
                                         tempList.append(str(OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).first_name) + " "+ lastname  )
                                         tempList.append(OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).school_name.school_name)
-                                        if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                                        if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                                             fileurl = sub_sub_sec_content_data.file_url
                                             if fileurl is not None and fileurl !="" :
                                                 path,ext = os.path.splitext(fileurl)
                                                 tempList.append(ext.replace(".",""))
                                             else:
                                                 tempList.append("Text")
+                                        else:
+                                            tempList.append("Text")
                                         tempList.append(keyword_list)                
                                         data_str_list.append( tempList )
                                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]

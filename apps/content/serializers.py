@@ -639,7 +639,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                 keyword=self.getkeywords(chapter_keyword)
                 tempList = tempList + [section,sub_section,sub_sub_section,keyword,chapter_content_data.content_name,chapter_content_data.video]
                 keyword = ""
-                tempList.append(chapter_content_data.rating)
+                # tempList.append(chapter_content_data.rating)
 
                 lastname=ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
                 if lastname is None  :
@@ -662,7 +662,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
             keyword=self.getkeywords(chapter_keyword)
             tempList = tempList + [section,sub_section,sub_sub_section,keyword]
             keyword = ""
-            for _ in range(5):
+            for _ in range(4):
                 tempList.append("")
             data_str_list.append( tempList )
             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
@@ -690,7 +690,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                             keyword_list = ""
                         tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,section_content_data.video]
                         keyword=""
-                        tempList.append(section_content_data.rating)
+                        # tempList.append(section_content_data.rating)
                         lastname=ContentContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                         if lastname is None  :
                             lastname=""
@@ -713,7 +713,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                     keyword = self.getkeywords(section_keyword)
                     tempList = tempList + [sections_1,sub_section ,sub_sub_section,keyword]
                     keyword=""
-                    for _ in range(5):
+                    for _ in range(4):
                         tempList.append("")
       
                     data_str_list.append( tempList )
@@ -742,7 +742,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 
                                 tempList = tempList + [sub_sections,sub_sub_section,keyword,sub_section_content_data.content_name,sub_section_content_data.video]
                                 keyword = ""
-                                tempList.append(sub_section_content_data.rating)
+                                # tempList.append(sub_section_content_data.rating)
                                 lastname=ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                 if lastname is None  :
                                     lastname=""
@@ -764,7 +764,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                             keyword = self.getkeywords(sub_section_keyword)
                             tempList = tempList + [sub_sections,sub_sub_section,keyword]
                             keyword = ""
-                            for _ in range(5):
+                            for _ in range(4):
                                 tempList.append("")
                 
                             data_str_list.append( tempList )
@@ -793,7 +793,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                             keyword_list = ""
                                         tempList = tempList + [sub_sub_sections_1,keyword,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.video]
                                         keyword = ""
-                                        tempList.append(sub_sub_sec_content_data.rating)
+                                        # tempList.append(sub_sub_sec_content_data.rating)
                                         lastname=ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                         if lastname is None  :
                                             lastname=""
@@ -816,7 +816,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                     keyword = self.getkeywords(sub_sub_section_keyword)
                                     tempList = tempList + [sub_sub_sections_1,keyword]
                                     keyword = ""
-                                    for _ in range(5):
+                                    for _ in range(4):
                                         tempList.append("")
                                     data_str_list.append( tempList )
                                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
