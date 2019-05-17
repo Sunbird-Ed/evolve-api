@@ -723,7 +723,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                     lastname=""
                 tempList.append(str(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).first_name) + " "+ lastname  )
                 tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name.school_name) 
-                if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                     fileurl = chapter_content_data.file_url
                     if fileurl is not None and fileurl !="" :
                         path,ext = os.path.splitext(fileurl)
@@ -763,11 +763,6 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                             
                         else:
                             keyword_list = ""
-                        
-                        # if (section_content_data.text != ""  or section_content_data.text !=  None ) and (section_content_data.file_url == None or section_content_data.file_url == ""):
-                        #     text= ""
-                        # else: 
-                        #     text = "Text"
                         tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,section_content_data.file_url,section_content_data.text]
                         keyword=""
                         lastname=OtherContributors.objects.get(id=section_content_data.content_contributors_id).last_name
@@ -775,7 +770,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                             lastname=""
                         tempList.append(str(OtherContributors.objects.get(id=section_content_data.content_contributors_id).first_name) + " "+ str(lastname)  )
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name)
-                        if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                        if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                             fileurl = section_content_data.file_url
                             if fileurl is not None and fileurl !="" :
                                 path,ext = os.path.splitext(fileurl)
@@ -825,7 +820,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                     lastname=""
                                 tempList.append(str(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).first_name) + " "+ lastname  )
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name)
-                                if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                                if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                                     fileurl = sub_section_content_data.file_url
                                     if fileurl is not None and fileurl !="" :
                                         path,ext = os.path.splitext(fileurl)
@@ -877,7 +872,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                             lastname=""
                                         tempList.append(str(OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).first_name) + " "+ lastname  )
                                         tempList.append(OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).school_name.school_name)
-                                        if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                                        if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                                             fileurl = sub_sub_sec_content_data.file_url
                                             if fileurl is not None and fileurl !="" :
                                                 path,ext = os.path.splitext(fileurl)
