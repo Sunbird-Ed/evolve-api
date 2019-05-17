@@ -693,29 +693,33 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
 
 
     def get_chapter(self, req):
+        # import ipdb;ipdb.set_trace()
         data_str_list = []
         chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
-        section,sub_section,sub_sub_section,content_name,file_url,text,keyword = "","","","","","",""
+        section, sub_section, sub_sub_section, content_name,file_url, text, keyword, keyword_list = "","","","","","","",""
         chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id).order_by("id")
         if chapter_content.exists():
-            
+
             for chapter_content_data in chapter_content:
                 # import ipdb;ipdb.set_trace()
-                # if  chapter_content_data.chapter_keywords.all().count() != 0:
-                #     linked_keyword = ChapterKeyword.objects.filter(id__in=chapter_content_data.chapter_keywords.all())
-                #     keyword_list=','.join([str(x.keyword) for x in linked_keyword.all()])
-                #     print(keyword_list)
+                if  chapter_content_data.chapter_keywords.all().count() != 0:
+                    linked_keyword = ChapterKeyword.objects.filter(id__in=chapter_content_data.chapter_keywords.all())
+                    keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                    
+                else:
+                    keyword_list = ""
+
                 keyword=self.getkeywords(chapter_keyword)
-                tempList = tempList + [section,sub_section,sub_sub_section,keyword,chapter_content_data.content_name,chapter_content_data.file_url,chapter_content_data.text]
+                tempList = tempList + [section,sub_section,sub_sub_section,keyword,keyword_list,chapter_content_data.content_name,chapter_content_data.file_url,chapter_content_data.text]
                 keyword = ""
                 lastname=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
                 if lastname is None  :
                     lastname=""
                 tempList.append(str(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).first_name) + " "+ lastname  )
                 tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name.school_name) 
-                if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                     fileurl = chapter_content_data.file_url
                     if fileurl is not None and fileurl !="" :
                         path,ext = os.path.splitext(fileurl)
@@ -726,7 +730,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         else:
             keyword=self.getkeywords(chapter_keyword)
-            tempList = tempList + [section,sub_section,sub_sub_section,keyword]
+            tempList = tempList + [section,sub_section,sub_sub_section,keyword,"keyword_list"]
             keyword = ""
             for _ in range(6):
                 tempList.append("")
@@ -743,19 +747,25 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
             for section_data in sections:
                 sections_1=section_data.section
                 sec_content = OtherContent.objects.filter(section__id=section_data.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
-                sub_section,sub_sub_section,content_name,file_url,text,keyword = "","","","","",""
+                sub_section,sub_sub_section,content_name,file_url,text,keyword,keyword_list = "","","","","","",""
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id).order_by("id")
                 if sec_content.exists():
                     for section_content_data in sec_content:
                         keyword=self.getkeywords(section_keyword)
-                        tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,section_content_data.file_url,section_content_data.text]
+                        if  section_content_data.section_keywords.all().count() != 0:
+                            linked_keyword = SectionKeyword.objects.filter(id__in=section_content_data.section_keywords.all())
+                            keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                            
+                        else:
+                            keyword_list = ""
+                        tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,keyword_list,section_content_data.content_name,section_content_data.file_url,section_content_data.text]
                         keyword=""
                         lastname=OtherContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                         if lastname is None  :
                             lastname=""
                         tempList.append(str(OtherContributors.objects.get(id=section_content_data.content_contributors_id).first_name) + " "+ str(lastname)  )
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name)
-                        if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                        if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                             fileurl = section_content_data.file_url
                             if fileurl is not None and fileurl !="" :
                                 path,ext = os.path.splitext(fileurl)
@@ -766,7 +776,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
                 else:
                     keyword = self.getkeywords(section_keyword)
-                    tempList = tempList + [sections_1,sub_section ,sub_sub_section,keyword]
+                    tempList = tempList + [sections_1,sub_section ,sub_sub_section,keyword,"keyword_list"]
                     keyword=""
                     for _ in range(6):
                         tempList.append("")
@@ -780,21 +790,27 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                 if sub_section.exists():
                     for sub_section_data in sub_section:
                         sub_sections=sub_section_data.sub_section 
-                        sub_sub_section,content_name,file_url,text,keyword = "","","","",""
+                        sub_sub_section,content_name,file_url,text,keyword,keyword_list = "","","","","",""
                         
                         sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id).order_by("id")
                         sub_sec_content = OtherContent.objects.filter(sub_section__id=sub_section_data.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
                         if sub_sec_content.exists():
                             for sub_section_content_data in sub_sec_content:
                                 keyword = self.getkeywords(sub_section_keyword)
-                                tempList = tempList + [sub_sections,sub_sub_section,keyword,sub_section_content_data.content_name,sub_section_content_data.file_url,sub_section_content_data.text]
+                                if  sub_section_content_data.sub_section_keywords.all().count() != 0:
+                                    linked_keyword = SubSectionKeyword.objects.filter(id__in=sub_section_content_data.sub_section_keywords.all())
+                                    keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                                    
+                                else:
+                                    keyword_list = ""
+                                tempList = tempList + [sub_sections,sub_sub_section,keyword,keyword_list,sub_section_content_data.content_name,sub_section_content_data.file_url,sub_section_content_data.text]
                                 keyword = ""
                                 lastname=OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                 if lastname is None  :
                                     lastname=""
                                 tempList.append(str(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).first_name) + " "+ lastname  )
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name)
-                                if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                                if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                                     fileurl = sub_section_content_data.file_url
                                     if fileurl is not None and fileurl !="" :
                                         path,ext = os.path.splitext(fileurl)
@@ -805,7 +821,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                         else:
                             keyword = self.getkeywords(sub_section_keyword)
-                            tempList = tempList + [sub_sections,sub_sub_section,keyword]
+                            tempList = tempList + [sub_sections,sub_sub_section,keyword,"keyword_list"]
                             keyword = ""
                             for _ in range(6):
                                 tempList.append("")
@@ -819,7 +835,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                         if sub_sub_sections.exists():
                             for sub_sub_section in sub_sub_sections:
                                 sub_sub_sections_1 = sub_sub_section.sub_sub_section 
-                                content_name,file_url,text,keyword = "","","",""
+                                content_name,file_url,text,keyword,keyword_list = "","","","",""
                                 sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id).order_by("id")
 
                                 sub_sub_sec_content = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
@@ -827,14 +843,21 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
 
                                     for sub_sub_sec_content_data in sub_sub_sec_content:
                                         keyword = self.getkeywords(sub_sub_section_keyword)
-                                        tempList = tempList + [sub_sub_sections_1,keyword,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.file_url,sub_sub_sec_content_data.text]
+                                        keyword = self.getkeywords(sub_section_keyword)
+                                        if  sub_sub_sec_content_data.sub_sub_section_keywords.all().count() != 0:
+                                            linked_keyword = SubSubSectionKeyword.objects.filter(id__in=sub_sub_sec_content_data.sub_sub_section_keywords.all())
+                                            keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                                            
+                                        else:
+                                            keyword_list = ""
+                                        tempList = tempList + [sub_sub_sections_1,keyword,keyword_list,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.file_url,sub_sub_sec_content_data.text]
                                         keyword = ""
                                         lastname=OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                         if lastname is None  :
                                             lastname=""
                                         tempList.append(str(OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).first_name) + " "+ lastname  )
                                         tempList.append(OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).school_name.school_name)
-                                        if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                                        if self.context['tag_id'] == "2" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                                             fileurl = sub_sub_sec_content_data.file_url
                                             if fileurl is not None and fileurl !="" :
                                                 path,ext = os.path.splitext(fileurl)
@@ -846,7 +869,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
 
                                 else:
                                     keyword = self.getkeywords(sub_sub_section_keyword)
-                                    tempList = tempList + [sub_sub_sections_1,keyword]
+                                    tempList = tempList + [sub_sub_sections_1,keyword,"keyword_list"]
                                     keyword = ""
                                     for _ in range(6):
                                         tempList.append("")
