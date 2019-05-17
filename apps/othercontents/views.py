@@ -398,7 +398,7 @@ class ApprovedOtherContentDownload(ListAPIView):
                     for d in data['chapter']:
                         final_list.append(d)
                 
-                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','linked_keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format'])
+                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format',"linked_keywords"])
 
                 # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
                 # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
