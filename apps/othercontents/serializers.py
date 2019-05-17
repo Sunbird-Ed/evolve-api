@@ -854,7 +854,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
 
                                     for sub_sub_sec_content_data in sub_sub_sec_content:
                                         keyword = self.getkeywords(sub_sub_section_keyword)
-                                        keyword = self.getkeywords(sub_section_keyword)
+                                        # keyword = self.getkeywords(sub_section_keyword)
                                         if  sub_sub_sec_content_data.sub_sub_section_keywords.all().count() != 0:
                                             linked_keyword = SubSubSectionKeyword.objects.filter(id__in=sub_sub_sec_content_data.sub_sub_section_keywords.all())
                                             keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
