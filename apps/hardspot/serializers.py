@@ -301,92 +301,93 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
        
         fields = ['chapter']
 
-    
+    def getkeywords(self,chapter_keywords):
+        keyword=""
+        for keys in chapter_keywords:
+            keyword =  keyword + keys.keyword + ", "
+        return keyword
+
 
     def get_chapter(self, req):
-        # import ipdb; ipdb.set_trace()
+       
         data_str_list = []
         chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-        chapter_hardspot = HardSpot.objects.filter(chapter__id=chapters.id,approved=True)
-        section = ""
-        sub_section = ""
-        sub_sub_section= ""
-        tempList.append(section)
-        tempList.append(sub_section)
-        tempList.append(sub_sub_section)
-        keyword = ""
+        chapter_hardspots = HardSpot.objects.filter(chapter__id=chapters.id,approved=True)
+        section, sub_section, sub_sub_section = "","",""
         chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id)
-        for keys in chapter_keyword:
-            keyword =  keyword + keys.keyword + ", "
-        tempList.append(keyword)
-        
-        if chapter_hardspot.exists():
-            serializer = HardSpotDownloadSerializer(chapter_hardspot, many=True)
-            no_of_hardspot=len(serializer.data)
-            if no_of_hardspot == 5:
-                for data in serializer.data:
-                    for key, value in data.items():
-                        tempList.append(value)
-            elif no_of_hardspot < 5:
-                for data in serializer.data[:no_of_hardspot]:
-                    for key, value in data.items():
-                        tempList.append(value)
-                for i in range(0,(6*(5-no_of_hardspot))):
-                    tempList.append("")
-            else:
-                for data in serializer.data[:5]:
-                    for key, value in data.items():
-                        tempList.append(value)
-            data_str_list.append( tempList )
-
+        if chapter_hardspots.exists():
+            for chapter_hardspot in chapter_hardspots:
+                tempList.append(section)
+                tempList.append(sub_section)
+                tempList.append(sub_sub_section)
+                tempList.append(self.getkeywords(chapter_keyword))
+                chapter_keyword = ""
+                tempList.append(chapter_hardspot.hard_spot)
+                tempList.append(chapter_hardspot.description)
+                tempList.append(chapter_hardspot.points_to_be_covered)
+                tempList.append(chapter_hardspot.useful_to)
+                tempList.append(chapter_hardspot.rating)
+                tempList.append(chapter_hardspot.comment)
+                data_str_list.append( tempList )
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         else:
-            for x in range(0,30):
-                tempList.append("")
-       
+            tempList.append(section)
+            tempList.append(sub_section)
+            tempList.append(sub_sub_section)
+            tempList.append(self.getkeywords(chapter_keyword))
+            chapter_keyword = ""
+
+            tempList.append("")
+            tempList.append("")
+            tempList.append("")
+            tempList.append("")
+            tempList.append("")
+            tempList.append("")
             data_str_list.append( tempList )
-        
+            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]             
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
+            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
+
             for section_data in sections:
-                tempList.append(section_data.section)
-                sec_hardspot = HardSpot.objects.filter(section__id=section_data.id,approved=True)
+                sec_hardspots = HardSpot.objects.filter(section__id=section_data.id,approved=True)
                 sub_section = ""
                 sub_sub_section=""
-                tempList.append(sub_section)
-                tempList.append(sub_sub_section)
+                section_keyword = SectionKeyword.objects.filter(section__id=section_data.id).order_by("id")
 
-                keyword = ""
-                section_keyword = SectionKeyword.objects.filter(section__id=section_data.id)
-                for keys in section_keyword:
-                    keyword = keyword + keys.keyword + ", "
-                tempList.append(keyword)
-                if sec_hardspot.exists():
-              
-                    
-                    serializer = HardSpotDownloadSerializer(sec_hardspot, many=True)
-                    no_of_hardspot=len(serializer.data)
-                    if no_of_hardspot == 5:
-                        for data in serializer.data:
-                            for key, value in data.items():
-                                tempList.append(value)
-                    elif no_of_hardspot < 5:
-                        for data in serializer.data[:no_of_hardspot]:
-                            for key, value in data.items():
-                                tempList.append(value)
-                        for i in range(0,(6*(5-no_of_hardspot))):
-                            tempList.append("")
-                    else:
-                        for data in serializer.data[:5]:
-                            for key, value in data.items():
-                                tempList.append(value)
-                    data_str_list.append( tempList )
+                if sec_hardspots.exists():
+                    for sec_hardspot in sec_hardspots:
+                        tempList.append(section_data.section)
+                        tempList.append(sub_section)
+                        tempList.append(sub_sub_section)
+                        tempList.append(self.getkeywords(section_keyword))
+                        section_keyword = ""
+                        tempList.append(sec_hardspot.hard_spot)
+                        tempList.append(sec_hardspot.description)
+                        tempList.append(sec_hardspot.points_to_be_covered)
+                        tempList.append(sec_hardspot.useful_to)
+                        tempList.append(sec_hardspot.rating)
+                        tempList.append(sec_hardspot.comment)
+                        data_str_list.append( tempList )
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]  
                     
                 else:
-                    for x in range(0,30):
-                        tempList.append("")
+                    tempList.append(section_data.section)
+                    tempList.append("")
+                    tempList.append("")
+                    tempList.append(self.getkeywords(section_keyword))
+                    section_keyword = ""                    
+                    tempList.append("")
+                    tempList.append("")
+                    tempList.append("")
+                    tempList.append("")
+                    tempList.append("")
+                    tempList.append("")
                     data_str_list.append( tempList )
+                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]  
+
                 
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]  
             # tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]  
@@ -394,81 +395,74 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                 sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')   
                 if sub_section.exists():
                     for sub_section_data in sub_section:
-                        tempList.append( sub_section_data.sub_section )
-                        sub_sub_section=""
-                        tempList.append(sub_sub_section)
-                        keyword = ""
                         sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id)
-                        for keys in sub_section_keyword:
-                            keyword = keyword + keys.keyword + ", "
-                        tempList.append(keyword)
-
-                        sub_sec_hardspot = HardSpot.objects.filter(sub_section__id=sub_section_data.id,approved=True)
-                        if sub_sec_hardspot.exists():
-                           
-                            serializer = HardSpotDownloadSerializer(sub_sec_hardspot, many=True)
-                            no_of_hardspot=len(serializer.data)
-                            if no_of_hardspot == 5:
-                                for data in serializer.data:
-                                    for key, value in data.items():
-                                        tempList.append(value)
-                            elif no_of_hardspot < 5:
-                                for data in serializer.data[:no_of_hardspot]:
-                                    for key, value in data.items():
-                                        tempList.append(value)
-                                for i in range(0,(6*(5-no_of_hardspot))):
-                                    tempList.append("")
-                            else:
-                                for data in serializer.data[:5]:
-                                    for key, value in data.items():
-                                        tempList.append(value)
-                            data_str_list.append( tempList )
-                        else:
-                            for x in range(0,30):
+                        sub_sec_hardspots = HardSpot.objects.filter(sub_section__id=sub_section_data.id,approved=True)
+                        if sub_sec_hardspots.exists():
+                            for sub_sec_hardspot in sub_sec_hardspots:
+                                tempList.append(sub_section_data.sub_section)
                                 tempList.append("")
+                                tempList.append(self.getkeywords(sub_section_keyword))
+                                sub_section_keyword = "" 
+                                tempList.append("")
+                                tempList.append("")
+                                tempList.append("")
+                                tempList.append("")
+                                tempList.append("")
+                                tempList.append("")
+                                data_str_list.append( tempList )
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]  
+                        else:
+                            tempList.append(sub_section_data.section)
+                            tempList.append("")
+                            tempList.append(self.getkeywords(sub_section_keyword))
+                            sub_section_keyword = ""                    
+                            tempList.append("")
+                            tempList.append("")
+                            tempList.append("")
+                            tempList.append("")
+                            tempList.append("")
+                            tempList.append("")
                             data_str_list.append( tempList )
-                    # tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section]
-                    
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section, sub_section_data.sub_section]
-
-                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id) 
+                            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]   
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  
                         
+                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id) 
                         if sub_sub_sections.exists():
 
                             for sub_sub_section in sub_sub_sections:
-                                tempList.append( sub_sub_section.sub_sub_section )
+                                # tempList.append( sub_sub_section.sub_sub_section )
                                 keyword = ""
 
                                 sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id)
-                                
-                                for keys in sub_sub_section_keyword:
-                                    keyword = keyword + keys.keyword + ", "
-                                tempList.append(keyword)
+                
 
-                                sub_sub_sec_hardspot = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True).order_by('id')
-                                if sub_sub_sec_hardspot.exists():
-                                    serializer = HardSpotDownloadSerializer(sub_sub_sec_hardspot, many=True)
-                                    no_of_hardspot=len(serializer.data)
-                                    if no_of_hardspot == 5:
-                                        for data in serializer.data:
-                                            for key, value in data.items():
-                                                tempList.append(value)
-                                    elif no_of_hardspot < 5:
-                                        for data in serializer.data[:no_of_hardspot]:
-                                            for key, value in data.items():
-                                                tempList.append(value)
-                                        for i in range(0,(6*(5-no_of_hardspot))):
-                                            tempList.append("")
-                                    else:
-                                        for data in serializer.data[:5]:
-                                            for key, value in data.items():
-                                                tempList.append(value)
-                                    data_str_list.append( tempList )
+                                sub_sub_sec_hardspots = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True).order_by('id')
+                                if sub_sub_sec_hardspots.exists():
+                                    for sub_sub_sec_hardspot in sub_sub_sec_hardspots:
+                                        tempList.append(sub_sub_section.sub_sub_section)
+                                        tempList.append(self.getkeywords(sub_sub_section_keyword))
+                                        sub_sub_section_keyword = ""
+                                        tempList.append(sub_sub_sec_hardspot.hard_spot)
+                                        tempList.append(sub_sub_sec_hardspot.description)
+                                        tempList.append(sub_sub_sec_hardspot.points_to_be_covered)
+                                        tempList.append(sub_sub_sec_hardspot.useful_to)
+                                        tempList.append(sub_sub_sec_hardspot.rating)
+                                        tempList.append(sub_sub_sec_hardspot.comment)
+                                        data_str_list.append( tempList )  
+                                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  
+                             
                                 else:
-                                    for x in range(0,30):
-                                        tempList.append("")
-                                    data_str_list.append( tempList )
-                                
+                                    tempList.append(sub_sub_section.sub_sub_section)
+                                    tempList.append(self.getkeywords(sub_sub_section_keyword))
+                                    sub_sub_section_keyword = ""
+                                    tempList.append("")
+                                    tempList.append("")
+                                    tempList.append("")
+                                    tempList.append("")
+                                    tempList.append("")
+                                    tempList.append("")
+                                    data_str_list.append( tempList )    
+                                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]

@@ -307,7 +307,7 @@ class OtherContentDetailList(ListAPIView):
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# @permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
     queryset = OtherContent.objects.all()
     serializer_class = OtherContentContributorsSerializer
@@ -376,6 +376,7 @@ class ApprovedOtherContentDownload(ListAPIView):
 
     def get(self, request):
         try:
+
             final_list = []
             state_id = request.query_params.get('state', None)
             book = request.query_params.get('book', None)
@@ -383,21 +384,26 @@ class ApprovedOtherContentDownload(ListAPIView):
             chapters=Chapter.objects.filter(book_id=book).order_by('id')
             if tag == "1":
                 serializer = ApprovedContentSerializer(chapters, many=True)
+
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
                 
-                repeat_list=['Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords']
-                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
- 
+                # repeat_list=['Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords']
+                # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+
+                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','linked_keywords'])
+
             else:
                 serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag})
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
-              
-                repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
-                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+                
+                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format',"linked_keywords"])
+
+                # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
+                # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
             tag_name=""
             if tag == "10" or tag == "9":
                 # video and pdf
@@ -430,5 +436,6 @@ class ApprovedOtherContentDownload(ListAPIView):
             context = {"success": True, "message": "Activity List",  "data": 'media/files/{}_{}_ApprovedContent.csv'.format(str(state_name),str(tag_name))}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.' ,"error" :error}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

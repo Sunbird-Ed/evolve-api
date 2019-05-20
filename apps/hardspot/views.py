@@ -8,7 +8,7 @@ from rest_framework.generics import (
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
-from apps.configuration.models import Book
+from apps.configuration.models import Book,State
 from apps.dataupload.models import Chapter,Section,SubSection
 from .models import HardSpot,HardSpotContributors
 from apps.content.models import Content, ContentContributors
@@ -325,6 +325,9 @@ class ApprovedHardSpotDownloadView(ListAPIView):
             import os
             from shutil import copyfile
             book = request.query_params.get('book', None)
+            state =  request.query_params.get('state',None)
+            state_name = ""
+            state_name = str(State.objects.get(id=state).state) + "_"
             if book is not None:
                 chapters=Chapter.objects.filter(book_id=book).order_by('id')
                 serializer = ApprovedHardSpotSerializer(chapters, many=True)
@@ -332,17 +335,17 @@ class ApprovedHardSpotDownloadView(ListAPIView):
                     for d in data['chapter']:
                         final_list.append(d)
                 
-                data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)'])
-                exists = os.path.isfile('ApprovedHardSpot.csv')
+                data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?','Hardspot Rating (By Reviewer)','Comment (By Reviewer)'])
+                exists = os.path.isfile(str(state_name) + 'ApprovedHardSpot.csv')
                 path = settings.MEDIA_ROOT + '/files/'
                 if exists:
-                    os.remove('ApprovedHardSpot.csv')
-                data_frame.to_csv(path + 'ApprovedHardSpot.csv', encoding="utf-8-sig", index=False)
+                    os.remove(str(state_name) + 'ApprovedHardSpot.csv')
+                data_frame.to_csv(path + str(state_name) +'ApprovedHardSpot.csv', encoding="utf-8-sig", index=False)
         
-            context = {"success": True, "message": "Activity List", "data": 'media/files/ApprovedHardSpot.csv'}
+            context = {"success": True, "message": "Activity List", "data": 'media/files/{}ApprovedHardSpot.csv'.format(str(state_name))}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.',"error":error}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
