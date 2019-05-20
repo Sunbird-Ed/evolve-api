@@ -327,8 +327,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                 tempList.append(chapter_hardspot.description)
                 tempList.append(chapter_hardspot.points_to_be_covered)
                 tempList.append(chapter_hardspot.useful_to)
-                tempList.append(chapter_hardspot.rating)
-                tempList.append(chapter_hardspot.comment)
+                
                 data_str_list.append( tempList )
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         else:
@@ -342,8 +341,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
             tempList.append("")
             tempList.append("")
             tempList.append("")
-            tempList.append("")
-            tempList.append("")
+           
             data_str_list.append( tempList )
             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]             
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
@@ -368,8 +366,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                         tempList.append(sec_hardspot.description)
                         tempList.append(sec_hardspot.points_to_be_covered)
                         tempList.append(sec_hardspot.useful_to)
-                        tempList.append(sec_hardspot.rating)
-                        tempList.append(sec_hardspot.comment)
+                      
                         data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]  
                     
@@ -383,8 +380,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                     tempList.append("")
                     tempList.append("")
                     tempList.append("")
-                    tempList.append("")
-                    tempList.append("")
+                   
                     data_str_list.append( tempList )
                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]  
 
@@ -403,12 +399,11 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 tempList.append("")
                                 tempList.append(self.getkeywords(sub_section_keyword))
                                 sub_section_keyword = "" 
-                                tempList.append("")
-                                tempList.append("")
-                                tempList.append("")
-                                tempList.append("")
-                                tempList.append("")
-                                tempList.append("")
+                                tempList.append(sub_sec_hardspot.hard_spot)
+                                tempList.append(sub_sec_hardspot.description)
+                                tempList.append(sub_sec_hardspot.points_to_be_covered)
+                                tempList.append(sub_sec_hardspot.useful_to)
+                          
                                 data_str_list.append( tempList )
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]  
                         else:
@@ -420,8 +415,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                             tempList.append("")
                             tempList.append("")
                             tempList.append("")
-                            tempList.append("")
-                            tempList.append("")
+                            
                             data_str_list.append( tempList )
                             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]   
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  
@@ -446,8 +440,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                         tempList.append(sub_sub_sec_hardspot.description)
                                         tempList.append(sub_sub_sec_hardspot.points_to_be_covered)
                                         tempList.append(sub_sub_sec_hardspot.useful_to)
-                                        tempList.append(sub_sub_sec_hardspot.rating)
-                                        tempList.append(sub_sub_sec_hardspot.comment)
+                                        
                                         data_str_list.append( tempList )  
                                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  
                              
@@ -459,8 +452,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                     tempList.append("")
                                     tempList.append("")
                                     tempList.append("")
-                                    tempList.append("")
-                                    tempList.append("")
+                               
                                     data_str_list.append( tempList )    
                                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section]
