@@ -325,9 +325,9 @@ class ApprovedHardSpotDownloadView(ListAPIView):
             import os
             from shutil import copyfile
             book = request.query_params.get('book', None)
-            state =  request.query_params.get('state',None)
+            # state =  request.query_params.get('state',None)
             state_name = ""
-            state_name = str(State.objects.get(id=state).state) + "_"
+            # state_name = str(State.objects.get(id=state).state) + "_"
             if book is not None:
                 chapters=Chapter.objects.filter(book_id=book).order_by('id')
                 serializer = ApprovedHardSpotSerializer(chapters, many=True)
