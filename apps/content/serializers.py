@@ -650,11 +650,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                     school_name = ""
                 # tempList.append(school_name) 
                 fileurl = chapter_content_data.video
-                # if fileurl is not None and fileurl !="" :
-                #     path,ext = os.path.splitext(fileurl)
-                #     tempList.append(ext.replace(".",""))
-                # else:
-                #     tempList.append("")
+                if fileurl is not None and fileurl !="" :
+                    path,ext = os.path.splitext(fileurl)
+                    tempList.append(ext.replace(".",""))
+                else:
+                    tempList.append("")
                 tempList.append(keyword_list)
                 data_str_list.append( tempList)
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
@@ -701,11 +701,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
 
                         # tempList.append(school_name)
                         fileurl = section_content_data.video
-                        # if fileurl is not None and fileurl !="" :
-                        #     path,ext = os.path.splitext(fileurl)
-                        #     tempList.append(ext.replace(".",""))
-                        # else:
-                        #     tempList.append("")
+                        if fileurl is not None and fileurl !="" :
+                            path,ext = os.path.splitext(fileurl)
+                            tempList.append(ext.replace(".",""))
+                        else:
+                            tempList.append("")
                         tempList.append(keyword_list)
                         data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
@@ -752,11 +752,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                     school_name = ""
                                 # tempList.append(school_name)
                                 fileurl = sub_section_content_data.video
-                                # if fileurl is not None and fileurl !="" :
-                                #     path,ext = os.path.splitext(fileurl)
-                                #     tempList.append(ext.replace(".",""))
-                                # else:
-                                #     tempList.append("")
+                                if fileurl is not None and fileurl !="" :
+                                    path,ext = os.path.splitext(fileurl)
+                                    tempList.append(ext.replace(".",""))
+                                else:
+                                    tempList.append("")
                                 tempList.append(keyword_list)
                                 data_str_list.append( tempList )
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
@@ -803,11 +803,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                             school_name = ""
                                         # tempList.append(school_name)
                                         fileurl = sub_sub_sec_content_data.video
-                                        # if fileurl is not None and fileurl !="" :
-                                        #     path,ext = os.path.splitext(fileurl)
-                                        #     tempList.append(ext.replace(".",""))
-                                        # else:
-                                        #     tempList.append("")
+                                        if fileurl is not None and fileurl !="" :
+                                            path,ext = os.path.splitext(fileurl)
+                                            tempList.append(ext.replace(".",""))
+                                        else:
+                                            tempList.append("")
                                         tempList.append(keyword_list)                
                                         data_str_list.append( tempList )
                                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
@@ -824,9 +824,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
-        for i in data_str_list:
-            # print(i)
-            print(len(i))
+        
         return data_str_list
 
 
