@@ -400,10 +400,12 @@ class ApprovedOtherContentDownload(ListAPIView):
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
-                
+                file_status= ""
                 if str(status_) == "approved":
+                    file_status = "Approved"
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format',"linked_keywords"])
                 if str(status_) == "rejected":
+                    file_status = "Rejected"
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment',"linked_keywords"])
 
                 # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
@@ -431,13 +433,13 @@ class ApprovedOtherContentDownload(ListAPIView):
             else:
                 data_frame=data_frame1
             state_name=State.objects.get(id=state_id).state
-            exists = os.path.isfile(str(state_name)+"_"+str(tag_name)+'_ApprovedContent.csv')
+            exists = os.path.isfile(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Content.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove(str(state_name)+"_"+str(tag_name)+'_ApprovedContent.csv')
-            data_frame.to_csv(path + str(state_name) +"_"+str(tag_name)+'_ApprovedContent.csv', encoding="utf-8-sig", index=False)
+                os.remove(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Content.csv')
+            data_frame.to_csv(path + str(state_name) +"_"+str(tag_name)+'_'+file_status+'Content.csv', encoding="utf-8-sig", index=False)
      
-            context = {"success": True, "message": "Activity List",  "data": 'media/files/{}_{}_ApprovedContent.csv'.format(str(state_name),str(tag_name))}
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/{}_{}_{}Content.csv'.format(str(state_name),str(tag_name),str(file_status))}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.' ,"error" :error}
