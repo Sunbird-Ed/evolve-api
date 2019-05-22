@@ -381,7 +381,7 @@ class ApprovedOtherContentDownload(ListAPIView):
             state_id = request.query_params.get('state', None)
             book = request.query_params.get('book', None)
             tag = request.query_params.get('tag',None)
-            status = request.query_params.get('status',None)
+            status_ = request.query_params.get('status',None)
             chapters=Chapter.objects.filter(book_id=book).order_by('id')
             if tag == "1":
                 serializer = ApprovedContentSerializer(chapters, many=True)
@@ -396,14 +396,14 @@ class ApprovedOtherContentDownload(ListAPIView):
                 data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','linked_keywords'])
 
             else:
-                serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag, "status" : str(status)})
+                serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
                 
-                if str(status) == "approved":
+                if str(status_) == "approved":
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format',"linked_keywords"])
-                if str(status) == "rejected":
+                if str(status_) == "rejected":
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment',"linked_keywords"])
 
                 # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
