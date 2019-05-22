@@ -381,6 +381,7 @@ class ApprovedOtherContentDownload(ListAPIView):
             state_id = request.query_params.get('state', None)
             book = request.query_params.get('book', None)
             tag = request.query_params.get('tag',None)
+            status = request.query_params.get('status',None)
             chapters=Chapter.objects.filter(book_id=book).order_by('id')
             if tag == "1":
                 serializer = ApprovedContentSerializer(chapters, many=True)
@@ -395,12 +396,15 @@ class ApprovedOtherContentDownload(ListAPIView):
                 data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','linked_keywords'])
 
             else:
-                serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag})
+                serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag, "status" : status})
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
                 
-                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format',"linked_keywords"])
+                if status == "approved":
+                    data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format',"linked_keywords"])
+                if status == "rejected":
+                    data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment',"linked_keywords"])
 
                 # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
                 # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
