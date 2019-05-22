@@ -567,6 +567,7 @@ class OtherContentDetailListSerializer(serializers.ModelSerializer):
     # approved_hardspot=serializers.SerializerMethodField()
     total_content=serializers.SerializerMethodField()
     approved_content=serializers.SerializerMethodField()
+    rejected_content = serializers.SerializerMethodField()
     class Meta:
         model = Book
         fields = '__all__'
@@ -584,6 +585,7 @@ class OtherContentDetailListSerializer(serializers.ModelSerializer):
         
 
     def get_approved_content(self,req):
+        
         tag=self.context['code_name']
         chapter_count=OtherContent.objects.filter(chapter__book__id=req.id,approved=True,tags__id = tag).count()
         section_count=OtherContent.objects.filter(section__chapter__book__id=req.id,approved=True,tags__id = tag).count()
@@ -592,6 +594,7 @@ class OtherContentDetailListSerializer(serializers.ModelSerializer):
         return(chapter_count + section_count + subsection_count + subsubsection_count)
 
     def get_rejected_content(self,req):
+
         tag=self.context['code_name']
         chapter_count=OtherContent.objects.filter(chapter__book__id=req.id,approved=False,tags__id = tag).exclude(approved_by=None).count()
         section_count=OtherContent.objects.filter(section__chapter__book__id=req.id,approved=False,tags__id = tag).exclude(approved_by=None).count()
@@ -955,6 +958,7 @@ class HardSpotDetailListSerializer(serializers.ModelSerializer):
 class ContentDetailListSerializer(serializers.ModelSerializer):
     total_content=serializers.SerializerMethodField()
     approved_content=serializers.SerializerMethodField()
+    rejected_content = serializers.SerializerMethodField()
     class Meta:
         model = Book
         fields = '__all__'
