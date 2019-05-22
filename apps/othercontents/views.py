@@ -396,14 +396,14 @@ class ApprovedOtherContentDownload(ListAPIView):
                 data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','linked_keywords'])
 
             else:
-                serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag, "status" : status})
+                serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag, "status" : str(status)})
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
                 
-                if status == "approved":
+                if str(status) == "approved":
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format',"linked_keywords"])
-                if status == "rejected":
+                if str(status) == "rejected":
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment',"linked_keywords"])
 
                 # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
