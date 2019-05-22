@@ -347,8 +347,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
-            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
-
             for section_data in sections:
                 sec_hardspots = HardSpot.objects.filter(section__id=section_data.id,approved=True)
                 sub_section = ""
@@ -366,7 +364,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                         tempList.append(sec_hardspot.description)
                         tempList.append(sec_hardspot.points_to_be_covered)
                         tempList.append(sec_hardspot.useful_to)
-                      
                         data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]  
                     
@@ -407,7 +404,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 data_str_list.append( tempList )
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]  
                         else:
-                            tempList.append(sub_section_data.section)
+                            tempList.append(sub_section_data.sub_section)
                             tempList.append("")
                             tempList.append(self.getkeywords(sub_section_keyword))
                             sub_section_keyword = ""                    
