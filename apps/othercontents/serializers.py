@@ -591,6 +591,16 @@ class OtherContentDetailListSerializer(serializers.ModelSerializer):
         subsubsection_count=OtherContent.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id,approved=True,tags__id = tag).count()
         return(chapter_count + section_count + subsection_count + subsubsection_count)
 
+    def get_rejected_content(self,req):
+        tag=self.context['code_name']
+        chapter_count=OtherContent.objects.filter(chapter__book__id=req.id,approved=False,tags__id = tag).exclude(approved_by=None).count()
+        section_count=OtherContent.objects.filter(section__chapter__book__id=req.id,approved=False,tags__id = tag).exclude(approved_by=None).count()
+        subsection_count=OtherContent.objects.filter(sub_section__section__chapter__book__id=req.id,approved=False,tags__id = tag).exclude(approved_by=None).count()
+        subsubsection_count=OtherContent.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id,approved=False,tags__id = tag).exclude(approved_by=None).count()
+        
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
+
+
 
 
 class OtherContentContributorsSerializer(serializers.ModelSerializer):
@@ -911,7 +921,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
             # print("sdfsf: >>" +str(_i))
         return data_str_list
 
-
+        
 
 class HardSpotDetailListSerializer(serializers.ModelSerializer):
     total_content=serializers.SerializerMethodField()
@@ -966,5 +976,13 @@ class ContentDetailListSerializer(serializers.ModelSerializer):
         section_count=Content.objects.filter(section__chapter__book__id=req.id,approved=True).count()
         subsection_count=Content.objects.filter(sub_section__section__chapter__book__id=req.id,approved=True).count()
         subsubsection_count=Content.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id,approved=True).count()
+
+        return(chapter_count + section_count + subsection_count + subsubsection_count)
+
+    def get_rejected_content(self,req):
+        chapter_count=Content.objects.filter(chapter__book__id=req.id,approved=False).exclude(approved_by=None).count()
+        section_count=Content.objects.filter(section__chapter__book__id=req.id,approved=False).exclude(approved_by=None).count()
+        subsection_count=Content.objects.filter(sub_section__section__chapter__book__id=req.id,approved=False).exclude(approved_by=None).count()
+        subsubsection_count=Content.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id,approved=False).exclude(approved_by=None).count()
 
         return(chapter_count + section_count + subsection_count + subsubsection_count)
