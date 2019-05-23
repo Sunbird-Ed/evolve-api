@@ -315,7 +315,7 @@ class HardSpotContributorCreateView(ListCreateAPIView):
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# @permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 class ApprovedHardSpotDownloadView(ListAPIView):
     queryset = Book.objects.all()
 
@@ -329,6 +329,7 @@ class ApprovedHardSpotDownloadView(ListAPIView):
             status_ = request.query_params.get('status',None)
             state_name = ""
             state_name = str(State.objects.get(id=state).state) + "_"
+            file_status = ""
             if book is not None and status_ is not None:
                 chapters=Chapter.objects.filter(book_id=book).order_by('id')
                 serializer = ApprovedHardSpotSerializer(chapters, many=True, context={"status":str(status_)})
@@ -336,16 +337,18 @@ class ApprovedHardSpotDownloadView(ListAPIView):
                     for d in data['chapter']:
                         final_list.append(d)
                 if str(status_) == "approved":
+                    file_status = "_Approved"
                     data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?'])
                 elif str(status_) == "rejected":
+                    file_status = "_Rejected"
                     data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?',"Comment"])
-                exists = os.path.isfile(str(state_name) + 'ApprovedHardSpot.csv')
+                exists = os.path.isfile(str(state_name) +file_status+'HardSpot.csv')
                 path = settings.MEDIA_ROOT + '/files/'
                 if exists:
-                    os.remove(str(state_name) + 'ApprovedHardSpot.csv')
-                data_frame.to_csv(path + str(state_name) +'ApprovedHardSpot.csv', encoding="utf-8-sig", index=False)
+                    os.remove(str(state_name) + file_status +'HardSpot.csv')
+                data_frame.to_csv(path + str(state_name) +file_status+'HardSpot.csv', encoding="utf-8-sig", index=False)
         
-            context = {"success": True, "message": "Activity List", "data": 'media/files/{}ApprovedHardSpot.csv'.format(str(state_name))}
+            context = {"success": True, "message": "Activity List", "data": 'media/files/{}{}HardSpot.csv'.format(str(state_name),file_status)}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.',"error":error}
