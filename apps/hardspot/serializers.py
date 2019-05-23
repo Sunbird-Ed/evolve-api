@@ -325,7 +325,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                 tempList.append(sub_section)
                 tempList.append(sub_sub_section)
                 tempList.append(self.getkeywords(chapter_keyword))
-                chapter_keyword = ""
                 tempList.append(chapter_hardspot.hard_spot)
                 tempList.append(chapter_hardspot.description)
                 tempList.append(chapter_hardspot.points_to_be_covered)
@@ -340,7 +339,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
             tempList.append(sub_section)
             tempList.append(sub_sub_section)
             tempList.append(self.getkeywords(chapter_keyword))
-            chapter_keyword = ""
 
             tempList.append("")
             tempList.append("")
@@ -369,7 +367,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                         tempList.append(sub_section)
                         tempList.append(sub_sub_section)
                         tempList.append(self.getkeywords(section_keyword))
-                        section_keyword = ""
                         tempList.append(sec_hardspot.hard_spot)
                         tempList.append(sec_hardspot.description)
                         tempList.append(sec_hardspot.points_to_be_covered)
@@ -384,7 +381,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                     tempList.append("")
                     tempList.append("")
                     tempList.append(self.getkeywords(section_keyword))
-                    section_keyword = ""                    
                     tempList.append("")
                     tempList.append("")
                     tempList.append("")
@@ -411,7 +407,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 tempList.append(sub_section_data.sub_section)
                                 tempList.append("")
                                 tempList.append(self.getkeywords(sub_section_keyword))
-                                sub_section_keyword = "" 
                                 tempList.append(sub_sec_hardspot.hard_spot)
                                 tempList.append(sub_sec_hardspot.description)
                                 tempList.append(sub_sec_hardspot.points_to_be_covered)
@@ -424,7 +419,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                             tempList.append(sub_section_data.sub_section)
                             tempList.append("")
                             tempList.append(self.getkeywords(sub_section_keyword))
-                            sub_section_keyword = ""                    
                             tempList.append("")
                             tempList.append("")
                             tempList.append("")
@@ -466,7 +460,6 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 else:
                                     tempList.append(sub_sub_section.sub_sub_section)
                                     tempList.append(self.getkeywords(sub_sub_section_keyword))
-                                    sub_sub_section_keyword = ""
                                     tempList.append("")
                                     tempList.append("")
                                     tempList.append("")
@@ -480,7 +473,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
-        
+
         return data_str_list
 
 
