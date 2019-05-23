@@ -313,7 +313,10 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
         data_str_list = []
         chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-        chapter_hardspots = HardSpot.objects.filter(chapter__id=chapters.id,approved=True)
+        if self.context['status'] == "approved":
+            chapter_hardspots = HardSpot.objects.filter(chapter__id=chapters.id,approved=True)
+        else:
+            chapter_hardspots = HardSpot.objects.filter(chapter__id=chapters.id,approved=False).exclude(approved_by=None)
         section, sub_section, sub_sub_section = "","",""
         chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id)
         if chapter_hardspots.exists():
@@ -327,6 +330,8 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                 tempList.append(chapter_hardspot.description)
                 tempList.append(chapter_hardspot.points_to_be_covered)
                 tempList.append(chapter_hardspot.useful_to)
+                if self.context['status'] == "rejected":
+                    tempList.append(chapter_hardspot.comment)
                 
                 data_str_list.append( tempList )
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
@@ -341,6 +346,8 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
             tempList.append("")
             tempList.append("")
             tempList.append("")
+            if self.context['status'] == "rejected":
+                tempList.append("")
            
             data_str_list.append( tempList )
             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]             
@@ -348,7 +355,10 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
         sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
             for section_data in sections:
-                sec_hardspots = HardSpot.objects.filter(section__id=section_data.id,approved=True)
+                if self.context['status']=="approved":
+                    sec_hardspots = HardSpot.objects.filter(section__id=section_data.id,approved=True)
+                else:
+                    sec_hardspots = HardSpot.objects.filter(section__id=section_data.id,approved=False).exclude(approved_by=None)
                 sub_section = ""
                 sub_sub_section=""
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id).order_by("id")
@@ -364,6 +374,8 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                         tempList.append(sec_hardspot.description)
                         tempList.append(sec_hardspot.points_to_be_covered)
                         tempList.append(sec_hardspot.useful_to)
+                        if self.context['status'] == "rejected":
+                            tempList.append(sec_hardspot.comment)
                         data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]  
                     
@@ -377,7 +389,8 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                     tempList.append("")
                     tempList.append("")
                     tempList.append("")
-                   
+                    if self.context['status'] == "rejected":
+                        tempList.append("")
                     data_str_list.append( tempList )
                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]  
 
@@ -389,7 +402,10 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                 if sub_section.exists():
                     for sub_section_data in sub_section:
                         sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id)
-                        sub_sec_hardspots = HardSpot.objects.filter(sub_section__id=sub_section_data.id,approved=True)
+                        if self.context['status'] == "approved":
+                            sub_sec_hardspots = HardSpot.objects.filter(sub_section__id=sub_section_data.id,approved=True)
+                        else:
+                            sub_sec_hardspots = HardSpot.objects.filter(sub_section__id=sub_section_data.id,approved=False).exclude(approved_by=None)
                         if sub_sec_hardspots.exists():
                             for sub_sec_hardspot in sub_sec_hardspots:
                                 tempList.append(sub_section_data.sub_section)
@@ -400,7 +416,8 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 tempList.append(sub_sec_hardspot.description)
                                 tempList.append(sub_sec_hardspot.points_to_be_covered)
                                 tempList.append(sub_sec_hardspot.useful_to)
-                          
+                                if self.context['status'] == "rejected":
+                                    tempList.append(sub_sec_hardspot.comment)
                                 data_str_list.append( tempList )
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]  
                         else:
@@ -412,12 +429,13 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                             tempList.append("")
                             tempList.append("")
                             tempList.append("")
-                            
+                            if self.context['status'] == "rejected":
+                                tempList.append("")
                             data_str_list.append( tempList )
                             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]   
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  
                         
-                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id) 
+                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by("id") 
                         if sub_sub_sections.exists():
 
                             for sub_sub_section in sub_sub_sections:
@@ -426,8 +444,11 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
 
                                 sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id)
                 
+                                if self.context['status'] == "approved":
+                                    sub_sub_sec_hardspots = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True).order_by('id')
+                                else:
+                                    sub_sub_sec_hardspots = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=False).exclude(approved_by=None).order_by('id')
 
-                                sub_sub_sec_hardspots = HardSpot.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True).order_by('id')
                                 if sub_sub_sec_hardspots.exists():
                                     for sub_sub_sec_hardspot in sub_sub_sec_hardspots:
                                         tempList.append(sub_sub_section.sub_sub_section)
@@ -437,7 +458,8 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                         tempList.append(sub_sub_sec_hardspot.description)
                                         tempList.append(sub_sub_sec_hardspot.points_to_be_covered)
                                         tempList.append(sub_sub_sec_hardspot.useful_to)
-                                        
+                                        if self.context['status'] == "rejected":
+                                            tempList.append(sub_sub_sec_hardspot.comment)
                                         data_str_list.append( tempList )  
                                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  
                              
@@ -449,6 +471,9 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                     tempList.append("")
                                     tempList.append("")
                                     tempList.append("")
+                                    if self.context['status'] == "rejected":
+                                        tempList.append("")
+
                                
                                     data_str_list.append( tempList )    
                                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section,sub_section_data.sub_section]  

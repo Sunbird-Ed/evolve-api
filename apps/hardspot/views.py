@@ -326,16 +326,19 @@ class ApprovedHardSpotDownloadView(ListAPIView):
             from shutil import copyfile
             book = request.query_params.get('book', None)
             state =  request.query_params.get('state',None)
+            status_ = request.query_params.get('status',None)
             state_name = ""
             state_name = str(State.objects.get(id=state).state) + "_"
-            if book is not None:
+            if book is not None and status_ is not None:
                 chapters=Chapter.objects.filter(book_id=book).order_by('id')
-                serializer = ApprovedHardSpotSerializer(chapters, many=True)
+                serializer = ApprovedHardSpotSerializer(chapters, many=True, context={"status",str(status_)})
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
-                
-                data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?'])
+                if str(status_) == "approved":
+                    data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?'])
+                elif str(status_) == "rejected":
+                    data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','What topic is difficult to understand in this section ?','Why is this a difficult topic?','In the video to be created for this hard spot, what points/aspects do you want to be covered and addressed ?','Who do you think needs additional digital content for this hard spot?',"Comment"])
                 exists = os.path.isfile(str(state_name) + 'ApprovedHardSpot.csv')
                 path = settings.MEDIA_ROOT + '/files/'
                 if exists:
