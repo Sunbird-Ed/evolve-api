@@ -383,24 +383,28 @@ class ApprovedOtherContentDownload(ListAPIView):
             tag = request.query_params.get('tag',None)
             status_ = request.query_params.get('status',None)
             chapters=Chapter.objects.filter(book_id=book).order_by('id')
+            file_status= ""
             if tag == "1":
-                serializer = ApprovedContentSerializer(chapters, many=True)
+                serializer = ApprovedContentSerializer(chapters, many=True,context={"status" : str(status_)})
 
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
                 
-                # repeat_list=['Content Name','Content Link/Video Link','Content Rating (By Reviewer)','Comment (By Reviewer)', 'linked_keywords']
-                # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+                if str(status_) == "approved":
+                    file_status = "Approved"
+                    data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','linked_keywords'])
+                if str(status_) == "rejected":
+                    file_status = "Rejected"
+                    data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','Comment','linked_keywords'])
 
-                data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','linked_keywords'])
 
             else:
                 serializer = ApprovedOtherContentSerializer(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)
-                file_status= ""
+                
                 if str(status_) == "approved":
                     file_status = "Approved"
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format',"linked_keywords"])

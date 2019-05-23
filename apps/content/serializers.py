@@ -622,10 +622,13 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
 
     def get_chapter(self, req):
         data_str_list = []
-        # import ipdb;ipdb.set_trace()
+       
         chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-        chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=True)
+        if self.context['status'] == "approved": 
+            chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=True)
+        else:
+            chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=False).exclude(approved_by=None)
         section, sub_section, sub_sub_section, content_name,file_url, keyword, keyword_list = "","","","","","",""
         chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id)
         if chapter_content.exists():
@@ -639,7 +642,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                 keyword=self.getkeywords(chapter_keyword)
                 tempList = tempList + [section,sub_section,sub_sub_section,keyword,chapter_content_data.content_name,chapter_content_data.video]
                 keyword = ""
-                # tempList.append(chapter_content_data.rating)
 
                 lastname=ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
                 if lastname is None  :
@@ -655,6 +657,8 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                     tempList.append(ext.replace(".",""))
                 else:
                     tempList.append("")
+                if self.context['status']=="rejected":
+                    tempList.append(chapter_content_data.comment)
                 tempList.append(keyword_list)
                 data_str_list.append( tempList)
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
@@ -664,6 +668,8 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
             keyword = ""
             for _ in range(4):
                 tempList.append("")
+            if self.context['status']=="rejected":
+                    tempList.append("")
             data_str_list.append( tempList )
             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
 
@@ -674,6 +680,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
         if sections.exists():
             for section_data in sections:
                 sections_1 = (section_data.section)
+
                 sec_content = Content.objects.filter(section__id=section_data.id,approved=True)
                 sub_section,sub_sub_section,content_name,file_url,keyword,keyword_list = "","","","","",""
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id)
@@ -690,7 +697,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                             keyword_list = ""
                         tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,section_content_data.video]
                         keyword=""
-                        # tempList.append(section_content_data.rating)
                         lastname=ContentContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                         if lastname is None  :
                             lastname=""
@@ -699,14 +705,15 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                         if school_name is None or school_name == "":
                             school_name = ""
 
-                        # tempList.append(school_name)
                         fileurl = section_content_data.video
                         if fileurl is not None and fileurl !="" :
-                            path,ext = os.path.splitext(fileurl)
+                            path,ext = os.path.splitext(file_url)
                             tempList.append(ext.replace(".",""))
                         else:
                             tempList.append("")
                         tempList.append(keyword_list)
+                        if self.context['status']=="rejected":
+                            tempList.append(section_content_data.comment)
                         data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
                 else:
@@ -714,6 +721,8 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                     tempList = tempList + [sections_1,sub_section ,sub_sub_section,keyword]
                     keyword=""
                     for _ in range(4):
+                        tempList.append("")
+                    if self.context['status']=="rejected":
                         tempList.append("")
       
                     data_str_list.append( tempList )
@@ -742,7 +751,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 
                                 tempList = tempList + [sub_sections,sub_sub_section,keyword,sub_section_content_data.content_name,sub_section_content_data.video]
                                 keyword = ""
-                                # tempList.append(sub_section_content_data.rating)
                                 lastname=ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                 if lastname is None  :
                                     lastname=""
@@ -757,7 +765,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                     tempList.append(ext.replace(".",""))
                                 else:
                                     tempList.append("")
+                                if self.context['status']=="rejected":
+                                    tempList.append(sub_section_content_data.comment)
                                 tempList.append(keyword_list)
+                                
                                 data_str_list.append( tempList )
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                         else:
@@ -766,6 +777,9 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                             keyword = ""
                             for _ in range(4):
                                 tempList.append("")
+                            if self.context['status']=="rejected":
+                                tempList.append("")
+
                 
                             data_str_list.append( tempList )
                             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
@@ -777,10 +791,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 sub_sub_sections_1=( sub_sub_section.sub_sub_section )
                                 keyword = ""
                                 sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id)
-                                # for keys in sub_sub_section_keyword:
-                                #     keyword = keyword + keys.keyword + ", "
-                                # tempList.append(keyword)
-
                                 sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
                                 if sub_sub_sec_content.exists():
                                    for sub_sub_sec_content_data in sub_sub_sec_content:
@@ -793,7 +803,6 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                             keyword_list = ""
                                         tempList = tempList + [sub_sub_sections_1,keyword,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.video]
                                         keyword = ""
-                                        # tempList.append(sub_sub_sec_content_data.rating)
                                         lastname=ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                         if lastname is None  :
                                             lastname=""
@@ -801,13 +810,14 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                         school_name = ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).school_name
                                         if school_name is None or school_name == "":
                                             school_name = ""
-                                        # tempList.append(school_name)
                                         fileurl = sub_sub_sec_content_data.video
                                         if fileurl is not None and fileurl !="" :
                                             path,ext = os.path.splitext(fileurl)
                                             tempList.append(ext.replace(".",""))
                                         else:
                                             tempList.append("")
+                                        if self.context['status']=="rejected":
+                                            tempList.append(sub_sub_sec_content_data.comment)
                                         tempList.append(keyword_list)                
                                         data_str_list.append( tempList )
                                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
@@ -818,9 +828,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                     keyword = ""
                                     for _ in range(4):
                                         tempList.append("")
+                                    if self.context['status']=="rejected":
+                                        tempList.append("")
                                     data_str_list.append( tempList )
                                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
-
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
@@ -923,73 +934,7 @@ class ContentStatusSerializer(serializers.ModelSerializer):
     
         return data_str_list
     
-# class ContentStatusSerializer(serializers.ModelSerializer):
-#     chapter=serializers.SerializerMethodField()
-#     class Meta:
-#         model = Chapter
-#         fields = ['chapter']
-    
-#     def get_chapter(self, req):
-#         data_str_list = []
-        
-#         chapters=Chapter.objects.filter(chapter=req.chapter).first()
-#         # chapters=Chapter.objects.filter(id=req.id).first()
-#         # sections=Section.objects.filter(chapter=req)
-#         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-#         if sections.exists():
-#             for section_data in sections:
-#                 sub_section=SubSection.objects.filter(section__id=section_data.id)
-#                 tempList.append( section_data.section )
-#                 if sub_section.exists():
-#                     for sub_section_data in sub_section:
-#                         tempList.append( sub_section_data.sub_section )
-#                         total = Content.objects.filter(sub_section__id=sub_section_data.id).count()
-#                         approved = Content.objects.filter(sub_section__id=sub_section_data.id, approved=True).count()
-#                         rejected = Content.objects.filter(sub_section__id=sub_section_data.id, approved=False).exclude(approved_by=None).count()
-#                         pending = Content.objects.filter(sub_section__id=sub_section_data.id, approved=False, approved_by=None).count()
-#                         hard_spot = HardSpot.objects.filter(sub_section__id=sub_section_data.id).count()
-#                         tempList.append(total)
-#                         tempList.append(approved)
-#                         tempList.append(rejected)
-#                         tempList.append(pending)
-#                         tempList.append(hard_spot)
-#                         data_str_list.append( tempList )
-#                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
-#                 else:
-#                     sub_section = " "
-#                     tempList.append(sub_section)
-#                     total = Content.objects.filter(section__id=section_data.id).count()
-#                     approved = Content.objects.filter(section__id=section_data.id, approved=True).count()
-#                     rejected = Content.objects.filter(section__id=section_data.id, approved=False).exclude(approved_by=None).count()
-#                     pending = Content.objects.filter(section__id=section_data.id, approved=False, approved_by=None).count()
-#                     hard_spot = HardSpot.objects.filter(section__id=section_data.id).count()
-#                     tempList.append(total)
-#                     tempList.append(approved)
-#                     tempList.append(rejected)
-#                     tempList.append(pending)
-#                     tempList.append(hard_spot)
-#                     data_str_list.append( tempList )
-#                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
-#                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
-#         else:
-#             section = " "
-#             sub_section = " "
-#             tempList.append(section)
-#             tempList.append(sub_section)
-#             total = Content.objects.filter(chapter__id=chapters.id).count()
-#             approved = Content.objects.filter(chapter__id=chapters.id, approved=True).count()
-#             rejected = Content.objects.filter(chapter__id=chapters.id, approved=False).exclude(approved_by=None).count()
-#             pending = Content.objects.filter(chapter__id=chapters.id, approved=False, approved_by=None).count()
-#             hard_spot = HardSpot.objects.filter(chapter__id=chapters.id).count()
-#             tempList.append(total)
-#             tempList.append(approved)
-#             tempList.append(rejected)
-#             tempList.append(pending)
-#             tempList.append(hard_spot)
-#             data_str_list.append( tempList )
 
-
-#         return data_str_list
 
 class ContentContributorsSerializer(serializers.ModelSerializer):
     first_name=serializers.SerializerMethodField()
