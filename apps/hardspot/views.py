@@ -315,7 +315,7 @@ class HardSpotContributorCreateView(ListCreateAPIView):
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@permission_classes((IsAuthenticated,))
+# @permission_classes((IsAuthenticated,))
 class ApprovedHardSpotDownloadView(ListAPIView):
     queryset = Book.objects.all()
 
@@ -331,7 +331,7 @@ class ApprovedHardSpotDownloadView(ListAPIView):
             state_name = str(State.objects.get(id=state).state) + "_"
             if book is not None and status_ is not None:
                 chapters=Chapter.objects.filter(book_id=book).order_by('id')
-                serializer = ApprovedHardSpotSerializer(chapters, many=True, context={"status",str(status_)})
+                serializer = ApprovedHardSpotSerializer(chapters, many=True, context={"status":str(status_)})
                 for data in serializer.data:
                     for d in data['chapter']:
                         final_list.append(d)

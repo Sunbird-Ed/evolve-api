@@ -480,10 +480,7 @@ class ApprovedHardSpotSerializer(serializers.ModelSerializer):
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
-        for i in data_str_list:
-            print(i)
-            print(len(i))
-                # import ipdb; ipdb.set_trace()
+        
         return data_str_list
 
 
