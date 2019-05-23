@@ -654,7 +654,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                 fileurl = chapter_content_data.video
                 if fileurl is not None and fileurl !="" :
                     path,ext = os.path.splitext(fileurl)
-                    tempList.append(ext.replace(".",""))
+                    ext = ext.replace(".","").strip()
+                    if str(ext)== "mp4" or str(ext) == "pdf":
+                        tempList.append(ext)
+                    else:
+                        tempList.append("")
                 else:
                     tempList.append("")
                 if self.context['status']=="rejected":
@@ -708,7 +712,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                         fileurl = section_content_data.video
                         if fileurl is not None and fileurl !="" :
                             path,ext = os.path.splitext(file_url)
-                            tempList.append(ext.replace(".",""))
+                            ext = ext.replace(".","").strip()
+                            if str(ext)== "mp4" or str(ext) == "pdf":
+                                tempList.append(ext)
+                            else:
+                                tempList.append("")
                         else:
                             tempList.append("")
                         tempList.append(keyword_list)
@@ -762,7 +770,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 fileurl = sub_section_content_data.video
                                 if fileurl is not None and fileurl !="" :
                                     path,ext = os.path.splitext(fileurl)
-                                    tempList.append(ext.replace(".",""))
+                                    ext = ext.replace(".","").strip()
+                                    if str(ext)== "mp4" or str(ext) == "pdf":
+                                        tempList.append(ext)
+                                    else:
+                                        tempList.append("")
                                 else:
                                     tempList.append("")
                                 if self.context['status']=="rejected":
@@ -813,7 +825,11 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                         fileurl = sub_sub_sec_content_data.video
                                         if fileurl is not None and fileurl !="" :
                                             path,ext = os.path.splitext(fileurl)
-                                            tempList.append(ext.replace(".",""))
+                                            ext = ext.replace(".","").strip()
+                                            if str(ext) == "mp4" or str(ext) == "pdf":
+                                                tempList.append(ext)
+                                            else:
+                                                tempList.append("")
                                         else:
                                             tempList.append("")
                                         if self.context['status']=="rejected":
