@@ -11,7 +11,7 @@ from apps.dataupload.models import (Chapter,
     SubSubSection,)
 from apps.hardspot.models import HardSpot
 from apps.content.models import Content
-from apps.configuration.models import Book
+from apps.configuration.models import Book,Grade,Subject
 from apps.hardspot.models import HardSpot
 from datetime import datetime, timedelta
 import os
@@ -614,6 +614,8 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
     # city_name=serializers.SerializerMethodField()
     school_name=serializers.SerializerMethodField()
     textbook_name=serializers.SerializerMethodField()
+    grade=serializers.SerializerMethodField()
+    subject=serializers.SerializerMethodField()
     class Meta:
         model = OtherContent
         fields = ['first_name',
@@ -621,7 +623,9 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
                 'mobile',
                 'email',
                 'school_name',
-                'textbook_name']
+                'textbook_name',
+                'grade',
+                'subject']
 
     def get_first_name(self, obj):
         first_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().first_name
@@ -658,6 +662,47 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
             book = Book.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.id)
             books=','.join([str(x.book) for x in book.all()])
             return books
+        else:
+            return None
+
+    def get_grade(self, obj):
+
+        if obj.chapter is not None:
+            grade = Grade.objects.filter(id=obj.chapter.book.subject.grade.id )
+            grades = ','.join([str(x.grade) for x in grade.all()])
+            return grades
+        elif obj.section is not None:
+            grade = Grade.objects.filter(id=obj.section.chapter.book.subject.grade.id)
+            grades=','.join([str(x.grade) for x in grade.all()])
+            return grades
+        elif obj.sub_section is not None:
+            grade = Grade.objects.filter(id = obj.sub_section.section.chapter.book.subject.grade.id)
+            grades=','.join([str(x.grade) for x in grade.all()])
+            return grades
+        elif obj.sub_sub_section is not None:
+            grade = Grade.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.subject.grade.id)
+            grades = ','.join([str(x.grade) for x in grade.all()])
+            return grades
+        else:
+            return None
+
+    def get_subject(self, obj):
+        if obj.chapter is not None:
+            subject = Subject.objects.filter(id=obj.chapter.book.subject.id )
+            subjects = ','.join([str(x.Subject) for x in subject.all()])
+            return subjects
+        elif obj.section is not None:
+            subject = Subject.objects.filter(id=obj.section.chapter.book.subject.id)
+            subjects=','.join([str(x.Subject) for x in subject.all()])
+            return subjects
+        elif obj.sub_section is not None:
+            subject = Subject.objects.filter(id = obj.sub_section.section.chapter.book.subject.id)
+            subjects=','.join([str(x.Subject) for x in subject.all()])
+            return subjects
+        elif obj.sub_sub_section is not None:
+            subject = Subject.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.subject.id)
+            subjects = ','.join([str(x.Subject) for x in subject.all()])
+            return subjects
         else:
             return None
 

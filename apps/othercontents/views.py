@@ -328,7 +328,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 for data in res_list:
                     for d in res_list:
                         final_list.append(d)
-                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
+                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name','grade','subject']).drop_duplicates()
                 tag_name="content"
             elif tag =="2":
                 queryset = HardSpot.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
@@ -340,7 +340,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 for data in res_list:
                     for d in res_list:
                         final_list.append(d)
-                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
+                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name','grade','subject']).drop_duplicates()
                 tag_name="hardspot"
             else:
                 if tag is not None:
@@ -354,7 +354,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 for data in res_list:
                     for d in res_list:
                         final_list.append(d)
-                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name']).drop_duplicates()
+                data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name','grade','subject']).drop_duplicates()
             state_name=State.objects.get(id=state_id).state
             exists = os.path.isfile(str(state_name)+'_{}_contributers.csv'.format(tag_name))
             path = settings.MEDIA_ROOT + '/files/'
