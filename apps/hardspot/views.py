@@ -413,10 +413,13 @@ class HardspotContributorsDownloadView(RetrieveUpdateAPIView):
 
 
             data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name']).drop_duplicates()
-            exists = os.path.isfile('hard_spot_contributers.csv')
             path = settings.MEDIA_ROOT + '/files/'
+            exists = os.path.isfile(path + 'hard_spot_contributers.csv')
             if exists:
-                os.remove('hard_spot_contributers.csv')
+                os.remove( path + 'hard_spot_contributers.csv')
+                if os.path.isfile( path + 'hard_spot_contributers.csv'):
+                    print("file exist")
+
             data_frame.to_csv(path + 'hard_spot_contributers.csv', encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List",  "data": 'media/files/hard_spot_contributers.csv'}
             return Response(context, status=status.HTTP_200_OK)

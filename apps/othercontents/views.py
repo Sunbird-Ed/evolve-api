@@ -357,13 +357,18 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                         final_list.append(d)
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name','grade','subject']).drop_duplicates()
             state_name=State.objects.get(id=state_id).state
-            exists = os.path.isfile(str(state_name)+'_{}_contributers.csv'.format(tag_name))
             path = settings.MEDIA_ROOT + '/files/'
+            exists = os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
+            ff = ""
             if exists:
-                os.remove(str(state_name)+'_{}_contributers.csv'.format(tag_name))
+                os.remove(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
+                if os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name)):
+                    ff = "file exist" 
+                else:
+                    ff = "file removed"
             # data_frame.to_excel(path + 'content_contributers.xlsx')
             data_frame.to_csv(path +str(state_name)+ '_{}_contributers.csv'.format(tag_name), encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name)}
+            context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name) ,"initial_status":ff}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = { 'success': "false", 'message': 'Failed to get Activity list.'}
