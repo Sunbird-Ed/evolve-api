@@ -331,6 +331,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name','grade','subject']).drop_duplicates()
                 tag_name="content"
             elif tag =="2":
+                
                 queryset = HardSpot.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
                 serializer = HardspotContributorsSerializer(queryset, many=True)
                 res_list = [] 

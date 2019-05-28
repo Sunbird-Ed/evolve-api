@@ -584,7 +584,6 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
     email=serializers.SerializerMethodField()
     school_name=serializers.SerializerMethodField()
     city_name=serializers.SerializerMethodField()
-
     textbook_name = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
     subject = serializers.SerializerMethodField()
@@ -596,10 +595,11 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
                 'email',
                 'city_name',
                 'school_name',
-                'textbook_name'
+                'textbook_name',
                 'grade',
                 'subject']
     def get_first_name(self, obj):
+
         first_name=HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().first_name
         return first_name
     def get_last_name(self, obj):
@@ -617,6 +617,7 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
     def get_city_name(self,obj):
         city_name = HardSpotContributors.objects.filter(id=obj.hardspot_contributor.id).first().city_name
         return city_name
+    
     def get_textbook_name(self, obj):
         if obj.chapter is not None:
             book = Book.objects.filter(id=obj.chapter.book.id)
@@ -659,6 +660,7 @@ class HardspotContributorsSerializer(serializers.ModelSerializer):
             return None
 
     def get_subject(self, obj):
+        
         if obj.chapter is not None:
             subject = Subject.objects.filter(id=obj.chapter.book.subject.id )
             subjects = ','.join([str(x.Subject) for x in subject.all()])
