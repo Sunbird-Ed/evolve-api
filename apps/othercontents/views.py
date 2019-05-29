@@ -156,7 +156,8 @@ class OtherBookListView(ListAPIView):
                     queryset = self.get_queryset()
                 if tag is not None:
                     serializer = OtherContentBookListSerializer(queryset, many=True ,context={'tag_code': tag,'school_name':school_name})
-                    
+                 
+                context = {"success": True, "message": "Content List","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
                 context = {'success': "false", 'message': 'Failed to get Conetent list.',"error":error}
