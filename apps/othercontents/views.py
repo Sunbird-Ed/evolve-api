@@ -202,7 +202,7 @@ class OtherContentApprovedList(ListAPIView):
             sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             tag = request .query_params.get('tag',None)
             school_name = request.query_params.get('school', None)
-            if school_name is None:
+            if school_name is None or school_name == "0":
                 if chapter_id is not None and tag is not None:
                     queryset = self.get_queryset().filter(chapter__id=chapter_id, approved=True,tags__id=tag)
                 elif section_id is not None and tag is not None:
@@ -213,7 +213,7 @@ class OtherContentApprovedList(ListAPIView):
                     queryset = self.get_queryset().filter(sub_sub_section__id = sub_sub_section_id,approved=True,tags__id=tag)
                 else:
                     queryset = self.get_queryset().filter(approved=True,tags__id=tag)
-            elif school_name is not None:
+            elif school_name is not None and school_name != "0":
                 if chapter_id is not None and tag is not None:
                     queryset = self.get_queryset().filter(chapter__id=chapter_id, approved=True,tags__id=tag,content_contributors__school_name__id=school_name)
                 elif section_id is not None and tag is not None:
@@ -250,7 +250,7 @@ class OtherContentPendingList(ListAPIView):
             sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             tag = request.query_params.get('tag',None)
             school_name = request.query_params.get('school', None)
-            if school_name is None or school_name == "" or school_name == "null":
+            if school_name is None or school_name == "0":
                 if chapter_id is not None and tag is not None:
                     queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False, approved_by=None,tags__id=tag)
                 elif section_id is not None and tag is not None:
@@ -262,7 +262,7 @@ class OtherContentPendingList(ListAPIView):
                 else:
                     queryset = self.get_queryset().filter(approved=False, approved_by=None,tags__id=tag)
 
-            elif school_name is not None or school_name != "" or school_name != "null":
+            elif school_name is not None and  school_name != "0":
                 if chapter_id is not None and tag is not None:
                     queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False, approved_by=None,tags__id=tag,content_contributors__school_name__id=school_name)
                 elif section_id is not None and tag is not None:
@@ -293,7 +293,7 @@ class OtherContentRejectedList(ListAPIView):
             sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             tag = request.query_params.get('tag',None)
             school_name = request.query_params.get("school",None)
-            if school_name is None:
+            if school_name is None or school_name == "0":
                 if chapter_id is not None:
                     queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False,tags__id=tag).exclude(approved_by=None)
                 elif section_id is not None:
@@ -305,7 +305,7 @@ class OtherContentRejectedList(ListAPIView):
                 else:
                     queryset = self.get_queryset().filter(approved=False).exclude(approved_by=None,tags__id=tag)
 
-            elif school_name is not None:
+            elif school_name is not None and school_name != "0":
                 if chapter_id is not None:
                     queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False,tags__id=tag,content_contributors__school_name__id=school_name).exclude(approved_by=None)
                 elif section_id is not None:
