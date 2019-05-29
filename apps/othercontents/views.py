@@ -148,12 +148,13 @@ class OtherBookListView(ListAPIView):
             try:
                 subject = request.query_params.get('subject', None)
                 tag = request.query_params.get('tag',None)
+                school_name = request.query_params.get('school',None)
                 if subject is not None:
                     queryset=self.get_queryset().filter(subject__id=subject)
                 else:
                     queryset = self.get_queryset()
                 if tag is not None:
-                    serializer = OtherContentBookListSerializer(queryset, many=True ,context={'tag_code': tag})
+                    serializer = OtherContentBookListSerializer(queryset, many=True ,context={'tag_code': tag,'school_name':school_name})
                 context = {"success": True, "message": "Content List","data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
