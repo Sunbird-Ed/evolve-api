@@ -149,10 +149,11 @@ class OtherBookListView(ListAPIView):
                 subject = request.query_params.get('subject', None)
                 tag = request.query_params.get('tag',None)
                 school_name = request.query_params.get('school',None)
-                
+                if school_name is None:
+                    school_name = "0"
                 if subject is not None:
                     queryset=self.get_queryset().filter(subject__id=subject)
-                elif subject is None or school_name is None:
+                elif subject is None or school_name == "0":
                     queryset = self.get_queryset()
                 if tag is not None:
                     serializer = OtherContentBookListSerializer(queryset, many=True ,context={'tag_code': tag,'school_name':school_name})
