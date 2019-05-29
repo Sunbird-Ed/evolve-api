@@ -146,6 +146,7 @@ class OtherBookListView(ListAPIView):
 
     def get(self, request):
             try:
+                school_name = ""
                 subject = request.query_params.get('subject', None)
                 tag = request.query_params.get('tag',None)
                 school_name = request.query_params.get('school',None)
@@ -153,9 +154,10 @@ class OtherBookListView(ListAPIView):
                     queryset=self.get_queryset().filter(subject__id=subject)
                 else:
                     queryset = self.get_queryset()
-                if tag is not None:
+                if tag is not None and school_name is not None:
                     serializer = OtherContentBookListSerializer(queryset, many=True ,context={'tag_code': tag,'school_name':school_name})
-                context = {"success": True, "message": "Content List","data": serializer.data}
+                    school_name = SchoolName.objects.get(id=school_name).school_name
+                context = {"success": True, "message": "Content List","School name":school_name,"data": serializer.data}
                 return Response(context, status=status.HTTP_200_OK)
             except Exception as error:
                 context = {'success': "false", 'message': 'Failed to get Conetent list.'}
