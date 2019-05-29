@@ -203,6 +203,8 @@ class OtherContentApprovedList(ListAPIView):
             sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             tag = request .query_params.get('tag',None)
             school_name = request.query_params.get('school', None)
+            if school_name == "null":
+                school_name = "0"
             if school_name is None or school_name == "0":
                 if chapter_id is not None and tag is not None:
                     queryset = self.get_queryset().filter(chapter__id=chapter_id, approved=True,tags__id=tag)
@@ -296,6 +298,8 @@ class OtherContentRejectedList(ListAPIView):
             sub_sub_section_id = request.query_params.get('sub_sub_section',None)
             tag = request.query_params.get('tag',None)
             school_name = request.query_params.get("school",None)
+            if school_name == "null":
+                school_name = "0"
             if school_name is None or school_name == "0":
                 if chapter_id is not None:
                     queryset=self.get_queryset().filter(chapter__id=chapter_id, approved=False,tags__id=tag).exclude(approved_by=None)
