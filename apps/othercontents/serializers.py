@@ -444,7 +444,6 @@ class OtherContentChapterNestedSerializer(serializers.ModelSerializer):
     def get_total(self, req):
         try:
             if  self.context['school_name'] != "0":
-                # import ipdb;ipdb.set_trace()
                 count = OtherContent.objects.filter(chapter=req.id, tags__id= self.context['tag_code'], content_contributors__school_name__id=self.context['school_name'] ).count()
             else:
                 count = OtherContent.objects.filter(chapter=req.id, tags__id= self.context['tag_code'] ).count()
