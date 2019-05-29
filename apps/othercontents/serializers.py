@@ -238,7 +238,7 @@ class OtherContentSubSubSectionSerializer(serializers.ModelSerializer):
     
     def get_total(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if self.context['school_name'] != "0":
                 count = OtherContent.objects.filter(sub_sub_section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 count = OtherContent.objects.filter(sub_sub_section=req.id,tags__id = self.context['tag_code']).count()
@@ -248,7 +248,7 @@ class OtherContentSubSubSectionSerializer(serializers.ModelSerializer):
 
     def get_approved(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if self.context['school_name'] != "0":
                 sub_sec_approved = OtherContent.objects.filter(approved=True,sub_sub_section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 sub_sec_approved = OtherContent.objects.filter(approved=True,sub_sub_section=req.id,tags__id = self.context['tag_code']).count()
@@ -259,7 +259,7 @@ class OtherContentSubSubSectionSerializer(serializers.ModelSerializer):
 
     def get_reject(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 sub_sec_reject = OtherContent.objects.filter(approved=False,sub_sub_section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).exclude(approved_by=None).count()
             else:
                 sub_sec_reject = OtherContent.objects.filter(approved=False,sub_sub_section=req.id,tags__id = self.context['tag_code']).exclude(approved_by=None).count()
@@ -268,7 +268,7 @@ class OtherContentSubSubSectionSerializer(serializers.ModelSerializer):
             return None
     def get_pending(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 sub_sec_pending = OtherContent.objects.filter(approved=False,sub_sub_section=req.id,approved_by=None,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 sub_sec_pending = OtherContent.objects.filter(approved=False,sub_sub_section=req.id,approved_by=None,tags__id = self.context['tag_code']).count()
@@ -311,7 +311,7 @@ class OtherContentSubSectionSerializer(serializers.ModelSerializer):
     
     def get_total(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if self.context['school_name'] != "0":
                 count = OtherContent.objects.filter(sub_section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 count = OtherContent.objects.filter(sub_section=req.id,tags__id = self.context['tag_code']).count()
@@ -322,7 +322,7 @@ class OtherContentSubSectionSerializer(serializers.ModelSerializer):
 
     def get_approved(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if self.context['school_name'] != "0":
                 sub_sec_approved = OtherContent.objects.filter(approved=True,sub_section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 sub_sec_approved = OtherContent.objects.filter(approved=True,sub_section=req.id,tags__id = self.context['tag_code']).count()
@@ -332,7 +332,7 @@ class OtherContentSubSectionSerializer(serializers.ModelSerializer):
 
     def get_reject(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if self.context['school_name'] != "0":
                 sub_sec_reject = OtherContent.objects.filter(approved=False,sub_section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).exclude(approved_by=None).count()
             else:
                 sub_sec_reject = OtherContent.objects.filter(approved=False,sub_section=req.id,tags__id = self.context['tag_code']).exclude(approved_by=None).count()
@@ -341,7 +341,7 @@ class OtherContentSubSectionSerializer(serializers.ModelSerializer):
             return None
     def get_pending(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 sub_sec_pending = OtherContent.objects.filter(approved=False,sub_section=req.id,approved_by=None,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 sub_sec_pending = OtherContent.objects.filter(approved=False,sub_section=req.id,approved_by=None,tags__id = self.context['tag_code']).count()
@@ -380,7 +380,7 @@ class OtherContentSectionNestedSerializer(serializers.ModelSerializer):
             return None
     def get_total(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if self.context['school_name'] != "0":
                 count = OtherContent.objects.filter(section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 count = OtherContent.objects.filter(section=req.id,tags__id = self.context['tag_code']).count()
@@ -389,7 +389,7 @@ class OtherContentSectionNestedSerializer(serializers.ModelSerializer):
             return None
     def get_approved(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if self.context['school_name'] != "0":
                 sec_approved = OtherContent.objects.filter(approved=True,section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             
             else:
@@ -399,7 +399,7 @@ class OtherContentSectionNestedSerializer(serializers.ModelSerializer):
             return None
     def get_reject(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 sec_reject = OtherContent.objects.filter(approved=False,section=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).exclude(approved_by=None).count()
             else:
                 sec_reject = OtherContent.objects.filter(approved=False,section=req.id,tags__id = self.context['tag_code']).exclude(approved_by=None).count()
@@ -408,7 +408,7 @@ class OtherContentSectionNestedSerializer(serializers.ModelSerializer):
             return None
     def get_pending(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 sec_pending = OtherContent.objects.filter(approved=False,section=req.id,approved_by=None,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 sec_pending = OtherContent.objects.filter(approved=False,section=req.id,approved_by=None,tags__id = self.context['tag_code'],).count()
@@ -443,7 +443,7 @@ class OtherContentChapterNestedSerializer(serializers.ModelSerializer):
 
     def get_total(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 # import ipdb;ipdb.set_trace()
                 count = OtherContent.objects.filter(chapter=req.id, tags__id= self.context['tag_code'], content_contributors__school_name__id=self.context['school_name'] ).count()
             else:
@@ -453,7 +453,7 @@ class OtherContentChapterNestedSerializer(serializers.ModelSerializer):
             return None
     def get_approved(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 chapter_approved = OtherContent.objects.filter(approved=True,chapter=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 chapter_approved = OtherContent.objects.filter(approved=True,chapter=req.id,tags__id = self.context['tag_code']).count()
@@ -462,7 +462,7 @@ class OtherContentChapterNestedSerializer(serializers.ModelSerializer):
             return None
     def get_reject(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 chapter_reject = OtherContent.objects.filter(approved=False,chapter=req.id,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name'] ).exclude(approved_by=None).count()
             else:
                 chapter_reject = OtherContent.objects.filter(approved=False,chapter=req.id,tags__id = self.context['tag_code'] ).exclude(approved_by=None).count()
@@ -471,7 +471,7 @@ class OtherContentChapterNestedSerializer(serializers.ModelSerializer):
             return None
     def get_pending(self, req):
         try:
-            if self.context['school_name'] is not None:
+            if  self.context['school_name'] != "0":
                 chapter_pending = OtherContent.objects.filter(approved=False,chapter=req.id,approved_by=None,tags__id = self.context['tag_code'],content_contributors__school_name__id=self.context['school_name']).count()
             else:
                 chapter_pending = OtherContent.objects.filter(approved=False,chapter=req.id,approved_by=None,tags__id = self.context['tag_code']).count()
