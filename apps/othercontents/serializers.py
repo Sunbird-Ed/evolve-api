@@ -691,69 +691,80 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
         return email
 
     def get_school_name(self ,obj):
-        school_name=SchoolName.objects.filter(id=obj.content_contributors.school_name.id ).first().school_name         
+        school_name=SchoolName.objects.filter(id=obj.content_contributors.school_name.id).first().school_name         
         return school_name
   
     def get_textbook_name(self, obj):
-        if obj.chapter is not None:
-            book = Book.objects.filter(id=obj.chapter.book.id)
-            books=','.join([str(x.book) for x in book.all()])
-            return books
-        elif obj.section is not None:
-            book = Book.objects.filter(id=obj.section.chapter.book.id)
-            books=','.join([str(x.book) for x in book.all()])
-            return books
-        elif obj.sub_section is not None:
-            book = Book.objects.filter(id = obj.sub_section.section.chapter.book.id)
-            books=','.join([str(x.book) for x in book.all()])
-            return books
-        elif obj.sub_sub_section is not None:
-            book = Book.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.id)
-            books=','.join([str(x.book) for x in book.all()])
-            return books
-        else:
+        try:
+            if obj.chapter is not None:
+                book = Book.objects.filter(id=obj.chapter.book.id)
+                books=','.join([str(x.book) for x in book.all()])
+                return books
+            elif obj.section is not None:
+                book = Book.objects.filter(id=obj.section.chapter.book.id)
+                books=','.join([str(x.book) for x in book.all()])
+                return books
+            elif obj.sub_section is not None:
+                book = Book.objects.filter(id = obj.sub_section.section.chapter.book.id)
+                books=','.join([str(x.book) for x in book.all()])
+                return books
+            elif obj.sub_sub_section is not None:
+                book = Book.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.id)
+                books=','.join([str(x.book) for x in book.all()])
+                return books
+            else:
+                return None
+        except Exception as e:
             return None
 
     def get_grade(self, obj):
-
-        if obj.chapter is not None:
-            grade = Grade.objects.filter(id=obj.chapter.book.subject.grade.id )
-            grades = ','.join([str(x.grade) for x in grade.all()])
-            return grades
-        elif obj.section is not None:
-            grade = Grade.objects.filter(id=obj.section.chapter.book.subject.grade.id)
-            grades=','.join([str(x.grade) for x in grade.all()])
-            return grades
-        elif obj.sub_section is not None:
-            grade = Grade.objects.filter(id = obj.sub_section.section.chapter.book.subject.grade.id)
-            grades=','.join([str(x.grade) for x in grade.all()])
-            return grades
-        elif obj.sub_sub_section is not None:
-            grade = Grade.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.subject.grade.id)
-            grades = ','.join([str(x.grade) for x in grade.all()])
-            return grades
-        else:
+        try:
+            if obj.chapter is not None:
+                grade = Grade.objects.filter(id=obj.chapter.book.subject.grade.id )
+                grades = ','.join([str(x.grade) for x in grade.all()])
+                return grades
+            elif obj.section is not None:
+                grade = Grade.objects.filter(id=obj.section.chapter.book.subject.grade.id)
+                grades=','.join([str(x.grade) for x in grade.all()])
+                return grades
+            elif obj.sub_section is not None:
+                grade = Grade.objects.filter(id = obj.sub_section.section.chapter.book.subject.grade.id)
+                grades=','.join([str(x.grade) for x in grade.all()])
+                return grades
+            elif obj.sub_sub_section is not None:
+                grade = Grade.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.subject.grade.id)
+                grades = ','.join([str(x.grade) for x in grade.all()])
+                return grades
+            else:
+                return None
+        except Exception as e:
             return None
+        
 
     def get_subject(self, obj):
-        if obj.chapter is not None:
-            subject = Subject.objects.filter(id=obj.chapter.book.subject.id )
-            subjects = ','.join([str(x.Subject) for x in subject.all()])
-            return subjects
-        elif obj.section is not None:
-            subject = Subject.objects.filter(id=obj.section.chapter.book.subject.id)
-            subjects=','.join([str(x.Subject) for x in subject.all()])
-            return subjects
-        elif obj.sub_section is not None:
-            subject = Subject.objects.filter(id = obj.sub_section.section.chapter.book.subject.id)
-            subjects=','.join([str(x.Subject) for x in subject.all()])
-            return subjects
-        elif obj.sub_sub_section is not None:
-            subject = Subject.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.subject.id)
-            subjects = ','.join([str(x.Subject) for x in subject.all()])
-            return subjects
-        else:
+        
+        try:
+            if obj.chapter is not None:
+                subject = Subject.objects.filter(id=obj.chapter.book.subject.id )
+                subjects = ','.join([str(x.Subject) for x in subject.all()])
+                return subjects
+            elif obj.section is not None:
+                subject = Subject.objects.filter(id=obj.section.chapter.book.subject.id)
+                subjects=','.join([str(x.Subject) for x in subject.all()])
+                return subjects
+            elif obj.sub_section is not None:
+                subject = Subject.objects.filter(id = obj.sub_section.section.chapter.book.subject.id)
+                subjects=','.join([str(x.Subject) for x in subject.all()])
+                return subjects
+            elif obj.sub_sub_section is not None:
+                subject = Subject.objects.filter(id = obj.sub_sub_section.subsection.section.chapter.book.subject.id)
+                subjects = ','.join([str(x.Subject) for x in subject.all()])
+                return subjects
+            else:
+                return None      
+        except Exception as e:
             return None
+       
 
 
 class OtherContentDownloadSerializer(serializers.ModelSerializer):
