@@ -687,7 +687,7 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
     def get_last_name(self, obj):
 
         try:
-            last_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().last_namee
+            last_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().last_name
             return last_name
         except Exception as e:
             return None
