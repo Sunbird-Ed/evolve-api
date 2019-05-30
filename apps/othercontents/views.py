@@ -382,7 +382,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                         final_list.append(d)
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name','grade','subject']).drop_duplicates()
                 tag_name="content"
-            elif tag =="2":
+            elif tag == "2":
                 
                 queryset = HardSpot.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
                 serializer = HardspotContributorsSerializer(queryset, many=True)
@@ -397,7 +397,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 tag_name="hardspot"
             else:
                 if tag is not None:
-                    tag_name=str(Tags.objects.get(id=tag).tag_name)+"_content"
+                    tag_name = str(Tags.objects.get(id=tag).tag_name)+"_content"
                 queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
                 serializer = OtherContentContributorsSerializer(queryset, many=True )
                 res_list = [] 
@@ -412,12 +412,12 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             path = settings.MEDIA_ROOT + '/files/'
             exists = os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
             ff = ""
-            if exists:
-                os.remove(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
-                if os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name)):
-                    ff = "file exist" 
-                else:
-                    ff = "file removed"
+            # if exists:
+            #     os.remove(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
+            #     if os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name)):
+            #         ff = "file exist" 
+            #     else:
+            #         ff = "file removed"
             # data_frame.to_excel(path + 'content_contributers.xlsx')
             data_frame.to_csv(path +str(state_name)+ '_{}_contributers.csv'.format(tag_name), encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name) ,"initial_status":ff}
