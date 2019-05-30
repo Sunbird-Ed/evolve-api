@@ -678,21 +678,43 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
                 'subject']
 
     def get_first_name(self, obj):
-        first_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().first_name
-        return first_name
+        try:
+            first_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().first_name
+            return first_name
+        except Exception as e:
+            return None 
+
     def get_last_name(self, obj):
-        last_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().last_name
-        return last_name
+
+        try:
+            last_name=OtherContributors.objects.filter(id=obj.content_contributors.id).first().last_name
+            return last_name
+        except Exception as e:
+            return None
+        
     def get_mobile(self, obj):
-        mobile=OtherContributors.objects.filter(id=obj.content_contributors.id).first().mobile
-        return mobile
+        try:
+            mobile=OtherContributors.objects.filter(id=obj.content_contributors.id).first().mobile
+            return mobile
+        except Exception as e:
+            return None
+       
     def get_email(self, obj):
-        email=OtherContributors.objects.filter(id=obj.content_contributors.id).first().email
-        return email
+
+        try:
+            email=OtherContributors.objects.filter(id=obj.content_contributors.id).first().email
+            return email
+        except Exception as e:
+            return None
+        
 
     def get_school_name(self ,obj):
-        school_name=SchoolName.objects.filter(id=obj.content_contributors.school_name.id).first().school_name         
-        return school_name
+        try:
+            school_name=SchoolName.objects.filter(id=obj.content_contributors.school_name.id).first().school_name         
+            return school_name
+        except Exception as e:
+            None
+        
   
     def get_textbook_name(self, obj):
         try:
