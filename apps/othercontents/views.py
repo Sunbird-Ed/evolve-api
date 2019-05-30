@@ -365,7 +365,9 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
     serializer_class = OtherContentContributorsSerializer
 
     def get(self, request):
+        count = ""
         try:
+
             final_list = []
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
@@ -396,10 +398,12 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name','grade','subject']).drop_duplicates()
                 tag_name="hardspot"
             else:
+                count = "1st"
                 if tag is not None:
                     tag_name = str(Tags.objects.get(id=tag).tag_name)+"_content"
                     queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id,tags__id=tag)| Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id,tags__id=tag)| Q(section__chapter__book__subject__grade__medium__state__id= state_id,tags__id=tag) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
                     serializer = OtherContentContributorsSerializer(queryset, many=True )
+                    count = "serialized"
                 res_list = [] 
                 for i in range(len(serializer.data)): 
                     if serializer.data[i] not in serializer.data[i + 1:]: 
@@ -407,10 +411,13 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 for data in res_list:
                     for d in res_list:
                         final_list.append(d)
+                count = "for loop ended"
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name','grade','subject']).drop_duplicates()
+                count = "data_frame ready"
             state_name=State.objects.get(id=state_id).state
             path = settings.MEDIA_ROOT + '/files/'
             exists = os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
+            count = "exist"
             ff = ""
             if exists:
                 os.remove(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
@@ -418,12 +425,14 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                     ff = "file exist" 
                 else:
                     ff = "file removed"
+            count = ff
             # data_frame.to_excel(path + 'content_contributers.xlsx')
             data_frame.to_csv(path +str(state_name)+ '_{}_contributers.csv'.format(tag_name), encoding="utf-8-sig", index=False)
+            count = "return"
             context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name) ,"initial_status":ff}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = { 'success': "false", 'message': 'Failed to get Activity list.'}
+            context = { 'success': "false", 'message': 'Failed to get Activity list.',"error":error,"count":count}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
