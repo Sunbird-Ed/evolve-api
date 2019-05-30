@@ -432,7 +432,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name) ,"initial_status":ff,"count":count}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = { 'success': "false", 'message': 'Failed to get Activity list.',"error":error,"count":count}
+            context = { 'success': "false", 'message': 'Failed to get Activity list.',"error":  str(error),"count":count}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
