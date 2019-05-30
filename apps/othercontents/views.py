@@ -359,7 +359,7 @@ class OtherContentDetailList(ListAPIView):
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@permission_classes((IsAuthenticated,))
+# @permission_classes((IsAuthenticated,))
 class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
     queryset = OtherContent.objects.all()
     serializer_class = OtherContentContributorsSerializer
@@ -408,6 +408,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                 for i in range(len(serializer.data)): 
                     if serializer.data[i] not in serializer.data[i + 1:]: 
                         res_list.append(serializer.data[i])
+                    
                 for data in res_list:
                     for d in res_list:
                         final_list.append(d)
