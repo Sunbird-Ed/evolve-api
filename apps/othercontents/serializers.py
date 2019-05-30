@@ -688,7 +688,6 @@ class OtherContentContributorsSerializer(serializers.ModelSerializer):
         return mobile
     def get_email(self, obj):
         email=OtherContributors.objects.filter(id=obj.content_contributors.id).first().email
-        print(email)
         return email
 
     def get_school_name(self ,obj):
@@ -834,7 +833,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                     fileurl = chapter_content_data.file_url
                     if fileurl is not None and fileurl !="" :
                         path,ext = os.path.splitext(fileurl)
-                        ext = ext.replace(".","").strip()
+                        ext = ext.replace(".","").strip().lower()
                         if str(ext)== "mp4" or str(ext) == "pdf":
                             tempList.append(ext)
                         else:
@@ -895,7 +894,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                             fileurl = section_content_data.file_url
                             if fileurl is not None and fileurl !="" :
                                 path,ext = os.path.splitext(fileurl)
-                                ext = ext.replace(".","").strip()
+                                ext = ext.replace(".","").strip().lower()
                                 if str(ext)== "mp4" or str(ext) == "pdf":
                                     tempList.append(ext)
                                 else:
@@ -957,7 +956,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                     fileurl = sub_section_content_data.file_url
                                     if fileurl is not None and fileurl !="" :
                                         path,ext = os.path.splitext(fileurl)
-                                        ext = ext.replace(".","").strip()
+                                        ext = ext.replace(".","").strip().lower()
                                         if str(ext)== "mp4" or str(ext) == "pdf":
                                             tempList.append(ext)
                                         else:
@@ -1024,7 +1023,7 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                             fileurl = sub_sub_sec_content_data.file_url
                                             if fileurl is not None and fileurl !="" :
                                                 path,ext = os.path.splitext(fileurl)
-                                                ext = ext.replace(".","").strip()
+                                                ext = ext.replace(".","").strip().lower()
                                                 if str(ext)== "mp4" or str(ext) == "pdf":
                                                     tempList.append(ext)
                                                 else:
