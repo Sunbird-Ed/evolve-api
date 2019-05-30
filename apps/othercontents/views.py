@@ -412,12 +412,12 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             path = settings.MEDIA_ROOT + '/files/'
             exists = os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
             ff = ""
-            # if exists:
-            #     os.remove(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
-            #     if os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name)):
-            #         ff = "file exist" 
-            #     else:
-            #         ff = "file removed"
+            if exists:
+                os.remove(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
+                if os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name)):
+                    ff = "file exist" 
+                else:
+                    ff = "file removed"
             # data_frame.to_excel(path + 'content_contributers.xlsx')
             data_frame.to_csv(path +str(state_name)+ '_{}_contributers.csv'.format(tag_name), encoding="utf-8-sig", index=False)
             context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name) ,"initial_status":ff}
