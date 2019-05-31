@@ -22,6 +22,7 @@ from .serializers import (OtherContributorSerializer,
     ApprovedOtherContentSerializer,
     HardSpotDetailListSerializer,
     ContentDetailListSerializer,
+    OtherContentStatusSerializer,
     )
 from .models import OtherContent, OtherContributors,SchoolName,Tags
 from apps.configuration.models import Book,State
@@ -518,3 +519,37 @@ class ApprovedOtherContentDownload(ListAPIView):
             context = {'success': "false", 'message': 'Failed to get Activity list.' ,"error" :error}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
+
+class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
+    queryset = OtherContent.objects.all()
+    serializer_class = OtherContentStatusSerializer
+
+    def get(self, request):
+        try:
+            final_list = []
+            import os
+            from shutil import copyfile
+            book_id = request.query_params.get('book', None)
+            book_name=""
+            if book_id is not None:
+                book_name=Book.objects.get(id=book_id)
+                chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
+            serializer = OtherContentStatusSerializer(chapters, many=True)
+            for data in serializer.data:
+                for d in data['chapter']:
+                    final_list.append(d)
+
+            data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Content name', 'School_name', 'Mobile', 'Email', 'File name','Status',"Content Type"])
+            exists = os.path.isfile('{}_contentstatus.csv'.format(book_name))
+            path = settings.MEDIA_ROOT + '/files/'
+            if exists:
+                os.remove('{}_contentstatus.csv'.format(book_name))
+            # data_frame.to_excel(path + 'contentstatus.xlsx')
+            data_frame.to_csv(path + str(book_name)+'_contentstatus.csv', encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List","data": 'media/files/{}_contentstatus.csv'.format(book_name)}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get Activity list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

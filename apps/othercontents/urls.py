@@ -19,7 +19,7 @@ urlpatterns = [
     path('othercontentdetaillist',views.OtherContentDetailList.as_view(),name="OtherContentDetailListView"),
     path('othercontributorsdownload',views.OtherContentContributorsDownloadView.as_view(),name="OtherContentContributorsDownloadView"),
     path('approvedothercontentdownload',views.ApprovedOtherContentDownload.as_view(),name="ApprovedOtherContentDownloadView"),
-
+    path("othercontentstatusdownload",views.OtherContentStatusDownloadView.as_view(),name="OtherContentStatusDownloadView")
 
 
 

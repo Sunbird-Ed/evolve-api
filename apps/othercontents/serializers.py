@@ -14,7 +14,7 @@ from apps.content.models import Content
 from apps.configuration.models import Book,Grade,Subject
 from apps.hardspot.models import HardSpot
 from datetime import datetime, timedelta
-import os
+import os,ntpath
 from azure.storage.blob import (
     BlockBlobService,
     ContainerPermissions,
@@ -1167,3 +1167,260 @@ class ContentDetailListSerializer(serializers.ModelSerializer):
         subsubsection_count=Content.objects.filter(sub_sub_section__subsection__section__chapter__book__id=req.id,approved=False).exclude(approved_by=None).count()
 
         return(chapter_count + section_count + subsection_count + subsubsection_count)
+
+
+
+
+class OtherContentStatusSerializer(serializers.ModelSerializer):
+    chapter=serializers.SerializerMethodField()
+    class Meta:
+        model = Chapter
+        fields = ['chapter']
+    
+    def get_chapter(self, req):
+        data_str_list = []
+        # import ipdb;ipdb.set_trace()
+        chapters=Chapter.objects.filter(id=req.id).first()
+        # chapters=Chapter.objects.filter(id=req.id).first()
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        section = " "
+        sub_section = " "
+        sub_sub_section = " "
+       
+        chapter_con = OtherContent.objects.filter(chapter__id=chapters.id)
+        section, sub_section, sub_sub_section, content_name,file_url, text, keyword, keyword_list = "","","","","","","",""
+        # import ipdb;ipdb.set_trace()
+        if chapter_con.exists():
+            for chapter_content_data in chapter_con:
+                tempList.append(section)
+                tempList.append(sub_section)
+                tempList.append(sub_sub_section)
+                tempList.append(chapter_content_data.content_name)
+                tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name.school_name) 
+                tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).mobile) 
+                tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).email) 
+                filename = chapter_content_data.file_url
+                if filename is not None:
+                    head, tail = ntpath.split(filename)
+                    if tail is not None or tail !="":
+                        tempList.append(tail)
+                    else:
+                        tempList.append("")
+                else:
+                    tempList.append("")
+                approved = chapter_content_data.approved
+                approved_by = chapter_content_data.approved_by
+                if approved_by is not None and  approved is True:
+                    tempList.append("approved")
+                elif approved_by is not None and  approved is False:
+                    tempList.append("rejected")
+                elif approved_by is  None and  approved is False:
+                    tempList.append("pending")
+                else:
+                    tempList.append("")
+                tag_id=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).tags.id
+                if tag_id == "7":
+                    tempList.append("lod")
+                elif tag_id == "11":
+                    tempList.append("lp")
+                elif tag_id == "10":
+                    tempList.append("expr")
+                elif tag_id == "9":
+                    tempList.append("expl")
+                elif tag_id == "8":
+                    tempList.append("cq")
+                else:
+                    tempList.append("")
+
+                data_str_list.append( tempList)
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+
+        else:
+            for i in range(10):
+                tempList.append("")
+            data_str_list.append( tempList)
+            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+
+
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+
+        
+        # data_str_list.append( tempList)
+        # print("1:>>"+str(len(tempList)))
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        sections=Section.objects.filter(chapter=req).order_by('id')
+        if sections.exists():
+            for section_data in sections:
+                section_con = OtherContent.objects.filter(section__id=section_data.id)
+                if section_con.exists():
+                    for section_content_data in section_con:
+                        tempList.append( section_data.section )
+                        tempList.append("")
+                        tempList.append("")
+                        tempList.append(section_content_data.content_name)
+                        tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name) 
+                        tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).mobile) 
+                        tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).email) 
+                        filename = section_content_data.file_url
+                        if filename is not None:
+                            head, tail = ntpath.split(filename)
+                            if tail is not None or tail !="":
+                                tempList.append(tail)
+                            else:
+                                tempList.append("")
+                        else:
+                            tempList.append("")
+                        approved = section_content_data.approved
+                        approved_by = section_content_data.approved_by
+                        if approved_by is not None and  approved is True:
+                            tempList.append("approved")
+                        elif approved_by is not None and  approved is False:
+                            tempList.append("rejected")
+                        elif approved_by is  None and  approved is False:
+                            tempList.append("pending")
+                        else:
+                            tempList.append("")
+                        tag_id=OtherContributors.objects.get(id=section_content_data.content_contributors_id).tags.id
+                        if tag_id == "7":
+                            tempList.append("lod")
+                        elif tag_id == "11":
+                            tempList.append("lp")
+                        elif tag_id == "10":
+                            tempList.append("expr")
+                        elif tag_id == "9":
+                            tempList.append("expl")
+                        elif tag_id == "8":
+                            tempList.append("cq")
+                        else:
+                            tempList.append("")
+                        data_str_list.append( tempList)
+                        # print("2:>>"+str(len(tempList)))
+
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+                else:
+                    tempList.append( section_data.section )
+                    for i in range(9):
+                        tempList.append("")
+                    data_str_list.append(tempList)
+                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+
+
+                sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
+                if sub_section.exists():
+                    for sub_section_data in sub_section:
+                        sub_section_con = OtherContent.objects.filter(sub_section__id=sub_section_data.id)
+                        if sub_section_con.exists():
+                            for sub_section_content_data in sub_section_con:
+                                tempList.append( sub_section_data.sub_section )
+                                tempList.append("")
+                                tempList.append(sub_section_content_data.content_name)
+                                tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name) 
+                                tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).mobile) 
+                                tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).email) 
+                                filename = sub_section_content_data.file_url
+                                if filename is not None:
+                                    head, tail = ntpath.split(filename)
+                                    if tail is not None or tail !="":
+                                        tempList.append(tail)
+                                    else:
+                                        tempList.append("")
+                                else:
+                                    tempList.append("")
+                                approved = sub_section_content_data.approved
+                                approved_by = sub_section_content_data.approved_by
+                                if approved_by is not None and  approved is True:
+                                    tempList.append("approved")
+                                elif approved_by is not None and  approved is False:
+                                    tempList.append("rejected")
+                                elif approved_by is  None and  approved is False:
+                                    tempList.append("pending")
+                                else:
+                                    tempList.append("")
+
+                                tag_id=OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).tags.id
+                                if tag_id == "7":
+                                    tempList.append("lod")
+                                elif tag_id == "11":
+                                    tempList.append("lp")
+                                elif tag_id == "10":
+                                    tempList.append("expr")
+                                elif tag_id == "9":
+                                    tempList.append("expl")
+                                elif tag_id == "8":
+                                    tempList.append("cq")
+                                else:
+                                    tempList.append("")
+                                data_str_list.append( tempList)
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                        else:
+                            tempList.append( sub_section_data.sub_section )
+                            for i in range(8):
+                                tempList.append("")
+                            data_str_list.append( tempList)
+                            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+
+                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
+                        if sub_sub_sections.exists():
+                            for sub_sub_section_data in sub_sub_sections:
+                                sub_sub_section_con = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section_data.id)
+                                if sub_sub_section_con.exists():
+                                    for sub_sub_section_con_data in sub_sub_section_con:
+                                        tempList.append(sub_sub_section_data.sub_sub_section)
+                                        tempList.append(sub_sub_section_con_data.content_name)
+                                        tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).school_name.school_name) 
+                                        tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).mobile) 
+                                        tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).email) 
+                                        filename = sub_sub_section_con_data.file_url
+                                        if filename is not None:
+                                            head, tail = ntpath.split(filename)
+                                            if tail is not None or tail !="":
+                                                tempList.append(tail)
+                                            else:
+                                                tempList.append("")
+                                        else:
+                                            tempList.append("")
+                                        approved = sub_sub_section_con_data.approved
+                                        approved_by = sub_sub_section_con_data.approved_by
+                                        if approved_by is not None and  approved is True:
+                                            tempList.append("approved")
+                                        elif approved_by is not None and  approved is False:
+                                            tempList.append("rejected")
+                                        elif approved_by is  None and  approved is False:
+                                            tempList.append("pending")
+                                        else:
+                                            tempList.append("")
+
+
+                                        tag_id=OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).tags.id
+                                        if tag_id == "7":
+                                            tempList.append("lod")
+                                        elif tag_id == "11":
+                                            tempList.append("lp")
+                                        elif tag_id == "10":
+                                            tempList.append("expr")
+                                        elif tag_id == "9":
+                                            tempList.append("expl")
+                                        elif tag_id == "8":
+                                            tempList.append("cq")
+                                        else:
+                                            tempList.append("")
+                                        data_str_list.append( tempList)
+                                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+
+
+                                else:
+                                    tempList.append(sub_sub_section_data.sub_sub_section)
+                                    for i in range(7):
+                                        tempList.append("")
+                                    data_str_list.append(tempList)
+                                
+
+                                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
+        for i in data_str_list:
+            print(len(i))
+        return data_str_list
