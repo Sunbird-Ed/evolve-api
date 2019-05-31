@@ -1218,7 +1218,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                     tempList.append("pending")
                 else:
                     tempList.append("")
-                tag_id=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).tags.id
+                tag_id=str(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).tags.id)
                 if tag_id == "7":
                     tempList.append("lod")
                 elif tag_id == "11":
