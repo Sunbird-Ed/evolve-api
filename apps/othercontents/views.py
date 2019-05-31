@@ -532,12 +532,12 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
             import os
             from shutil import copyfile
             book_id = request.query_params.get('book', None)
-            tag = request.query_params.get("tag",None)
+            # tag = request.query_params.get("tag",None)
             book_name=""
             if book_id is not None:
                 book_name=Book.objects.get(id=book_id)
                 chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
-            serializer = OtherContentStatusSerializer(chapters, many=True,context={"tag_id":tag})
+            serializer = OtherContentStatusSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
                     final_list.append(d)

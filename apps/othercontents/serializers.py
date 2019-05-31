@@ -1187,7 +1187,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
         sub_section = " "
         sub_sub_section = " "
        
-        chapter_con = OtherContent.objects.filter(chapter__id=chapters.id,tags__id=self.context['tag_id'])
+        chapter_con = OtherContent.objects.filter(chapter__id=chapters.id)
         section, sub_section, sub_sub_section, content_name,file_url, text, keyword, keyword_list = "","","","","","","",""
         # import ipdb;ipdb.set_trace()
         if chapter_con.exists():
@@ -1251,7 +1251,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
         sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
             for section_data in sections:
-                section_con = OtherContent.objects.filter(section__id=section_data.id,tags__id=self.context['tag_id'])
+                section_con = OtherContent.objects.filter(section__id=section_data.id)
                 if section_con.exists():
                     for section_content_data in section_con:
                         tempList.append( section_data.section )
@@ -1309,7 +1309,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                 sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
                 if sub_section.exists():
                     for sub_section_data in sub_section:
-                        sub_section_con = OtherContent.objects.filter(sub_section__id=sub_section_data.id,tags__id=self.context['tag_id'])
+                        sub_section_con = OtherContent.objects.filter(sub_section__id=sub_section_data.id)
                         if sub_section_con.exists():
                             for sub_section_content_data in sub_section_con:
                                 tempList.append( sub_section_data.sub_section )
@@ -1364,7 +1364,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                         sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
                         if sub_sub_sections.exists():
                             for sub_sub_section_data in sub_sub_sections:
-                                sub_sub_section_con = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section_data.id,tags__id=self.context['tag_id'])
+                                sub_sub_section_con = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section_data.id)
                                 if sub_sub_section_con.exists():
                                     for sub_sub_section_con_data in sub_sub_section_con:
                                         tempList.append(sub_sub_section_data.sub_sub_section)
