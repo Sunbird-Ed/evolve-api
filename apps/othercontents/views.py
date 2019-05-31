@@ -555,5 +555,5 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
             context = {"success": True, "message": "Activity List","data": 'media/files/{}_contentstatus.csv'.format(book_name)}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'success': "false", 'message': 'Failed to get Activity list.'}
+            context = {'success': "false", 'message': 'Failed to get Activity list.',"error":str(error)}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

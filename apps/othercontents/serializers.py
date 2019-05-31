@@ -1201,7 +1201,11 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                     tempList.append("")
                 else:
                     tempList.append(chapter_content_data.content_name)
-                tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name.school_name) 
+                school = OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name
+                if school is not None:
+                    tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name.school_name)
+                else:
+                    tempList.append("") 
                 tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).mobile) 
                 tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).email) 
                 filename = chapter_content_data.file_url
@@ -1262,7 +1266,12 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                             tempList.append("")
                         else:
                             tempList.append(section_content_data.content_name)
-                        tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name) 
+                        school = OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name
+                        if school is not None:
+                            tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name)
+                        else:
+                            tempList.append("") 
+                        # tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name) 
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).mobile) 
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).email) 
                         filename = section_content_data.file_url
@@ -1322,7 +1331,12 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                                     tempList.append("")
                                 else:
                                     tempList.append(sub_section_content_data.content_name)
-                                tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name) 
+                                school = OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name
+                                if school is not None:
+                                    tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name)
+                                else:
+                                    tempList.append("") 
+                                # tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name) 
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).mobile) 
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).email) 
                                 filename = sub_section_content_data.file_url
@@ -1379,7 +1393,12 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                                             tempList.append("")
                                         else:
                                             tempList.append(sub_sub_section_con_data.content_name)
-                                        tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).school_name.school_name) 
+                                        school = OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).school_name
+                                        if school is not None:
+                                            tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).school_name.school_name)
+                                        else:
+                                            tempList.append("") 
+                                        # tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).school_name.school_name) 
                                         tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).mobile) 
                                         tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).email) 
                                         filename = sub_sub_section_con_data.file_url
@@ -1430,6 +1449,5 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
-        for i in data_str_list:
-            print(len(i))
+        
         return data_str_list
