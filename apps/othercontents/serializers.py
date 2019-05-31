@@ -1224,15 +1224,15 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                 else:
                     tempList.append("")
                 if tag_id == "7":
-                    tempList.append("lod")
+                    tempList.append("Learning Outcome Definition")
                 elif tag_id == "11":
-                    tempList.append("lp")
+                    tempList.append("Lesson Plans")
                 elif tag_id == "10":
-                    tempList.append("expr")
+                    tempList.append("Experential")
                 elif tag_id == "9":
-                    tempList.append("expl")
+                    tempList.append("Explanation")
                 elif tag_id == "8":
-                    tempList.append("cq")
+                    tempList.append("Curiosity Questions")
                 else:
                     tempList.append("")
 
@@ -1289,15 +1289,15 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                         else:
                             tempList.append("")
                         if tag_id == "7":
-                            tempList.append("lod")
+                            tempList.append("Learning Outcome Definition")
                         elif tag_id == "11":
-                            tempList.append("lp")
+                            tempList.append("Lesson Plans")
                         elif tag_id == "10":
-                            tempList.append("expr")
+                            tempList.append("Experential")
                         elif tag_id == "9":
-                            tempList.append("expl")
+                            tempList.append("Explanation")
                         elif tag_id == "8":
-                            tempList.append("cq")
+                            tempList.append("Curiosity Questions")
                         else:
                             tempList.append("")
                         data_str_list.append( tempList)
@@ -1350,15 +1350,15 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                                     tempList.append("")
 
                                 if tag_id == "7":
-                                    tempList.append("lod")
+                                    tempList.append("Learning Outcome Definition")
                                 elif tag_id == "11":
-                                    tempList.append("lp")
+                                    tempList.append("Lesson Plans")
                                 elif tag_id == "10":
-                                    tempList.append("expr")
+                                    tempList.append("Experential")
                                 elif tag_id == "9":
-                                    tempList.append("expl")
+                                    tempList.append("Explanation")
                                 elif tag_id == "8":
-                                    tempList.append("cq")
+                                    tempList.append("Curiosity Questions")
                                 else:
                                     tempList.append("")
                                 data_str_list.append( tempList)
@@ -1408,15 +1408,15 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
 
 
                                         if tag_id == "7":
-                                            tempList.append("lod")
+                                            tempList.append("Learning Outcome Definition")
                                         elif tag_id == "11":
-                                            tempList.append("lp")
+                                            tempList.append("Lesson Plans")
                                         elif tag_id == "10":
-                                            tempList.append("expr")
+                                            tempList.append("Experential")
                                         elif tag_id == "9":
-                                            tempList.append("expl")
+                                            tempList.append("Explanation")
                                         elif tag_id == "8":
-                                            tempList.append("cq")
+                                            tempList.append("Curiosity Questions")
                                         else:
                                             tempList.append("")
                                         data_str_list.append( tempList)
