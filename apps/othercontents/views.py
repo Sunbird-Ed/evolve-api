@@ -532,13 +532,14 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
             import os
             from shutil import copyfile
             book_id = request.query_params.get('book', None)
-            # tag = request.query_params.get("tag",None)
+            # import ipdb;ipdb.set_trace()
+            state_id = request.query_params.get("state",None)
             book_name=""
             if book_id is not None:
                 book_name=Book.objects.get(id=book_id)
                 chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
             else:
-                chapters=Chapter.objects.all()
+                chapters= Chapter.objects.filter(book__subject__grade__medium__state__id=state_id)
             serializer = OtherContentStatusSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
