@@ -537,6 +537,8 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
             if book_id is not None:
                 book_name=Book.objects.get(id=book_id)
                 chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
+            else:
+                chapters=Chapter.objects.all()
             serializer = OtherContentStatusSerializer(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:

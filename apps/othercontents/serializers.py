@@ -1195,7 +1195,12 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                 tempList.append(section)
                 tempList.append(sub_section)
                 tempList.append(sub_sub_section)
-                tempList.append(chapter_content_data.content_name)
+                tag_id=str(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).tags.id)
+
+                if tag_id == "7" or tag_id == "8" :
+                    tempList.append("")
+                else:
+                    tempList.append(chapter_content_data.content_name)
                 tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name.school_name) 
                 tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).mobile) 
                 tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).email) 
@@ -1218,7 +1223,6 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                     tempList.append("pending")
                 else:
                     tempList.append("")
-                tag_id=str(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).tags.id)
                 if tag_id == "7":
                     tempList.append("lod")
                 elif tag_id == "11":
@@ -1257,7 +1261,11 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                         tempList.append( section_data.section )
                         tempList.append("")
                         tempList.append("")
-                        tempList.append(section_content_data.content_name)
+                        tag_id=str(OtherContributors.objects.get(id=section_content_data.content_contributors_id).tags.id)
+                        if tag_id == "7" or tag_id == "8" :
+                            tempList.append("")
+                        else:
+                            tempList.append(section_content_data.content_name)
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name) 
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).mobile) 
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).email) 
@@ -1280,7 +1288,6 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                             tempList.append("pending")
                         else:
                             tempList.append("")
-                        tag_id=str(OtherContributors.objects.get(id=section_content_data.content_contributors_id).tags.id)
                         if tag_id == "7":
                             tempList.append("lod")
                         elif tag_id == "11":
@@ -1314,7 +1321,11 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                             for sub_section_content_data in sub_section_con:
                                 tempList.append( sub_section_data.sub_section )
                                 tempList.append("")
-                                tempList.append(sub_section_content_data.content_name)
+                                tag_id=str(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).tags.id)
+                                if tag_id == "7" or tag_id == "8" :
+                                    tempList.append("")
+                                else:
+                                    tempList.append(sub_section_content_data.content_name)
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name) 
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).mobile) 
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).email) 
@@ -1338,7 +1349,6 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                                 else:
                                     tempList.append("")
 
-                                tag_id=str(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).tags.id)
                                 if tag_id == "7":
                                     tempList.append("lod")
                                 elif tag_id == "11":
@@ -1368,7 +1378,11 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                                 if sub_sub_section_con.exists():
                                     for sub_sub_section_con_data in sub_sub_section_con:
                                         tempList.append(sub_sub_section_data.sub_sub_section)
-                                        tempList.append(sub_sub_section_con_data.content_name)
+                                        tag_id=str(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).tags.id)
+                                        if tag_id == "7" or tag_id == "8" :
+                                            tempList.append("")
+                                        else:
+                                            tempList.append(sub_sub_section_con_data.content_name)
                                         tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).school_name.school_name) 
                                         tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).mobile) 
                                         tempList.append(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).email) 
@@ -1393,7 +1407,6 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
                                             tempList.append("")
 
 
-                                        tag_id=str(OtherContributors.objects.get(id=sub_sub_section_con_data.content_contributors_id).tags.id)
                                         if tag_id == "7":
                                             tempList.append("lod")
                                         elif tag_id == "11":
