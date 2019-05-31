@@ -1248,10 +1248,6 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
 
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
 
-        
-        # data_str_list.append( tempList)
-        # print("1:>>"+str(len(tempList)))
-        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
             for section_data in sections:
