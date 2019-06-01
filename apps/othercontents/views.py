@@ -534,7 +534,7 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
             book_id = request.query_params.get('book', None)
             # import ipdb;ipdb.set_trace()
             state_id = request.query_params.get("state",None)
-            book_name=""
+            
             if book_id is not None:
                 book_name=Book.objects.get(id=book_id)
                 chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
@@ -546,13 +546,13 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
                     final_list.append(d)
 
             data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Content name', 'School_name', 'Mobile', 'Email', 'File name','Status',"Content Type"])
-            exists = os.path.isfile('{}_contentstatus.csv'.format(book_name))
+            exists = os.path.isfile('full-report.csv')
             path = settings.MEDIA_ROOT + '/files/'
             if exists:
-                os.remove('{}_contentstatus.csv'.format(book_name))
+                os.remove('full-report.csv')
             # data_frame.to_excel(path + 'contentstatus.xlsx')
-            data_frame.to_csv(path + str(book_name)+'_contentstatus.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List","data": 'media/files/{}_contentstatus.csv'.format(book_name)}
+            data_frame.to_csv(path +'full-report.csv', encoding="utf-8-sig", index=False)
+            context = {"success": True, "message": "Activity List","data": 'media/files/full-report.csv'}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.',"error":str(error)}
