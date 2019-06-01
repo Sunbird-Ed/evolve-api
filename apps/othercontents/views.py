@@ -22,7 +22,7 @@ from .serializers import (OtherContributorSerializer,
     ApprovedOtherContentSerializer,
     HardSpotDetailListSerializer,
     ContentDetailListSerializer,
-    OtherContentStatusSerializer,
+    OtherContentStatusSerializerdownload,
     )
 from .models import OtherContent, OtherContributors,SchoolName,Tags
 from apps.configuration.models import Book,State
@@ -540,7 +540,7 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
                 chapters=Chapter.objects.filter(book__id=book_id).order_by('id')
             else:
                 chapters= Chapter.objects.filter(book__subject__grade__medium__state__id=state_id)
-            serializer = OtherContentStatusSerializer(chapters, many=True)
+            serializer = OtherContentStatusSerializerdownload(chapters, many=True)
             for data in serializer.data:
                 for d in data['chapter']:
                     final_list.append(d)

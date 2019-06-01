@@ -1171,7 +1171,7 @@ class ContentDetailListSerializer(serializers.ModelSerializer):
 
 
 
-class OtherContentStatusSerializer(serializers.ModelSerializer):
+class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
     chapter=serializers.SerializerMethodField()
     class Meta:
         model = Chapter
