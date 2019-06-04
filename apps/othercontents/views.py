@@ -609,7 +609,8 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
         chapters=Chapter.objects.filter(book_id=book).order_by('id')
         file_status= ""
         # import ipdb;ipdb.set_trace()
-        serializer = ApprovedOtherContentSerializerSecond(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
+        book_name = Book.objects.get(id= book).book
+        serializer = ApprovedOtherContentSerializerSecond(chapters, many=True,context={'tag_id':tag, "status" : str(status_) ,"book_name":book_name})
         for data in serializer.data:
             for d in data['chapter']:
                 final_list.append(d)

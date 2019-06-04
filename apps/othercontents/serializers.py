@@ -1498,7 +1498,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                 
                
                 keyword=self.getkeywords(chapter_keyword)
-                tempList = tempList + [section,sub_section,sub_sub_section,keyword,chapter_content_data.content_name,"This resource is about "+str(chapters.chapter),chapter_content_data.file_url,chapter_content_data.text]
+                tempList = tempList + [section,sub_section,sub_sub_section,keyword,chapter_content_data.content_name,"This resource is about "+self.context['book_name']+","+str(chapters.chapter),chapter_content_data.file_url,chapter_content_data.text]
                 keyword = ""
                 lastname=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
                 if lastname is None  :
@@ -1566,7 +1566,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                             
                         else:
                             keyword_list = ""
-                        tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,"This resource is about "+str(chapters.chapter)+"," +str(sections_1),section_content_data.file_url,section_content_data.text]
+                        tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,"This resource is about "+self.context['book_name']+","+str(chapters.chapter)+"," +str(sections_1),section_content_data.file_url,section_content_data.text]
                         keyword=""
                         lastname=OtherContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                         if lastname is None  :
@@ -1638,7 +1638,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                 #     text= ""
                                 # else: 
                                 #     text = "Text"
-                                tempList = tempList + [sub_sections,sub_sub_section,keyword,sub_section_content_data.content_name,"This resource is about "+str(chapters.chapter)+","+ str(sections_1) +","+ str(sub_sections) ,sub_section_content_data.file_url,sub_section_content_data.text]
+                                tempList = tempList + [sub_sections,sub_sub_section,keyword,sub_section_content_data.content_name,"This resource is about "+self.context['book_name']+","+str(chapters.chapter)+","+ str(sections_1) +","+ str(sub_sections) ,sub_section_content_data.file_url,sub_section_content_data.text]
                                 keyword = ""
                                 lastname=OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                 if lastname is None  :
@@ -1711,7 +1711,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                         #     text= ""
                                         # else: 
                                         #     text = "Text"
-                                        tempList = tempList + [sub_sub_sections_1,keyword,sub_sub_sec_content_data.content_name,"This resource is about "+str(chapters.chapter)+"," +str(sections_1) +","+ str(sub_sections) +","+str(sub_sub_sections_1),sub_sub_sec_content_data.file_url,sub_sub_sec_content_data.text]
+                                        tempList = tempList + [sub_sub_sections_1,keyword,sub_sub_sec_content_data.content_name,"This resource is about "+self.context['book_name']+","+str(chapters.chapter)+"," +str(sections_1) +","+ str(sub_sections) +","+str(sub_sub_sections_1),sub_sub_sec_content_data.file_url,sub_sub_sec_content_data.text]
                                         keyword = ""
                                         lastname=OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                         if lastname is None  :
