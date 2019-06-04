@@ -23,6 +23,7 @@ from .serializers import (OtherContributorSerializer,
     HardSpotDetailListSerializer,
     ContentDetailListSerializer,
     OtherContentStatusSerializerdownload,
+    ApprovedOtherContentSerializerSecond,
     )
 from .models import OtherContent, OtherContributors,SchoolName,Tags
 from apps.configuration.models import Book,State
@@ -30,7 +31,7 @@ from django.db.models import Q
 import pandas as pd
 from evolve import settings
 import os
-import re
+import re,string,random
 from shutil import copyfile
 import itertools
 from apps.dataupload.models import Chapter
@@ -38,6 +39,8 @@ from apps.content.serializers import ApprovedContentSerializer,ContentContributo
 from apps.hardspot.serializers import HardspotContributorsSerializer
 from apps.hardspot.models import HardSpot
 from apps.content.models import Content
+
+
 # Create your views here.
 class OtherContributorCreateView(ListCreateAPIView):
     queryset = OtherContributors.objects.all()
@@ -532,7 +535,6 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
             import os
             from shutil import copyfile
             book_id = request.query_params.get('book', None)
-            # import ipdb;ipdb.set_trace()
             state_id = request.query_params.get("state",None)
             
             if book_id is not None:
@@ -557,3 +559,106 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.',"error":str(error)}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+
+class ApprovedOtherContentDownloadSecond(ListAPIView):
+    queryset = Book.objects.all()
+
+
+
+    def get(self,request):
+        try:
+            import threading
+            # import ipdb;importdb.set_trace()
+            state_id = request.query_params.get('state', None)
+            book = request.query_params.get('book', None)
+            tag = request.query_params.get('tag',None)
+            status_ = request.query_params.get('status',None)
+            # random_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=2))
+            # # random_str = "DDDDDD"
+            # data = Job(task_id=random_str, status=False)
+            # data.save()
+            # random n0 
+            # model = job()
+            # job.id= random no
+            # job.Status=pending
+            # import ipdb;ipdb.set_trace()
+            t = threading.Thread(target=self.index, args=(request,state_id,book,tag,status_), kwargs={})
+            t.setDaemon(True)
+            t.start()
+            state_name=State.objects.get(id=state_id).state
+            tag_name = Tags.objects.get(id=tag).tag_name
+            if str(status_) == "approved":
+                file_status = "Approved"
+            else:
+                file_status = "Rejected"
+
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/{}_{}_{}Content.csv'.format(str(state_name),str(tag_name),str(file_status))}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get Activity list.' ,"error" :error}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+    def index(self, request,state_id,book,tag,status_,random_str):
+        final_list = []
+        chapters=Chapter.objects.filter(book_id=book).order_by('id')
+        file_status= ""
+        # import ipdb;ipdb.set_trace()
+        serializer = ApprovedOtherContentSerializerSecond(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
+        for data in serializer.data:
+            for d in data['chapter']:
+                final_list.append(d)
+        
+        if str(status_) == "approved":
+            file_status = "Approved"
+            data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name',"Description of the content in one line - telling about the content",'Content Link/Video Link','text',"Creators",'Attribution (Credits)','File format','Resource Type','Audience',"linked_keywords"])
+        elif str(status_) == "rejected":
+            file_status = "Rejected"
+            data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment',"linked_keywords"])
+        else:
+            data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name',"Description of the content in one line - telling about the content",'Content Link/Video Link','text',"Creators",'Attribution (Credits)','File format','Resource Type','Audience',"linked_keywords"])
+
+            # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
+            # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
+        tag_name=""
+        if tag == "10" or tag == "9":
+            # video and pdf
+            tag_name = Tags.objects.get(id=tag).tag_name
+            data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Content Link"})
+            # data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
+        elif tag == "8":
+            # question answer
+            tag_name = Tags.objects.get(id=tag).tag_name
+            data_frame=(data_frame1.drop(['Content Link/Video Link'], axis=1)).rename(index=str, columns={"Content Name": "Question","text":"Answer"})
+
+        elif tag == "7":
+            # description
+            tag_name = Tags.objects.get(id=tag).tag_name
+            data_frame=(data_frame1.drop(['Content Link/Video Link','Content Name'], axis=1)).rename(index=str, columns={"text":"Learning Outcome Definition"})
+
+        elif tag == "11":
+            # only pdf
+            tag_name = Tags.objects.get(id=tag).tag_name
+            data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link"})
+        else:
+            data_frame=data_frame1
+        state_name=State.objects.get(id=state_id).state
+        exists = os.path.isfile(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Content.csv')
+        path = settings.MEDIA_ROOT + '/files/'
+        if exists:
+            os.remove(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Content.csv')
+        data_frame.to_csv(path + str(state_name) +"_"+str(tag_name)+'_'+file_status+'Content.csv', encoding="utf-8-sig", index=False)
+        
+
+        # t = Job.objects.get(task_id=random_str)
+        # t.status = True  # change field
+        # t.save()
+# job = job()
+# Status=True        # time.sleep(10000)
+            
+

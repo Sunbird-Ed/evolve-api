@@ -23,6 +23,7 @@ from evolve import settings
 accountName = settings.AZURE_ACCOUNT_NAME
 accountKey = settings.AZURE_ACCOUNT_KEY
 containerName= settings.AZURE_CONTAINER
+from threading import Thread
 
 class OtherContributorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -1244,8 +1245,9 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
 
         else:
-            for i in range(10):
-                tempList.append("")
+            tempList = tempList + ["","","","","","","","","",""]
+            # for i in range(10):
+            #     tempList.append("")
             data_str_list.append( tempList)
             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
 
@@ -1311,8 +1313,9 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
                 else:
                     tempList.append( section_data.section )
-                    for i in range(9):
-                        tempList.append("")
+                    tempList = tempList + ["","","","","","","","",""]
+                    # for i in range(9):
+                    #     tempList.append("")
                     data_str_list.append(tempList)
                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
@@ -1375,8 +1378,9 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                         else:
                             tempList.append( sub_section_data.sub_section )
-                            for i in range(8):
-                                tempList.append("")
+                            tempList = tempList + ["","","","","","","",""]
+                            # for i in range(8):
+                            #     tempList.append("")
                             data_str_list.append( tempList)
                             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
@@ -1440,8 +1444,9 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
 
                                 else:
                                     tempList.append(sub_sub_section_data.sub_sub_section)
-                                    for i in range(7):
-                                        tempList.append("")
+                                    tempList = tempList + ["","","","","","",""]
+                                    # for i in range(7):
+                                    #     tempList.append("")
                                     data_str_list.append(tempList)
                                 
 
@@ -1451,3 +1456,310 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
         
         return data_str_list
+
+
+
+class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
+    chapter=serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Chapter
+       
+        fields = ['chapter']
+
+    def getkeywords(self, keywords):
+        keyword = ""
+        for keys in keywords:
+            keyword =  keyword + keys.keyword + ", "
+        return keyword
+
+
+    
+    def get_chapter(self, req):
+        data_str_list = []
+        chapters=Chapter.objects.filter(id=req.id).first()
+
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        if self.context['status'] == "approved":
+            chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
+        elif self.context['status'] == "rejected":
+            chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
+        section, sub_section, sub_sub_section, content_name,file_url, text, keyword, keyword_list = "","","","","","","",""
+        chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id).order_by("id")
+        if chapter_content.exists():
+
+            for chapter_content_data in chapter_content:
+                if  chapter_content_data.chapter_keywords.all().count() != 0:
+                    linked_keyword = ChapterKeyword.objects.filter(id__in=chapter_content_data.chapter_keywords.all())
+                    keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                    
+                else:
+                    keyword_list = ""
+                
+               
+                keyword=self.getkeywords(chapter_keyword)
+                tempList = tempList + [section,sub_section,sub_sub_section,keyword,chapter_content_data.content_name,"This resource is about "+str(chapters.chapter),chapter_content_data.file_url,chapter_content_data.text]
+                keyword = ""
+                lastname=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
+                if lastname is None  :
+                    lastname=""
+                tempList.append(str(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).first_name) + " "+ lastname  )
+                tempList.append(OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name.school_name) 
+                if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                    fileurl = chapter_content_data.file_url
+                    if fileurl is not None and fileurl !="" :
+                        path,ext = os.path.splitext(fileurl)
+                        ext = ext.replace(".","").strip().lower()
+                        if str(ext)== "mp4" or str(ext) == "pdf":
+                            tempList.append(ext)
+                        else:
+                            tempList.append("")
+                    else:
+                        tempList.append("Text")
+                else:
+                    tempList.append("Text")
+
+                if self.context['tag_id'] == "11":
+                    tempList.append("Teach")
+                    tempList.append("Instructor")
+                else:
+                    tempList.append("Learn")
+                    tempList.append("Learner")
+                
+                if self.context['status'] == "rejected":
+                    tempList.append(chapter_content_data.comment)
+                tempList.append(keyword_list)
+                data_str_list.append( tempList)
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        else:
+            keyword=self.getkeywords(chapter_keyword)
+            tempList = tempList + [section,sub_section,sub_sub_section,keyword]
+            keyword = ""
+            for _ in range(10):
+                tempList.append("")
+            if self.context['status'] == "rejected":
+                tempList.append("")
+            data_str_list.append( tempList )
+            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+
+
+        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+        
+        sections=Section.objects.filter(chapter=req).order_by('id')
+        if sections.exists():
+            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
+
+            for section_data in sections:
+                sections_1=section_data.section
+                if self.context['status'] == "approved":
+                    sec_content = OtherContent.objects.filter(section__id=section_data.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
+                elif self.context['status'] == "rejected":
+                    sec_content = OtherContent.objects.filter(section__id=section_data.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
+                sub_section,sub_sub_section,content_name,file_url,text,keyword,keyword_list = "","","","","","",""
+                section_keyword = SectionKeyword.objects.filter(section__id=section_data.id).order_by("id")
+                if sec_content.exists():
+                    for section_content_data in sec_content:
+                        keyword=self.getkeywords(section_keyword)
+                        if  section_content_data.section_keywords.all().count() != 0:
+                            linked_keyword = SectionKeyword.objects.filter(id__in=section_content_data.section_keywords.all())
+                            keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                            
+                        else:
+                            keyword_list = ""
+                        tempList = tempList + [sections_1,sub_section,sub_sub_section,keyword,section_content_data.content_name,"This resource is about "+str(chapters.chapter)+"," +str(sections_1),section_content_data.file_url,section_content_data.text]
+                        keyword=""
+                        lastname=OtherContributors.objects.get(id=section_content_data.content_contributors_id).last_name
+                        if lastname is None  :
+                            lastname=""
+                        tempList.append(str(OtherContributors.objects.get(id=section_content_data.content_contributors_id).first_name) + " "+ str(lastname)  )
+                        tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name)
+                        if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                            fileurl = section_content_data.file_url
+                            if fileurl is not None and fileurl !="" :
+                                path,ext = os.path.splitext(fileurl)
+                                ext = ext.replace(".","").strip().lower()
+                                if str(ext)== "mp4" or str(ext) == "pdf":
+                                    tempList.append(ext)
+                                else:
+                                    tempList.append("")
+                            else:
+                                tempList.append("Text")
+                        else:
+                            tempList.append("Text")
+                       
+                        if self.context['tag_id'] == "11":
+                            tempList.append("Teach")
+                            tempList.append("Instructor")
+                        else:
+                            tempList.append("Learn")
+                            tempList.append("Learner")
+
+
+                        if self.context['status'] == "rejected":
+                            tempList.append(section_content_data.comment)
+                        tempList.append(keyword_list)
+
+                        data_str_list.append( tempList )
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
+                else:
+                    keyword = self.getkeywords(section_keyword)
+                    tempList = tempList + [sections_1,sub_section ,sub_sub_section,keyword]
+                    keyword=""
+                    for _ in range(10):
+                        tempList.append("")
+                    if self.context['status'] == "rejected":
+                        tempList.append("")
+      
+                    data_str_list.append( tempList )
+                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
+
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter , section_data.section]
+
+                sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
+                if sub_section.exists():
+                    for sub_section_data in sub_section:
+                        sub_sections=sub_section_data.sub_section 
+                        sub_sub_section,content_name,file_url,text,keyword,keyword_list = "","","","","",""
+                        sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id).order_by("id")
+                        if self.context['status'] == "approved":
+                            sub_sec_content = OtherContent.objects.filter(sub_section__id=sub_section_data.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
+                        elif self.context['status'] == "rejected":
+                            sub_sec_content = OtherContent.objects.filter(sub_section__id=sub_section_data.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
+                        if sub_sec_content.exists():
+                            for sub_section_content_data in sub_sec_content:
+                                keyword = self.getkeywords(sub_section_keyword)
+                                if  sub_section_content_data.sub_section_keywords.all().count() != 0:
+                                    linked_keyword = SubSectionKeyword.objects.filter(id__in=sub_section_content_data.sub_section_keywords.all())
+                                    keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                                    
+                                else:
+                                    keyword_list = ""
+                                # if (sub_section_content_data.text != ""  or sub_section_content_data.text !=  None ) and (sub_section_content_data.file_url == None or sub_section_content_data.file_url == ""):
+                                #     text= ""
+                                # else: 
+                                #     text = "Text"
+                                tempList = tempList + [sub_sections,sub_sub_section,keyword,sub_section_content_data.content_name,"This resource is about "+str(chapters.chapter)+","+ str(sections_1) +","+ str(sub_sections) ,sub_section_content_data.file_url,sub_section_content_data.text]
+                                keyword = ""
+                                lastname=OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
+                                if lastname is None  :
+                                    lastname=""
+                                tempList.append(str(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).first_name) + " "+ lastname  )
+                                tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name)
+                                if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                                    fileurl = sub_section_content_data.file_url
+                                    if fileurl is not None and fileurl !="" :
+                                        path,ext = os.path.splitext(fileurl)
+                                        ext = ext.replace(".","").strip().lower()
+                                        if str(ext)== "mp4" or str(ext) == "pdf":
+                                            tempList.append(ext)
+                                        else:
+                                            tempList.append("")
+                                    else:
+                                        tempList.append("Text")
+                                else:
+                                    tempList.append("Text")
+                                if self.context['tag_id'] == "11":
+                                    tempList.append("Teach")
+                                    tempList.append("Instructor")
+                                else:
+                                    tempList.append("Learn")
+                                    tempList.append("Learner")
+                                
+                                if self.context['status'] == "rejected":
+                                    tempList.append(sub_section_content_data.comment)
+                                tempList.append(keyword_list)
+                                data_str_list.append( tempList )
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                        else:
+                            keyword = self.getkeywords(sub_section_keyword)
+                            tempList = tempList + [sub_sections,sub_sub_section,keyword]
+                            keyword = ""
+                            for _ in range(10):
+                                tempList.append("")
+                            if self.context['status'] == "rejected":
+                                    tempList.append("")
+            
+                            data_str_list.append( tempList )
+                            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+         
+                        sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
+                        if sub_sub_sections.exists():
+                            for sub_sub_section in sub_sub_sections:
+                                sub_sub_sections_1 = sub_sub_section.sub_sub_section 
+                                content_name,file_url,text,keyword,keyword_list = "","","","",""
+                                sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id).order_by("id")
+                                if self.context['status'] == "approved":
+                                    sub_sub_sec_content = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
+                                elif self.context['status'] == "rejected":
+                                    sub_sub_sec_content = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
+
+
+                                if sub_sub_sec_content.exists():
+
+                                    for sub_sub_sec_content_data in sub_sub_sec_content:
+                                        keyword = self.getkeywords(sub_sub_section_keyword)
+                                        # keyword = self.getkeywords(sub_section_keyword)
+                                        if  sub_sub_sec_content_data.sub_sub_section_keywords.all().count() != 0:
+                                            linked_keyword = SubSubSectionKeyword.objects.filter(id__in=sub_sub_sec_content_data.sub_sub_section_keywords.all())
+                                            keyword_list =','.join([str(x.keyword) for x in linked_keyword.all()])
+                                            
+                                        else:
+                                            keyword_list = ""
+                                        # if (sub_sub_sec_content_data.text != ""  or sub_sub_sec_content_data.text !=  None ) and (sub_sub_sec_content_data.file_url == None or sub_sub_sec_content_data.file_url == ""):
+                                        #     text= ""
+                                        # else: 
+                                        #     text = "Text"
+                                        tempList = tempList + [sub_sub_sections_1,keyword,sub_sub_sec_content_data.content_name,"This resource is about "+str(chapters.chapter)+"," +str(sections_1) +","+ str(sub_sections) +","+str(sub_sub_sections_1),sub_sub_sec_content_data.file_url,sub_sub_sec_content_data.text]
+                                        keyword = ""
+                                        lastname=OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
+                                        if lastname is None  :
+                                            lastname=""
+                                        tempList.append(str(OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).first_name) + " "+ lastname  )
+                                        tempList.append(OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).school_name.school_name)
+                                        if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
+                                            fileurl = sub_sub_sec_content_data.file_url
+                                            if fileurl is not None and fileurl !="" :
+                                                path,ext = os.path.splitext(fileurl)
+                                                ext = ext.replace(".","").strip().lower()
+                                                if str(ext)== "mp4" or str(ext) == "pdf":
+                                                    tempList.append(ext)
+                                                else:
+                                                    tempList.append("")
+                                            else:
+                                                tempList.append("Text")
+                                        else:
+                                            tempList.append("Text")
+
+                                        if self.context['tag_id'] == "11":
+                                            tempList.append("Teach")
+                                            tempList.append("Instructor")
+                                        else:
+                                            tempList.append("Learn")
+                                            tempList.append("Learner")
+                                            
+                                        if self.context['status'] == "rejected":
+                                            tempList.append(sub_sub_sec_content_data.comment)
+                                        tempList.append(keyword_list)
+                                        data_str_list.append( tempList )
+                                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+
+                                else:
+                                    keyword = self.getkeywords(sub_sub_section_keyword)
+                                    tempList = tempList + [sub_sub_sections_1,keyword]
+                                    keyword = ""
+                                    for _ in range(10):
+                                        tempList.append("")
+                                    if self.context['status'] == "rejected":
+                                        tempList.append("")
+                                    data_str_list.append( tempList )
+                                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter]
+
+        for _i in data_str_list:
+            print(len(_i))
+        return data_str_list
+
