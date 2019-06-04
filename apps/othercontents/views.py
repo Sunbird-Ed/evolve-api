@@ -597,14 +597,14 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             else:
                 file_status = "Rejected"
 
-            context = {"success": True, "message": "Activity List",  "data": 'media/files/{}_{}_{}Content.csv'.format(str(state_name),str(tag_name),str(file_status))}
+            context = {"success": True, "message": "Activity List",  "data": 'media/files/{}_{}_{}Contents.csv'.format(str(state_name),str(tag_name),str(file_status))}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.' ,"error" :error}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
-    def index(self, request,state_id,book,tag,status_,random_str):
+    def index(self, request,state_id,book,tag,status_):
         final_list = []
         chapters=Chapter.objects.filter(book_id=book).order_by('id')
         file_status= ""
@@ -648,13 +648,13 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
         else:
             data_frame=data_frame1
         state_name=State.objects.get(id=state_id).state
-        exists = os.path.isfile(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Content.csv')
+        exists = os.path.isfile(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Contents.csv')
         path = settings.MEDIA_ROOT + '/files/'
         if exists:
-            os.remove(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Content.csv')
-        data_frame.to_csv(path + str(state_name) +"_"+str(tag_name)+'_'+file_status+'Content.csv', encoding="utf-8-sig", index=False)
+            os.remove(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Contents.csv')
+        data_frame.to_csv(path + str(state_name) +"_"+str(tag_name)+'_'+file_status+'Contents.csv', encoding="utf-8-sig", index=False)
         
-
+        time.sleep(10000)
         # t = Job.objects.get(task_id=random_str)
         # t.status = True  # change field
         # t.save()
