@@ -603,7 +603,6 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
     
     def index(self, request,state_id,tag,status_):
         try:
-            # import ipdb;ipdb.set_trace()
             final_list = []
             chapters=Chapter.objects.filter(book__subject__grade__medium__state__id=state_id).order_by('id')
             file_status= ""
