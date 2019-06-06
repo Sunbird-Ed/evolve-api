@@ -613,7 +613,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             
             if str(status_) == "approved":
                 file_status = "Approved"
-                data_frame1 = pd.DataFrame(final_list , columns=['Content Name',"Description of the content in one line - telling about the content",'Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link'])
+                data_frame1 = pd.DataFrame(final_list , columns=['Content Name',"Description of the content in one line - telling about the content",'Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link'])
             elif str(status_) == "rejected":
                 file_status = "Rejected"
                 data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment'])
@@ -626,7 +626,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             if tag == "10" or tag == "9":
                 # video and pdf
                 tag_name = Tags.objects.get(id=tag).tag_name
-                data_frame=(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link": ""})
+                data_frame=(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "File path"})
                 # data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
             elif tag == "8":
                 # question answer
@@ -641,7 +641,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             elif tag == "11":
                 # only pdf
                 tag_name = Tags.objects.get(id=tag).tag_name
-                data_frame=(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link"})
+                data_frame=(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
             else:
                 data_frame=data_frame1
             state_name=State.objects.get(id=state_id).state
