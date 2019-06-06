@@ -108,3 +108,11 @@ class OtherContent(models.Model):
     class Meta:
         verbose_name='Other Content'
 
+
+class Job(models.Model):
+    task_id = models.CharField(max_length=200)
+    status = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.random_id
+
