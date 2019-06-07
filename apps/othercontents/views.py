@@ -608,7 +608,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             final_list = []
             chapters=Chapter.objects.filter(book__subject__grade__medium__state__id=state_id).order_by('id')
             file_status= ""
-            if tag == "2":
+            if tag == "1":
                 # import ipdb;ipdb.set_trace()
                 serializer = ApprovedOtherContentSerializerBulkDownload(chapters, many=True,context={"status" : str(status_)})
                 for data in serializer.data:
@@ -658,7 +658,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 df =(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
                 data_frame = df.drop_duplicates()
             elif tag == "2":
-                tag_name = Tags.objects.get(id=tag).tag_name
+                tag_name = "Content"
                 df=(data_frame1.drop(['Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
                 data_frame = df.drop_duplicates()
             else:
