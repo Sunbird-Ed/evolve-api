@@ -596,6 +596,8 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 file_status = "Approved"
             else:
                 file_status = "Rejected"
+            if tag == "1":
+                tag_name = "Content"
             context = {"success": True, "message": "Activity List", "id":random_str, "data": 'media/files/{}_{}_{}Contents.csv'.format(str(state_name),str(tag_name),str(file_status))}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
@@ -657,7 +659,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 tag_name = Tags.objects.get(id=tag).tag_name
                 df =(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
                 data_frame = df.drop_duplicates()
-            elif tag == "2":
+            elif tag == "1":
                 tag_name = "Content"
                 df=(data_frame1.drop(['Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
                 data_frame = df.drop_duplicates()
