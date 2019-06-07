@@ -1107,7 +1107,7 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                     else:
                         tempList.append("")
                 tempList.append(chapter_content_data.video)
-                # data_str_list.append( tempList)
+                data_str_list.append( tempList)
                 tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter ]
         else:
             tempList = ["",""] + tempList + [section,sub_section,sub_sub_section]
