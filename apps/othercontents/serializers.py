@@ -1487,7 +1487,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
             chapter = (chapter_[1].replace(")",""))
         else:
             chapter = chapter_[0]
-        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book ,chapter]
+        tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book ,chapter]
         if self.context['status'] == "approved":
             chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
         elif self.context['status'] == "rejected":
@@ -1540,7 +1540,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                 if self.context['status'] == "rejected":
                     tempList.append(chapter_content_data.comment)
                 data_str_list.append( tempList)
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter ]
+                tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter ]
         else:
             keyword = self.getkeywords(chapter_keyword)
             tempList = ["",""] + tempList + [section,sub_section,sub_sub_section]
@@ -1553,15 +1553,15 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
             if self.context['status'] == "rejected":
                 tempList.append("")
             data_str_list.append( tempList )
-            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter ]
+            tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter ]
 
 
-        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter ]
+        tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter ]
         
         sections=Section.objects.filter(chapter=req).order_by('id')
         if sections.exists():
 
-            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book,chapter ]
+            tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book,chapter ]
 
             for section_data in sections:
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id).order_by("id")
@@ -1614,7 +1614,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                             tempList.append(section_content_data.comment)
 
                         data_str_list.append( tempList )
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter]
+                        tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter]
                 else:
                     keyword = self.getkeywords(section_keyword)
                     tempList = ["", ""] + tempList + [sections_1,sub_section ,sub_sub_section]
@@ -1628,9 +1628,9 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                         tempList.append("")
       
                     data_str_list.append( tempList )
-                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter ]
+                    tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter ]
 
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter , section_data.section]
+                tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter , section_data.section]
 
                 sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
                 if sub_section.exists():
@@ -1684,7 +1684,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                 if self.context['status'] == "rejected":
                                     tempList.append(sub_section_content_data.comment)
                                 data_str_list.append( tempList )
-                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter, section_data.section ]
+                                tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section ]
                         else:
                             keyword = self.getkeywords(sub_section_keyword)
                             tempList = ["",""]+tempList + [sub_sections,sub_sub_section]
@@ -1697,9 +1697,9 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                     tempList.append("")
             
                             data_str_list.append( tempList )
-                            tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter, section_data.section ]
+                            tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section ]
 
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
+                        tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
          
                         sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
                         if sub_sub_sections.exists():
@@ -1758,7 +1758,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                         if self.context['status'] == "rejected":
                                             tempList.append(sub_sub_sec_content_data.comment)
                                         data_str_list.append( tempList )
-                                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
+                                        tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
 
                                 else:
                                     keyword = self.getkeywords(sub_sub_section_keyword)
@@ -1771,10 +1771,10 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                     if self.context['status'] == "rejected":
                                         tempList.append("")
                                     data_str_list.append( tempList )
-                                    tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
-                                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
-                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter, section_data.section ]
-                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapter]
+                                    tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
+                                tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
+                        tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade,chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section ]
+                tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade,chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter]
 
         for _i in data_str_list:
             print(len(_i))
