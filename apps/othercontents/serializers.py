@@ -1,5 +1,5 @@
 from rest_framework import routers, serializers
-from .models import OtherContributors,OtherContent,SchoolName
+from .models import OtherContributors,OtherContent,SchoolName,Job
 from apps.dataupload.models import (Chapter,
     Section,
     SubSection,
@@ -1800,3 +1800,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
             print(len(_i))
         return data_str_list
 
+class JobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Job
+        fields = '__all__'

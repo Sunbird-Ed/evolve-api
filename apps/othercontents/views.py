@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import OtherContributors
+from .models import OtherContributors,Job
 from rest_framework import status
 from rest_framework.generics import (
     ListAPIView,
@@ -24,6 +24,7 @@ from .serializers import (OtherContributorSerializer,
     ContentDetailListSerializer,
     OtherContentStatusSerializerdownload,
     ApprovedOtherContentSerializerSecond,
+    JobSerializer,
     )
 from .models import OtherContent, OtherContributors,SchoolName,Tags
 from apps.configuration.models import Book,State
@@ -576,16 +577,17 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
             status_ = request.query_params.get('status',None)
-            # random_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=2))
-            # random_str = "  "
-            # data = Job(task_id=random_str, status=False)
-            # data.save()
-            # # random n0 
-            # # model = job()
-            # # job.id= random no
-            # # job.Status=pending
-            # # import ipdb;ipdb.set_trace()
-            t = threading.Thread(target=self.index, args=(request,state_id,tag,status_), kwargs={})
+            random_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+            # random_str = "YGJAQ3"
+             
+            if Job.objects.filter(task_id=random_str).exists() is False:
+                data = Job(task_id=random_str, status=False)
+                data.save()
+            else:
+                exists.status = False
+                exists.save()
+            
+            t = threading.Thread(target=self.index, args=(request,state_id,tag,status_,random_str), kwargs={})
             t.setDaemon(True)
             t.start()
             state_name=State.objects.get(id=state_id).state
@@ -594,14 +596,14 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 file_status = "Approved"
             else:
                 file_status = "Rejected"
-            context = {"success": True, "message": "Activity List",  "data": 'media/files/{}_{}_{}Contents.csv'.format(str(state_name),str(tag_name),str(file_status))}
+            context = {"success": True, "message": "Activity List", "id":random_str, "data": 'media/files/{}_{}_{}Contents.csv'.format(str(state_name),str(tag_name),str(file_status))}
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Activity list.' ,"error" :str(error)}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
-    def index(self, request,state_id,tag,status_):
+    def index(self, request,state_id,tag,status_,random_str):
         try:
             final_list = []
             chapters=Chapter.objects.filter(book__subject__grade__medium__state__id=state_id).order_by('id')
@@ -670,11 +672,25 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
         except Exception as e:
             print(str(e))
         
-        # # time.sleep(10000)
-        # t = Job.objects.get(task_id=random_str)
-        # t.status = True  # change field
-        # t.save()
+        # time.sleep(10000)
+        t = Job.objects.get(task_id=random_str)
+        t.status = True  # change field
+        t.save()
 # job = job()
 # Status=True        # time.sleep(10000)
             
 
+
+class JobStatus(ListCreateAPIView):
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
+    def get(self, request):
+        try:
+            task_id = request.query_params.get("id" , None)
+            queryset = Job.objects.filter(task_id = task_id)
+            serializer = JobSerializer(queryset, many=True)
+            context = {"success": True, "message": "Job Status","data": serializer.data}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get Job Status.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

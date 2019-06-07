@@ -20,8 +20,8 @@ urlpatterns = [
     path('othercontributorsdownload',views.OtherContentContributorsDownloadView.as_view(),name="OtherContentContributorsDownloadView"),
     path('approvedothercontentdownload',views.ApprovedOtherContentDownload.as_view(),name="ApprovedOtherContentDownloadView"),
     path("othercontentstatusdownload",views.OtherContentStatusDownloadView.as_view(),name="OtherContentStatusDownloadView"),
-    path("ApprovedOtherContentDownloadSecond",views.ApprovedOtherContentDownloadSecond.as_view(),name="ApprovedOtherContentDownloadSecondView")
-
+    path("ApprovedOtherContentDownloadSecond",views.ApprovedOtherContentDownloadSecond.as_view(),name="ApprovedOtherContentDownloadSecondView"),
+    path("filestatus",views.JobStatus.as_view(),name="JobStatusView")
 
 
 
