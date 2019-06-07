@@ -613,7 +613,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                         final_list.append(d)
                 if str(status_) == "approved":
                     file_status = "Approved"
-                    data_frame1 = pd.DataFrame(final_list , columns=['Content Name',"Description of the content in one line - telling about the content",'Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link'])
+                    data_frame1 = pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link'])
         
 
             else:
@@ -624,12 +624,12 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 
                 if str(status_) == "approved":
                     file_status = "Approved"
-                    data_frame1 = (pd.DataFrame(final_list , columns=['Content Name',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link']))
+                    data_frame1 = (pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link']))
                 elif str(status_) == "rejected":
                     file_status = "Rejected"
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment'])
                 else:
-                    data_frame1 = pd.DataFrame(final_list , columns=['Content Name',"Description of the content in one line - telling about the content",'Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Content Link/Video Link','text',"Creators",'Attribution (Credits)','File format','Resource Type','Audience'])
+                    data_frame1 = pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Content Link/Video Link','text',"Creators",'Attribution (Credits)','File format','Resource Type','Audience'])
 
                 # repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
                 # data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
@@ -643,7 +643,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             elif tag == "8":
                 # question answer
                 tag_name = Tags.objects.get(id=tag).tag_name
-                df=(data_frame1.drop(['Content Link/Video Link','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Name": "Question","text":"Answer"})
+                df=(data_frame1.drop(['Content Link/Video Link','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Name of the Content": "Question","text":"Answer"})
                 data_frame = df.drop_duplicates()
             elif tag == "7":
                 # description
