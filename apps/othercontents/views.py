@@ -609,6 +609,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             chapters=Chapter.objects.filter(book__subject__grade__medium__state__id=state_id).order_by('id')
             file_status= ""
             if tag == "2":
+                # import ipdb;ipdb.set_trace()
                 serializer = ApprovedOtherContentSerializerBulkDownload(chapters, many=True,context={"status" : str(status_)})
                 for data in serializer.data:
                     for d in data['chapter']:
@@ -616,8 +617,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 if str(status_) == "approved":
                     file_status = "Approved"
                     data_frame1 = pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class' ,'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link'])
-        
-
+ 
             else:
                 serializer = ApprovedOtherContentSerializerSecond(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
                 for data in serializer.data:
@@ -657,7 +657,8 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 tag_name = Tags.objects.get(id=tag).tag_name
                 df =(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
                 data_frame = df.drop_duplicates()
-            elif tag == "1":
+            elif tag == "2":
+                tag_name = Tags.objects.get(id=tag).tag_name
                 df=(data_frame1.drop(['Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
                 data_frame = df.drop_duplicates()
             else:
@@ -669,15 +670,14 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 os.remove(str(state_name)+"_"+str(tag_name)+'_'+file_status+'Contents.csv')
             data_frame.to_csv(path + str(state_name) +"_"+str(tag_name)+'_'+file_status+'Contents.csv', encoding="utf-8-sig", index=False)
 
+            t = Job.objects.get(task_id=random_str)
+            t.status = True  # change field
+            t.save()
+
         except Exception as e:
             print(str(e))
         
-        # time.sleep(10000)
-        t = Job.objects.get(task_id=random_str)
-        t.status = True  # change field
-        t.save()
-# job = job()
-# Status=True        # time.sleep(10000)
+
             
 
 
