@@ -608,7 +608,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             final_list = []
             chapters=Chapter.objects.filter(book__subject__grade__medium__state__id=state_id).order_by('id')
             file_status= ""
-            if tag == "1":
+            if tag == "2":
                 serializer = ApprovedOtherContentSerializerBulkDownload(chapters, many=True,context={"status" : str(status_)})
                 for data in serializer.data:
                     for d in data['chapter']:
