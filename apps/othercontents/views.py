@@ -615,7 +615,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                         final_list.append(d)
                 if str(status_) == "approved":
                     file_status = "Approved"
-                    data_frame1 = pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link'])
+                    data_frame1 = pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class' ,'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link'])
         
 
             else:
@@ -658,7 +658,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
                 df =(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
                 data_frame = df.drop_duplicates()
             elif tag == "1":
-                df=(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
+                df=(data_frame1.drop(['Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
                 data_frame = df.drop_duplicates()
             else:
                 data_frame=data_frame1

@@ -1061,16 +1061,23 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
     class Meta:
         model = Chapter
         fields = ['chapter']
+    
+    def getkeywords(self, keywords):
+        keyword = ""
+        for keys in keywords:
+            keyword =  keyword + keys.keyword + ", "
+        return keyword
+
     def get_chapter(self, req):
         try:
             data_str_list = []
             chapters=Chapter.objects.filter(id=req.id).first()
-            # chapter_ = (chapters.chapter).split("(")
-            # if (len(chapter_)>1) :
-            #     chapter = (chapter_[1].replace(")",""))
-            # else:
-            #     chapter = chapter_[0]
-            # import ipdb;ipdb.set_trace()
+            chapter_ = (chapters.chapter).split("(")
+            if (len(chapter_)>1) :
+                chapter = (chapter_[1].replace(")",""))
+                chapter = ""
+            else:
+                chapter = ""
             chapter =""
             tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book ,chapter]
             if self.context['status'] == "approved":
@@ -1081,8 +1088,10 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
             if chapter_content.exists(): 
                 
                 for chapter_content_data in chapter_content:
+                    keyword = self.getkeywords(chapter_keyword)
                     tempList = [chapter_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapter)] + tempList + [section,sub_section,sub_sub_section,]
                     tempList.append("Learner")
+                    tempList.append(keyword)
                     tempList.append("Learn")
                     lastname=ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
                     if lastname is None  :
@@ -1124,8 +1133,10 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                     section_keyword = SectionKeyword.objects.filter(section__id=section_data.id).order_by("id")
                     if sec_content.exists():
                         for section_content_data in sec_content:
+                            keyword = self.getkeywords(chapter_keyword)
                             tempList = [section_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapter)+"," +str(sections_1)] +tempList + [sections_1,sub_section,sub_sub_section]
                             tempList.append("Learner")
+                            tempList.append(keyword)
                             tempList.append("Learn")
                             lastname=ContentContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                             if lastname is None  :
@@ -1164,9 +1175,12 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                             if self.context['status'] == "approved":
                                 sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True).order_by("id")
                             if sub_sec_content.exists():
+
                                 for sub_section_content_data in sub_sec_content:
+                                    keyword = self.getkeywords(chapter_keyword)
                                     tempList = [sub_section_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapter)+","+ str(sections_1) +","+ str(sub_sections)]+tempList + [sub_sections,sub_sub_section ]
                                     tempList.append("Learner")
+                                    tempList.append(keyword)
                                     tempList.append("Learn")
                                     lastname=ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                     if lastname is None  :
@@ -1215,9 +1229,10 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
 
                                         for sub_sub_sec_content_data in sub_sub_sec_content:
                                             
-                                            
+                                            keyword = self.getkeywords(chapter_keyword)
                                             tempList = [sub_sub_sec_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)+"," +str(sections_1) +","+ str(sub_sections) +","+str(sub_sub_sections_1)]+tempList + [sub_sub_sections_1]
                                             tempList.append("Learner")
+                                            tempList.append(keyword)
                                             tempList.append("Learn")
                                             lastname=ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                             if lastname is None  :
