@@ -1087,7 +1087,12 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
         if chapter_content.exists(): 
             
             for chapter_content_data in chapter_content:
-                keyword = self.getkeywords(chapter_keyword)
+                if  chapter_content_data.chapter_keywords.all().count() != 0:
+                    linked_keyword = ChapterKeyword.objects.filter(id__in=chapter_content_data.chapter_keywords.all())
+                    keyword =','.join([str(x.keyword) for x in linked_keyword.all()])
+                    
+                else:
+                    keyword = ""
                 tempList = [chapter_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)] + tempList + [section,sub_section,sub_sub_section,]
                 tempList.append("Learner")
                 tempList.append(keyword)
@@ -1132,7 +1137,12 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id).order_by("id")
                 if sec_content.exists():
                     for section_content_data in sec_content:
-                        keyword = self.getkeywords(chapter_keyword)
+                        if  section_content_data.section_keywords.all().count() != 0:
+                            linked_keyword = SectionKeyword.objects.filter(id__in=section_content_data.section_keywords.all())
+                            keyword =','.join([str(x.keyword) for x in linked_keyword.all()])
+                            
+                        else:
+                            keyword = ""
                         tempList = [section_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)+"," +str(sections_1)] +tempList + [sections_1,sub_section,sub_sub_section]
                         tempList.append("Learner")
                         tempList.append(keyword)
@@ -1176,7 +1186,12 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                         if sub_sec_content.exists():
 
                             for sub_section_content_data in sub_sec_content:
-                                keyword = self.getkeywords(chapter_keyword)
+                                if  sub_section_content_data.sub_section_keywords.all().count() != 0:
+                                    linked_keyword = SubSectionKeyword.objects.filter(id__in=sub_section_content_data.sub_section_keywords.all())
+                                    keyword =','.join([str(x.keyword) for x in linked_keyword.all()])
+                                    
+                                else:
+                                    keyword = ""
                                 tempList = [sub_section_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)+","+ str(sections_1) +","+ str(sub_sections)]+tempList + [sub_sections,sub_sub_section ]
                                 tempList.append("Learner")
                                 tempList.append(keyword)
@@ -1227,8 +1242,14 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                                 if sub_sub_sec_content.exists():
 
                                     for sub_sub_sec_content_data in sub_sub_sec_content:
+                                        if  sub_sub_sec_content_data.sub_sub_section_keywords.all().count() != 0:
+                                            linked_keyword = SubSubSectionKeyword.objects.filter(id__in=sub_sub_sec_content_data.sub_sub_section_keywords.all())
+                                            keyword =','.join([str(x.keyword) for x in linked_keyword.all()])
+                                            
+                                        else:
+                                            keyword = ""
+
                                         
-                                        keyword = self.getkeywords(chapter_keyword)
                                         tempList = [sub_sub_sec_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)+"," +str(sections_1) +","+ str(sub_sections) +","+str(sub_sub_sections_1)]+tempList + [sub_sub_sections_1]
                                         tempList.append("Learner")
                                         tempList.append(keyword)
