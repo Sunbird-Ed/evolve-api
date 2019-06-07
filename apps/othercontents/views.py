@@ -577,7 +577,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
             status_ = request.query_params.get('status',None)
-            random_str = ''.join(random.choice(string.ascii_letters) for m in xrange(4))
+            random_str = ''.join(random.choice(string.ascii_letters) for m in range(4))
             # random_str = "YGJAQ3"
              
             if Job.objects.filter(task_id=random_str).exists() is False:
