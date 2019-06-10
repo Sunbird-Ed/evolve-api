@@ -815,7 +815,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id)
                                 if self.context['status'] == "approved":
                                     sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
-                                elif:
+                                elif self.context['status'] == "rejected":
                                     sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=False).exclude(approved_by=None)
                                 else:
                                     sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
