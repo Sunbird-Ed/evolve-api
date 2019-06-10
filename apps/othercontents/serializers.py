@@ -1531,7 +1531,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                     tempList.append("")
                 
 
-                tempList.append("icon")
+                tempList.append("") # for icon
                 if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                     fileurl = chapter_content_data.file_url
                     if fileurl is not None and fileurl !="" :
@@ -1617,7 +1617,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                         else:
                             tempList.append("")
                         
-                        tempList.append("icon")
+                        tempList.append("") #for icon
                         if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                             fileurl = section_content_data.file_url
                             if fileurl is not None and fileurl !="" :
@@ -1695,7 +1695,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                     tempList.append(schoolname.school_name)
                                 else:
                                     tempList.append("")
-                                tempList.append("icon")
+                                tempList.append("") #for icon
                                 if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                                     fileurl = sub_section_content_data.file_url
                                     if fileurl is not None and fileurl !="" :
@@ -1778,7 +1778,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                         else:
                                             tempList.append("")
                                         
-                                        tempList.append("icon")
+                                        tempList.append("") #for icon
                                         if self.context['tag_id'] == "9" or self.context['tag_id'] == "10" or self.context['tag_id'] == "11":
                                             fileurl = sub_sub_sec_content_data.file_url
                                             if fileurl is not None and fileurl !="" :

@@ -1102,7 +1102,7 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                     lastname=""
                 tempList.append(str(ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).first_name) + " "+ lastname  )
                 tempList.append(ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).school_name) 
-                tempList.append("icon")
+                tempList.append("") # for icon
                 fileurl = chapter_content_data.video
                 if fileurl is not None and fileurl !="" :
                     path,ext = os.path.splitext(fileurl)
@@ -1152,7 +1152,7 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                             lastname=""
                         tempList.append(str(ContentContributors.objects.get(id=section_content_data.content_contributors_id).first_name) + " "+ str(lastname)  )
                         tempList.append(ContentContributors.objects.get(id=section_content_data.content_contributors_id).school_name)
-                        tempList.append("icon")
+                        tempList.append("") # for icon
                         fileurl = section_content_data.video
                         if fileurl is not None and fileurl !="" :
                             path,ext = os.path.splitext(fileurl)
@@ -1201,7 +1201,7 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                                     lastname=""
                                 tempList.append(str(ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).first_name) + " "+ lastname  )
                                 tempList.append(ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name)
-                                tempList.append("icon")
+                                tempList.append("") # for icon
                                 fileurl = sub_section_content_data.video
                                 if fileurl is not None and fileurl !="" :
                                     path,ext = os.path.splitext(fileurl)
@@ -1259,7 +1259,7 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                                             lastname=""
                                         tempList.append(str(ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).first_name) + " "+ lastname  )
                                         tempList.append(ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).school_name)
-                                        tempList.append("icon")
+                                        tempList.append("") # for icon
                                         fileurl = sub_sub_sec_content_data.video
                                         if fileurl is not None and fileurl !="" :
                                             path,ext = os.path.splitext(fileurl)
