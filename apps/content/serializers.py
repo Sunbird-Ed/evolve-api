@@ -672,7 +672,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
             keyword=self.getkeywords(chapter_keyword)
             tempList = tempList + [section,sub_section,sub_sub_section,keyword]
             keyword = ""
-            for _ in range(4):
+            for _ in range(5):
                 tempList.append("")
             if self.context['status']=="rejected":
                     tempList.append("")
@@ -734,7 +734,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                     keyword = self.getkeywords(section_keyword)
                     tempList = tempList + [sections_1,sub_section ,sub_sub_section,keyword]
                     keyword=""
-                    for _ in range(4):
+                    for _ in range(5):
                         tempList.append("")
                     if self.context['status']=="rejected":
                         tempList.append("")
@@ -797,7 +797,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                             keyword = self.getkeywords(sub_section_keyword)
                             tempList = tempList + [sub_sections,sub_sub_section,keyword]
                             keyword = ""
-                            for _ in range(4):
+                            for _ in range(5):
                                 tempList.append("")
                             if self.context['status']=="rejected":
                                 tempList.append("")
@@ -857,7 +857,7 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                     keyword = self.getkeywords(sub_sub_section_keyword)
                                     tempList = tempList + [sub_sub_sections_1,keyword]
                                     keyword = ""
-                                    for _ in range(4):
+                                    for _ in range(5):
                                         tempList.append("")
                                     if self.context['status']=="rejected":
                                         tempList.append("")

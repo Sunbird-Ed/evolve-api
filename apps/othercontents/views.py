@@ -449,7 +449,6 @@ class ApprovedOtherContentDownload(ListAPIView):
 
     def get(self, request):
         try:
-
             final_list = []
             state_id = request.query_params.get('state', None)
             book = request.query_params.get('book', None)
@@ -468,6 +467,7 @@ class ApprovedOtherContentDownload(ListAPIView):
                     file_status = "Approved"
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','linked_keywords'])
                 if str(status_) == "rejected":
+
                     file_status = "Rejected"
                     data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords','Content Name','Content Link',"Creators",'File format','Comment','linked_keywords'])
 
