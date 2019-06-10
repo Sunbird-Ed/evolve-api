@@ -684,8 +684,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
         if sections.exists():
             for section_data in sections:
                 sections_1 = (section_data.section)
-
-                sec_content = Content.objects.filter(section__id=section_data.id,approved=True)
+                if self.context['status'] == "approved":
+                    sec_content = Content.objects.filter(section__id=section_data.id,approved=True)
+                else:
+                    sec_content = Content.objects.filter(section__id=section_data.id,approved=False).exclude(approved_by=None)
                 sub_section,sub_sub_section,content_name,file_url,keyword,keyword_list = "","","","","",""
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id)
               
@@ -745,8 +747,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                         sub_sub_section,content_name,file_url,keyword,keyword_list = "","","","",""
 
                         sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id)
-                      
-                        sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
+                        if self.context['status'] == "approved":
+                            sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
+                        else:
+                            sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=False).exclude(approved_by=None)
                         if sub_sec_content.exists():
                             for sub_section_content_data in sub_sec_content:
                                 keyword = self.getkeywords(sub_section_keyword)
@@ -803,7 +807,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 sub_sub_sections_1=( sub_sub_section.sub_sub_section )
                                 keyword = ""
                                 sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id)
-                                sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
+                                if self.context['status'] == "approved":
+                                    sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
+                                else:
+                                    sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=False).exclude(approved_by=None)
                                 if sub_sub_sec_content.exists():
                                    for sub_sub_sec_content_data in sub_sub_sec_content:
                                         keyword = self.getkeywords(sub_sub_section_keyword)
