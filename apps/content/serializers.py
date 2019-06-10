@@ -1109,9 +1109,9 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                 else:
                     keyword = ""
                 tempList = [chapter_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)] + tempList + [section,sub_section,sub_sub_section,]
-                tempList.append("Learner")
-                tempList.append(keyword)
                 tempList.append("Learn")
+                tempList.append(keyword)
+                tempList.append("Learner")
                 lastname=ContentContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
                 if lastname is None  :
                     lastname=""
@@ -1159,9 +1159,9 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                         else:
                             keyword = ""
                         tempList = [section_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)+"," +str(sections_1)] +tempList + [sections_1,sub_section,sub_sub_section]
-                        tempList.append("Learner")
-                        tempList.append(keyword)
                         tempList.append("Learn")
+                        tempList.append(keyword)
+                        tempList.append("Learner")
                         lastname=ContentContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                         if lastname is None  :
                             lastname=""
@@ -1208,9 +1208,9 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                                 else:
                                     keyword = ""
                                 tempList = [sub_section_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)+","+ str(sections_1) +","+ str(sub_sections)]+tempList + [sub_sections,sub_sub_section ]
-                                tempList.append("Learner")
-                                tempList.append(keyword)
                                 tempList.append("Learn")
+                                tempList.append(keyword)
+                                tempList.append("Learner")
                                 lastname=ContentContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                 if lastname is None  :
                                     lastname=""
@@ -1266,9 +1266,9 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
 
                                         
                                         tempList = [sub_sub_sec_content_data.content_name,"This resource is about "+str(chapters.book)+","+str(chapters.chapter)+"," +str(sections_1) +","+ str(sub_sections) +","+str(sub_sub_sections_1)]+tempList + [sub_sub_sections_1]
-                                        tempList.append("Learner")
-                                        tempList.append(keyword)
                                         tempList.append("Learn")
+                                        tempList.append(keyword)
+                                        tempList.append("Learner")
                                         lastname=ContentContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                         if lastname is None  :
                                             lastname=""
