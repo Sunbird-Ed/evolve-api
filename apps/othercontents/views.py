@@ -363,19 +363,41 @@ class OtherContentDetailList(ListAPIView):
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# @permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
     queryset = OtherContent.objects.all()
     serializer_class = OtherContentContributorsSerializer
 
-    def get(self, request):
-        count = ""
-        try:
+    
 
-            final_list = []
+    def get(self ,request):
+        try:
             state_id = request.query_params.get('state', None)
             tag = request.query_params.get('tag',None)
-            tag_name=""
+            if tag is not None and state_id is not None:
+                tag_name = str(Tags.objects.get(id=tag).tag_name)
+                state_name=State.objects.get(id=state_id).state
+            random_str = ''.join(random.choice(string.ascii_letters) for m in range(4))
+            if Job.objects.filter(task_id=random_str).exists() is False:
+                data = Job(task_id=random_str, status=False)
+                data.save()
+            else:
+                exists.status = False
+                exists.save()
+            t = threading.Thread(target=self.index, args=(request,state_id,state_name,tag,tag_name,random_str), kwargs={})
+            t.setDaemon(True)
+            t.start()
+            context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name),"id":random_str}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = { 'success': "false", 'message': 'Failed to get Activity list.',"error":  str(error)}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+    def index(self, request,state_id,state_name,tag,tag_name,random_str):
+        try:
+            final_list = []
             if state_id is not None and tag == "1":
                 queryset = Content.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
                 serializer = ContentContributorsSerializer(queryset, many=True)
@@ -387,9 +409,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                     for d in res_list:
                         final_list.append(d)
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name','grade','subject']).drop_duplicates()
-                tag_name="content"
             elif tag == "2":
-                
                 queryset = HardSpot.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
                 serializer = HardspotContributorsSerializer(queryset, many=True)
                 res_list = [] 
@@ -400,30 +420,21 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                     for d in res_list:
                         final_list.append(d)
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name','grade','subject']).drop_duplicates()
-                tag_name="hardspot"
             else:
-                count = "1st"
                 if tag is not None:
-                    tag_name = str(Tags.objects.get(id=tag).tag_name)+"_content"
                     queryset = OtherContent.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id,tags__id=tag)| Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id,tags__id=tag)| Q(section__chapter__book__subject__grade__medium__state__id= state_id,tags__id=tag) | Q(chapter__book__subject__grade__medium__state__id = state_id , tags__id=tag) ).distinct()
                     serializer = OtherContentContributorsSerializer(queryset, many=True )
-                    count = str(len(serializer.data))+"serialized"
                 res_list = [] 
 
                 for i in range(len(serializer.data)): 
                     if serializer.data[i] not in serializer.data[i + 1:]: 
                         res_list.append(serializer.data[i])
-                count = "1st loop"   
                 for data in res_list:
                     for d in res_list:
                         final_list.append(d)
-                count = "for loop ended"
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','school_name','textbook_name','grade','subject']).drop_duplicates()
-                count = "data_frame ready"
-            state_name=State.objects.get(id=state_id).state
             path = settings.MEDIA_ROOT + '/files/'
             exists = os.path.isfile(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
-            count = "exist"
             ff = ""
             if exists:
                 os.remove(path+str(state_name)+'_{}_contributers.csv'.format(tag_name))
@@ -431,16 +442,13 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                     ff = "file exist" 
                 else:
                     ff = "file removed"
-            count = ff
-            # data_frame.to_excel(path + 'content_contributers.xlsx')
             data_frame.to_csv(path +str(state_name)+ '_{}_contributers.csv'.format(tag_name), encoding="utf-8-sig", index=False)
-            count = "return"
-            context = {"success": True, "message": "Activity List","data": 'media/files/{}_{}_contributers.csv'.format(str(state_name),tag_name) ,"initial_status":ff,"count":count}
-            return Response(context, status=status.HTTP_200_OK)
+            t = Job.objects.get(task_id=random_str)
+            t.status = True  # change field
+            t.save()
         except Exception as error:
-            context = { 'success': "false", 'message': 'Failed to get Activity list.',"error":  str(error),"count":count}
-            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            print(str(error))
+           
 
 
 # @permission_classes((IsAuthenticated,))
