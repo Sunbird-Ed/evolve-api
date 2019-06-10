@@ -937,9 +937,11 @@ class ApprovedOtherContentSerializer(serializers.ModelSerializer):
                                 tempList.append("Text")
                         else:
                             tempList.append("Text")
-                        tempList.append(keyword_list)
+
                         if self.context['status'] == "rejected":
                             tempList.append(section_content_data.comment)
+                        tempList.append(keyword_list)
+                       
                         data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, ]
                 else:
