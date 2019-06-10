@@ -627,8 +627,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         if self.context['status'] == "approved": 
             chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=True)
-        else:
+        elif self.context['status'] == "rejected":
             chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=False).exclude(approved_by=None)
+        else:
+            chapter_content = Content.objects.filter(chapter__id=chapters.id,approved=True)
         section, sub_section, sub_sub_section, content_name,file_url, keyword, keyword_list = "","","","","","",""
         chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id)
         if chapter_content.exists():
@@ -686,8 +688,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                 sections_1 = (section_data.section)
                 if self.context['status'] == "approved":
                     sec_content = Content.objects.filter(section__id=section_data.id,approved=True)
-                else:
+                elif self.context['status'] == "rejected":
                     sec_content = Content.objects.filter(section__id=section_data.id,approved=False).exclude(approved_by=None)
+                else:
+                    sec_content = Content.objects.filter(section__id=section_data.id,approved=True)
                 sub_section,sub_sub_section,content_name,file_url,keyword,keyword_list = "","","","","",""
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id)
               
@@ -749,8 +753,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                         sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id)
                         if self.context['status'] == "approved":
                             sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
-                        else:
+                        elif self.context['status'] == "rejected":
                             sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=False).exclude(approved_by=None)
+                        else:
+                            sub_sec_content = Content.objects.filter(sub_section__id=sub_section_data.id,approved=True)
                         if sub_sec_content.exists():
                             for sub_section_content_data in sub_sec_content:
                                 keyword = self.getkeywords(sub_section_keyword)
@@ -809,8 +815,10 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                                 sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id)
                                 if self.context['status'] == "approved":
                                     sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
-                                else:
+                                elif:
                                     sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=False).exclude(approved_by=None)
+                                else:
+                                    sub_sub_sec_content = Content.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=True)
                                 if sub_sub_sec_content.exists():
                                    for sub_sub_sec_content_data in sub_sub_sec_content:
                                         keyword = self.getkeywords(sub_sub_section_keyword)
