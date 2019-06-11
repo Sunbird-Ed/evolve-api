@@ -537,13 +537,30 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
     queryset = OtherContent.objects.all()
     serializer_class = OtherContentStatusSerializer
 
-    def get(self, request):
+    def get(self,request):
+        try:
+            book_id = request.query_params.get('book', None)
+            state_id = request.query_params.get("state",None)
+            if state_id is not None:
+                t = threading.Thread(target=self.index, args=(request,book_id,state_id), kwargs={})
+                t.setDaemon(True)
+                t.start()
+                context = {"success": True, "message": "Activity List","data": 'media/files/full-report.csv'}
+                return Response(context, status=status.HTTP_200_OK)
+            else:
+                context = {"success": False, "message": "state_id is missing"}
+                return Response(context, status=status.HTTP_200_OK)
+
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get Activity list.',"error":str(error)}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    def index(self, request,book_id,state_id):
         try:
             final_list = []
             import os
             from shutil import copyfile
-            book_id = request.query_params.get('book', None)
-            state_id = request.query_params.get("state",None)
             
             if book_id is not None:
                 book_name=Book.objects.get(id=book_id)
@@ -562,12 +579,9 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
                 os.remove('full-report.csv')
             # data_frame.to_excel(path + 'contentstatus.xlsx')
             data_frame.to_csv(path +'full-report.csv', encoding="utf-8-sig", index=False)
-            context = {"success": True, "message": "Activity List","data": 'media/files/full-report.csv'}
-            return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
-            context = {'success': "false", 'message': 'Failed to get Activity list.',"error":str(error)}
-            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            print(str(error))
+            
 
 
 
@@ -587,7 +601,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
             status_ = request.query_params.get('status',None)
             random_str = ''.join(random.choice(string.ascii_letters) for m in range(4))
             # random_str = "YGJAQ3"
-             
+
             if Job.objects.filter(task_id=random_str).exists() is False:
                 data = Job(task_id=random_str, status=False)
                 data.save()

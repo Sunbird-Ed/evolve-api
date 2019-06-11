@@ -1325,9 +1325,9 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
 
                 sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
                 if sub_section.exists():
-                    sub_section_keyword = SubSectionKeyword.objects.filter(sub_section__id=sub_section_data.id).order_by("id")
 
                     for sub_section_data in sub_section:
+
                         sub_section_con = OtherContent.objects.filter(sub_section__id=sub_section_data.id)
                         if sub_section_con.exists():
                             for sub_section_content_data in sub_section_con:
@@ -1391,7 +1391,6 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
 
                         sub_sub_sections=SubSubSection.objects.filter(subsection__id=sub_section_data.id).order_by('id')
                         if sub_sub_sections.exists():
-                            sub_sub_section_keyword = SubSubSectionKeyword.objects.filter(sub_sub_section__id=sub_sub_section.id).order_by("id")
 
                             for sub_sub_section_data in sub_sub_sections:
                                 sub_sub_section_con = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section_data.id)
