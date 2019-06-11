@@ -377,10 +377,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
             # tag interchage
             
             if tag is not None and state_id is not None:
-                if tag == "2":
-                    tag_name = "hardspot"
-                elif tag == "1":
-                    tag_name = "content"
+                tag_name = str(Tags.objects.get(id=tag).tag_name)
                 state_name=State.objects.get(id=state_id).state
             random_str = ''.join(random.choice(string.ascii_letters) for m in range(4))
             if Job.objects.filter(task_id=random_str).exists() is False:
