@@ -1508,7 +1508,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                     keyword = ""
                 tempList = [chapter_content_data.content_name,"This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)] + tempList + [section,sub_section,sub_sub_section,chapter_content_data.text]
                 if self.context['tag_id'] == "10":
-                    tempList.append("Practice")
+                    tempList.append("Learn")
                     tempList.append(keyword)
                     tempList.append("Learner")
 
@@ -1596,7 +1596,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                         keyword = self.getkeywords(section_keyword)
                         tempList = [section_content_data.content_name,"This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , " +str(sections_1)] +tempList + [sections_1,sub_section,sub_sub_section,section_content_data.text]
                         if self.context['tag_id'] == "10":
-                            tempList.append("Practice")
+                            tempList.append("Learn")
                             tempList.append(keyword)
                             tempList.append("Learner")
 
@@ -1675,7 +1675,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                     keyword = ""
                                 tempList = [sub_section_content_data.content_name,"This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , "+ str(sections_1) +" , "+ str(sub_sections)]+tempList + [sub_sections,sub_sub_section ,sub_section_content_data.text]
                                 if self.context['tag_id'] == "10":
-                                    tempList.append("Practice")
+                                    tempList.append("Learn")
                                     tempList.append(keyword)
                                     tempList.append("Learner")
                                 elif self.context['tag_id'] == "11":
@@ -1757,7 +1757,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                                         
                                         tempList = [sub_sub_sec_content_data.content_name,"This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , " +str(sections_1) +" , "+ str(sub_sections) +","+str(sub_sub_sections_1)]+tempList + [sub_sub_sections_1,sub_sub_sec_content_data.text]
                                         if self.context['tag_id'] == "10":
-                                            tempList.append("Practice")
+                                            tempList.append("Learn")
                                             tempList.append(keyword)
                                             tempList.append("Learner")
                                         elif self.context['tag_id'] == "11":
