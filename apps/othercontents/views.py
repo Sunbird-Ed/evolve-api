@@ -373,9 +373,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
     def get(self ,request):
         try:
             state_id = request.query_params.get('state', None)
-            tag = request.query_params.get('tag',None)
-            # tag interchage
-            
+            tag = request.query_params.get('tag',None)            
             if tag is not None and state_id is not None:
                 tag_name = str(Tags.objects.get(id=tag).tag_name)
                 state_name=State.objects.get(id=state_id).state
@@ -401,6 +399,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
         try:
             final_list = []
             if state_id is not None and tag == "1":
+                tag_name = "content"
                 queryset = Content.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
                 serializer = ContentContributorsSerializer(queryset, many=True)
                 res_list = [] 
@@ -412,9 +411,10 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
                         final_list.append(d)
                 data_frame = pd.DataFrame(final_list , columns=['first_name', 'last_name','mobile', 'email','city_name','school_name','textbook_name','grade','subject']).drop_duplicates()
             elif tag == "2":
+                tag_name = "hardspot"
                 queryset = HardSpot.objects.filter(Q(sub_sub_section__subsection__section__chapter__book__subject__grade__medium__state__id=state_id) | Q(sub_section__section__chapter__book__subject__grade__medium__state__id = state_id) | Q(section__chapter__book__subject__grade__medium__state__id= state_id) | Q(chapter__book__subject__grade__medium__state__id = state_id) ).distinct()
                 serializer = HardspotContributorsSerializer(queryset, many=True)
-                res_list = [] 
+                res_list  = [] 
                 for i in range(len(serializer.data)): 
                     if serializer.data[i] not in serializer.data[i + 1:]: 
                         res_list.append(serializer.data[i])
@@ -719,4 +719,21 @@ class JobStatus(ListCreateAPIView):
             return Response(context, status=status.HTTP_200_OK)
         except Exception as error:
             context = {'success': "false", 'message': 'Failed to get Job Status.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+class OtherContentListUrlUpdate(ListAPIView):
+    queryset = OtherContent.objects.all()
+    serializer_class = OtherContentStatusSerializer
+    def get(self, request):
+        try:
+            queryset = self.get_queryset().filter(approved=True)
+            serializer = OtherContentStatusSerializer(queryset, many=True)
+            context = {"success": True, "message": "OtherContent Approved List", "data": serializer.data}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get OtherContent Approved list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

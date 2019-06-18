@@ -21,8 +21,8 @@ urlpatterns = [
     path('approvedothercontentdownload',views.ApprovedOtherContentDownload.as_view(),name="ApprovedOtherContentDownloadView"),
     path("othercontentstatusdownload",views.OtherContentStatusDownloadView.as_view(),name="OtherContentStatusDownloadView"),
     path("ApprovedOtherContentDownloadSecond",views.ApprovedOtherContentDownloadSecond.as_view(),name="ApprovedOtherContentDownloadSecondView"),
-    path("filestatus",views.JobStatus.as_view(),name="JobStatusView")
-
+    path("filestatus",views.JobStatus.as_view(),name="JobStatusView"),
+    path("urlupdate",views.OtherContentListUrlUpdate.as_view(),name="OtherContentListUrlUpdateView")
 
 
 
