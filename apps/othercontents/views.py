@@ -764,7 +764,6 @@ class OtherContentListUrlPutRequestRevert(RetrieveUpdateAPIView):
 		try:
 			datalist = request.data
 			print(datalist)
-			# import ipdb;ipdb.set_trace()
 			for data in datalist:
 				print(data)
 				OtherContent.objects.filter(pk=data['content_id']).update(file_url=data['file_path_from_database'])
@@ -774,3 +773,41 @@ class OtherContentListUrlPutRequestRevert(RetrieveUpdateAPIView):
 		except Exception as error:
 			context = {'success': "false", 'message': 'Failed to get OtherContent Approved list.'}
 			return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+class BackupOtherContent(ListAPIView):
+	queryset = Book.objects.all()
+
+	def get(self,request):
+		try:
+			t = threading.Thread(target=self.index, args=(), kwargs={})
+			t.setDaemon(True)
+			t.start()
+	
+			context = {"success": True, "message": "Activity List", "data": 'media/files/BackupcbseContent.csv'}
+			return Response(context, status=status.HTTP_200_OK)
+		except Exception as error:
+			context = {'success': "false", 'message': 'Failed to get Activity list.' ,"error" :str(error)}
+			return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+	def index(self):
+		final_list,final = [],[]
+		queryset = OtherContent.objects.all()
+		for i in queryset:
+			try:
+				if i.file_url is not None :
+					final=[i.id,i.file_url]
+					final_list.append(final)
+			except Exception as e:
+				pass
+		path = settings.MEDIA_ROOT + '/files/'
+		data_frame = pd.DataFrame(final_list , columns=['id','url'])
+		data_frame.to_csv(path+ 'BackupcbseContent.csv', encoding="utf-8-sig", index=False)
+
+
+
+
+			
+

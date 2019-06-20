@@ -25,7 +25,8 @@ urlpatterns = [
     path("urlupdate",views.OtherContentListUrlUpdate.as_view(),name="OtherContentListUrlUpdateView"),
 
     path("urlputrequest",views.OtherContentListUrlPutRequest.as_view(),name='OtherContentListUrlPutRequestView'),
-    path("urlputrequestrevert",views.OtherContentListUrlPutRequestRevert.as_view(),name= "OtherContentListUrlPutRequestRevertView")
+    path("urlputrequestrevert",views.OtherContentListUrlPutRequestRevert.as_view(),name= "OtherContentListUrlPutRequestRevertView"),
+    path("backup",views.BackupOtherContent.as_view(),name ="BackupOtherContentView")
 
 
     ]
