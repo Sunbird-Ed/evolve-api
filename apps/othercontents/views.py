@@ -748,11 +748,27 @@ class OtherContentListUrlPutRequest(RetrieveUpdateAPIView):
 			# import ipdb;ipdb.set_trace()
 			for data in datalist:
 				print(data)
+				OtherContent.objects.filter(pk=data['content_id']).update(file_url=data['final_url'])
+
+			context = {"success": True, "message": "update successfull"}
+			return Response(context, status=status.HTTP_200_OK)
+		except Exception as error:
+			context = {'success': "false", 'message': 'Failed to get OtherContent Approved list.'}
+			return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class OtherContentListUrlPutRequestRevert(RetrieveUpdateAPIView):
+	queryset = OtherContent.objects.all()
+	serializer_class = OtherContentStatusSerializer
+	def post(self, request):
+		try:
+			datalist = request.data
+			print(datalist)
+			# import ipdb;ipdb.set_trace()
+			for data in datalist:
+				print(data)
 				OtherContent.objects.filter(pk=data['content_id']).update(file_url=data['file_path_from_database'])
 
-				
-			# queryset = self.get_queryset().filter(approved=True)
-			# serializer = OtherContentStatusSerializer(queryset, many=True)
 			context = {"success": True, "message": "update successfull"}
 			return Response(context, status=status.HTTP_200_OK)
 		except Exception as error:
