@@ -748,7 +748,7 @@ class OtherContentListUrlPutRequest(RetrieveUpdateAPIView):
 			# import ipdb;ipdb.set_trace()
 			for data in datalist:
 				print(data)
-				OtherContent.objects.filter(pk=data['content_id']).update(file_url=data['file_path_from_database'])
+				OtherContent.objects.filter(pk=data['content_id']).update(file_url=data['final_url'])
 
 				
 			# queryset = self.get_queryset().filter(approved=True)
