@@ -24,7 +24,7 @@ urlpatterns = [
     path("filestatus",views.JobStatus.as_view(),name="JobStatusView"),  
     path("urlupdate",views.OtherContentListUrlUpdate.as_view(),name="OtherContentListUrlUpdateView"),
 
-    path("urlputrequest",views.OtherContentListUrlPutRequest.as_view(),name='OtherContentListUrlPutRequestView')
+    path("urlputrequest",views.OtherContentListUrlPutRequest.as_view(),name='OtherContentListUrlPutRequestView'),
     path("urlputrequestrevert",views.OtherContentListUrlPutRequestRevert.as_view(),name= "OtherContentListUrlPutRequestRevertView")
 
 
