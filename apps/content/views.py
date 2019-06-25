@@ -58,6 +58,7 @@ account_name = settings.AZURE_ACCOUNT_NAME
 account_key = settings.AZURE_ACCOUNT_KEY
 CONTAINER_NAME= settings.AZURE_CONTAINER
 
+
 block_blob_service = BlockBlobService(account_name=account_name, account_key=account_key)
 
 
@@ -457,6 +458,22 @@ class GetSASView(ListAPIView):
             context = {'success': "false", 'message': 'Failed to get Activity list.'}
             return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+class GetSasDownloadView(ListAPIView):
+    
+    def get(self,request):
+        from evolve import settings
+        accountName = settings.AZURE_ACCOUNT_NAME
+        accountKey = settings.AZURE_ACCOUNT_KEY
+        containerName= settings.AZURE_CONTAINER
+        try:
+            blobService = BlockBlobService(account_name=accountName, account_key=accountKey)
+            sas_token = blobService.generate_container_shared_access_signature(containerName,ContainerPermissions.READ, datetime.utcnow() + timedelta(hours=10))
+            context = {"success": True, "token":sas_token}
+
+            return Response(context, status=status.HTTP_200_OK)
+        except:
+            return None
 
 
 

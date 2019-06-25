@@ -17,6 +17,7 @@ urlpatterns = [
     path('contentstatusdownload', views.ContentStatusDownloadView.as_view(), name= "ContentStatusDownloadView"),
     path('contentcontributorslist', views.ContentContributorsDownloadView.as_view(), name= "ContentContributorsDownloadView"),
     path('getsas',views.GetSASView.as_view(),name="GetSASView"),
+    path('getsasdownload',views.GetSasDownloadView.as_view(),name="GetSasDownloadView")
 
 
 
