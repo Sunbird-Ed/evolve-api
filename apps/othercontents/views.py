@@ -765,7 +765,7 @@ class OtherContentListUrlPutRequestRevert(RetrieveUpdateAPIView):
 			datalist = request.data
 			print(datalist)
 			for data in datalist:
-				print(data)
+			
 				OtherContent.objects.filter(pk=data['content_id']).update(file_url=data['file_path_from_database'])
 
 			context = {"success": True, "message": "update successfull"}
@@ -794,7 +794,7 @@ class BackupOtherContent(ListAPIView):
 
 	def index(self):
 		final_list,final = [],[]
-		queryset = OtherContent.objects.all()
+		queryset = OtherContent.objects.filter(approved=True)
 		for i in queryset:
 			try:
 				if i.file_url is not None :
@@ -805,6 +805,8 @@ class BackupOtherContent(ListAPIView):
 		path = settings.MEDIA_ROOT + '/files/'
 		data_frame = pd.DataFrame(final_list , columns=['id','url'])
 		data_frame.to_csv(path+ 'BackupcbseContent.csv', encoding="utf-8-sig", index=False)
+
+
 
 
 
