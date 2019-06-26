@@ -25,6 +25,7 @@ from .serializers import (OtherContributorSerializer,
 	OtherContentStatusSerializerdownload,
 	ApprovedOtherContentSerializerSecond,
 	JobSerializer,
+	OtherContentStatusSerializerFileFormat
 	)
 from .models import OtherContent, OtherContributors,SchoolName,Tags
 from apps.configuration.models import Book,State
@@ -731,7 +732,7 @@ class OtherContentListUrlUpdate(ListAPIView):
 	def get(self, request):
 		try:
 			queryset = self.get_queryset().filter(approved=True)
-			serializer = OtherContentStatusSerializer(queryset, many=True)
+			serializer = OtherContentStatusSerializerFileFormat(queryset, many=True)
 			context = {"success": True, "message": "OtherContent Approved List", "data": serializer.data}
 			return Response(context, status=status.HTTP_200_OK)
 		except Exception as error:

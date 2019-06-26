@@ -1826,3 +1826,26 @@ class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
         fields = '__all__'
+
+
+
+
+
+
+class OtherContentStatusSerializerFileFormat(serializers.ModelSerializer):
+    sas_token=serializers.SerializerMethodField()
+    
+    class Meta:
+        model = OtherContent
+        fields = ('id','file_url','sas_token')
+    
+    def get_sas_token(self,req):
+        try:
+            blobService = BlockBlobService(account_name=accountName, account_key=accountKey)
+            sas_token = blobService.generate_container_shared_access_signature(containerName,ContainerPermissions.READ, datetime.utcnow() + timedelta(hours=1))
+            return sas_token
+        except:
+            return None
+
+   
+
