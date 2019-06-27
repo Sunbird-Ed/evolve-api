@@ -48,7 +48,7 @@ for i in r.json()['data']:
 
                 dictionary["final_url"]=(AZURE_BLOB_URL +"/"+ container_name +"/"+ full_path_to_file)
                 final_data.append(dictionary)
-#                 resp = block_blob_service.create_blob_from_path(container_name,full_path_to_file,full_path_to_file)
+                resp = block_blob_service.create_blob_from_path(container_name,full_path_to_file,full_path_to_file)
 
             elif content_type == "video/mp4" or content_type == "video/x-m4v":
                 filename_change_ext= (os.path.splitext(filename)[0]) + ".mp4"
@@ -57,7 +57,7 @@ for i in r.json()['data']:
 
                 dictionary["final_url"]=(AZURE_BLOB_URL +"/"+ container_name +"/"+ full_path_to_file)
                 final_data.append(dictionary)
-#                 resp = block_blob_service.create_blob_from_path(container_name,full_path_to_file,full_path_to_file)
+                resp = block_blob_service.create_blob_from_path(container_name,full_path_to_file,full_path_to_file)
             dictionary = {}
 payload = final_data
 print("finallist:--"+ str(payload))
@@ -71,6 +71,7 @@ headers = {
     'postman-token': "15f793b9-2ea3-41cd-a04d-2badd12a3395"
     }
 
-# response = requests.request("POST", url, data=json.dumps(payload), headers=headers)
+response = requests.request("POST", url, data=json.dumps(payload), headers=headers)
 
-# print(response.text)
+print(response.text)
+
