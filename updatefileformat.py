@@ -36,7 +36,7 @@ for i in r.json()['data']:
             dictionary["file_path_from_database"]=(i['file_url'])
             
             _database_url = str(str(i['file_url']) + "?"+ str(i['sas_token'])) 
-            print(_databse_url)
+            print(_database_url)
             file_path = str(_path)+"/"+str(filename)
             urllib.request.urlretrieve(_database_url , file_path )
             mime = magic.Magic(mime=True)
