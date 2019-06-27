@@ -36,8 +36,9 @@ for i in r.json()['data']:
             dictionary["content_id"]=(i['id'])
 
             dictionary["file_path_from_database"]=(i['file_url'])
-            print(i['file_url'] + "?"+ i['sas_token'])
-            urllib.request.urlretrieve(i['file_url'] + "?"+ i['sas_token']  , _path+"/"+filename)
+            _database_url = str(str(i['file_url']) + "?"+ str(i['sas_token'])) 
+            file_path = str(_path)+"/"+str(filename)
+            urllib.request.urlretrieve(_database_url , file_path )
             mime = magic.Magic(mime=True)
             content_type= mime.from_file(_path+"/"+filename)
             if content_type == 'application/pdf':
