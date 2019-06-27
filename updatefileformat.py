@@ -31,7 +31,7 @@ for i in r.json()['data']:
         name,ext =  os.path.splitext(i['file_url'])
 #         filename = (os.path.basename(i['file_url']))
         
-        if (ext != '.mp4') and (ext != '.pdf'):
+        if (ext != '.mp4') and (ext != '.pdf') and (ext !='.pptx') :
             dictionary["content_id"]=(i['id'])
             dictionary["file_path_from_database"]=(i['file_url'])
             
