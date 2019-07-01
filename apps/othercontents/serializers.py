@@ -1561,18 +1561,7 @@ class ApprovedOtherContentSerializerSecond(serializers.ModelSerializer):
                 tempList.append(chapter_content_data.file_url)
                 if self.context['status'] == "rejected":
                     tempList.append(chapter_content_data.comment)
-                # 
-                # strftime("%Y-%m-%d %H:%M:%S") 
-                # import ipdb;ipdb.set_trace()
-                # created_utc = chapter_content_data.created_at.strftime("%Y-%m-%d %H:%M:%S") 
-                # created_utc_fmt = datetime.strptime(created_utc, '%Y-%m-%d %H:%M:%S')
-                # created_ist_ = created_utc_fmt.replace(tzinfo=from_zone)
-                # created_ist = created_ist_.astimezone(to_zone)
-
-                # update_utc = chapter_content_data.updated_at.strftime("%Y-%m-%d %H:%M:%S") 
-                # updated_utc_fmt = datetime.strptime(update_utc, '%Y-%m-%d %H:%M:%S')
-                # update_ist_ = updated_utc_fmt.replace(tzinfo=from_zone)
-                # update_ist=update_ist_.astimezone(to_zone)
+               
                 tempList.append(self.convert_utc_to_ist(chapter_content_data.created_at))
                 tempList.append(self.convert_utc_to_ist(chapter_content_data.updated_at))
                 data_str_list.append( tempList)
