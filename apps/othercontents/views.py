@@ -653,7 +653,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 				
 				if str(status_) == "approved":
 					file_status = "Approved"
-					data_frame1 = (pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link']))
+					data_frame1 = (pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link','created_at','updated_at']))
 				elif str(status_) == "rejected":
 					file_status = "Rejected"
 					data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment'])
@@ -746,7 +746,6 @@ class OtherContentListUrlPutRequest(RetrieveUpdateAPIView):
 		try:
 			datalist = request.data
 			print(datalist)
-			# import ipdb;ipdb.set_trace()
 			for data in datalist:
 				print(data)
 				OtherContent.objects.filter(pk=data['content_id']).update(file_url=data['final_url'])
