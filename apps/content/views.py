@@ -470,7 +470,6 @@ class GetSasDownloadView(ListAPIView):
             blobService = BlockBlobService(account_name=accountName, account_key=accountKey)
             sas_token = blobService.generate_container_shared_access_signature(containerName,ContainerPermissions.READ, datetime.utcnow() + timedelta(hours=10))
             context = {"success": True, "token":sas_token}
-
             return Response(context, status=status.HTTP_200_OK)
         except:
             return None

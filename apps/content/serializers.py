@@ -1083,6 +1083,13 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
             keyword =  keyword + keys.keyword + ", "
         return keyword
 
+    def convert_utc_to_ist(self,utc):
+        _utc = utc.strftime("%Y-%m-%d %H:%M:%S")
+        _utc_fmt = datetime.strptime(_utc, '%Y-%m-%d %H:%M:%S')
+        created_ist_ = _utc_fmt.replace(tzinfo=from_zone)
+        _ist = created_ist_.astimezone(to_zone)
+        return _ist.strftime("%Y-%m-%d %H:%M:%S")
+
     def get_chapter(self, req):
         data_str_list = []
         chapters=Chapter.objects.filter(id=req.id).first()
@@ -1127,6 +1134,9 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                     else:
                         tempList.append("")
                 tempList.append(chapter_content_data.video)
+                tempList.append(self.convert_utc_to_ist(chapter_content_data.created_at))
+                tempList.append(self.convert_utc_to_ist(chapter_content_data.updated_at))
+
                 data_str_list.append( tempList)
                 tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter ]
         else:
@@ -1178,6 +1188,8 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                                 tempList.append("")
                            
                         tempList.append(section_content_data.video)
+                        tempList.append(self.convert_utc_to_ist(section_content_data.created_at))
+                        tempList.append(self.convert_utc_to_ist(section_content_data.updated_at))
                         data_str_list.append( tempList )
                         tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter]
                 else:
@@ -1231,7 +1243,8 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                                 
                                 tempList.append(sub_section_content_data.video)
 
-                             
+                                tempList.append(self.convert_utc_to_ist(sub_section_content_data.created_at))
+                                tempList.append(self.convert_utc_to_ist(sub_section_content_data.updated_at))
                                 data_str_list.append( tempList )
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade,chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section ]
                         else:
@@ -1287,7 +1300,8 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
                                             tempList.append("")
                                            
                                         tempList.append(sub_sub_sec_content_data.video)
-
+                                        tempList.append(self.convert_utc_to_ist(sub_sub_sec_content_data.created_at))
+                                        tempList.append(self.convert_utc_to_ist(sub_sub_sec_content_data.updated_at))
                                         data_str_list.append( tempList )
                                         tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, chapters.book.subject.grade.medium,  chapters.book.subject, chapters.book, chapter, section_data.section,sub_section_data.sub_section ]
 
@@ -1307,6 +1321,8 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
             print(len(_i))
         return data_str_list
         
+
+
 
 
 
