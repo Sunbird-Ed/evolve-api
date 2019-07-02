@@ -16,7 +16,10 @@ from evolve import settings
 accountName = settings.AZURE_ACCOUNT_NAME
 accountKey = settings.AZURE_ACCOUNT_KEY
 containerName= settings.AZURE_CONTAINER
-
+from datetime import datetime
+from dateutil import tz
+from_zone = tz.gettz('UTC')
+to_zone = tz.gettz('Asia/Kolkata')
 
 class ContentListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -1107,7 +1110,6 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
         chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id).order_by("id")
         
         if chapter_content.exists(): 
-            
             for chapter_content_data in chapter_content:
                 if  chapter_content_data.chapter_keywords.all().count() != 0:
                     linked_keyword = ChapterKeyword.objects.filter(id__in=chapter_content_data.chapter_keywords.all())
