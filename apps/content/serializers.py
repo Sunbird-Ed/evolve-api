@@ -993,23 +993,39 @@ class ContentContributorsSerializer(serializers.ModelSerializer):
                 'grade',
                 'subject']
     def get_first_name(self, obj):
-        first_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().first_name
-        return first_name
+        try:
+            first_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().first_name
+            return first_name
+        except Exception as error:
+            return None
     def get_last_name(self, obj):
-        last_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().last_name
-        return last_name
+        try:
+            last_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().last_name
+            return last_name
+        except Exception as e:
+            return None
     def get_mobile(self, obj):
         mobile=ContentContributors.objects.filter(id=obj.content_contributors.id).first().mobile
         return mobile
     def get_email(self, obj):
-        email=ContentContributors.objects.filter(id=obj.content_contributors.id).first().email
-        return email
+        try:
+        
+            email=ContentContributors.objects.filter(id=obj.content_contributors.id).first().email
+            return email
+        except Exception as e:
+            return None
     def get_school_name(self ,obj):
-        school_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().school_name
-        return school_name
+        try:
+            school_name=ContentContributors.objects.filter(id=obj.content_contributors.id).first().school_name
+            return school_name
+        except Exception as e:
+            return None
     def get_city_name(self,obj):
-        city_name = ContentContributors.objects.filter(id=obj.content_contributors.id).first().city_name
-        return city_name
+        try:
+            city_name = ContentContributors.objects.filter(id=obj.content_contributors.id).first().city_name
+            return city_name
+        except Exception as e:
+            return None
     def get_textbook_name(self, obj):
         if obj.chapter is not None:
             book = Book.objects.filter(id=obj.chapter.book.id)
