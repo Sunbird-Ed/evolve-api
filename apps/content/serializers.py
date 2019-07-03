@@ -717,10 +717,9 @@ class ApprovedContentSerializer(serializers.ModelSerializer):
                         school_name = ContentContributors.objects.get(id=section_content_data.content_contributors_id).school_name
                         if school_name is None or school_name == "":
                             school_name = ""
-
                         fileurl = section_content_data.video
                         if fileurl is not None and fileurl !="" :
-                            path,ext = os.path.splitext(file_url)
+                            path,ext = os.path.splitext(fileurl)
                             ext = ext.replace(".","").strip()
                             if str(ext)== "mp4" or str(ext) == "pdf":
                                 tempList.append(ext)
