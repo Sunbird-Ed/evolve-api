@@ -18,7 +18,6 @@ urlpatterns = [
     path('contentcontributorslist', views.ContentContributorsDownloadView.as_view(), name= "ContentContributorsDownloadView"),
     path('getsas',views.GetSASView.as_view(),name="GetSASView"),
     path('getsasdownload',views.GetSasDownloadView.as_view(),name="GetSasDownloadView"),
-
     path("urlupdate",views.ContentListUrlUpdate.as_view(),name="ContentListUrlUpdateView"),
     path("urlputrequest",views.ContentListUrlPutRequest.as_view(),name='ContentListUrlPutRequestView'),
     path("urlputrequestrevert",views.ContentListUrlPutRequestRevert.as_view(),name= "ContentListUrlPutRequestRevertView"),

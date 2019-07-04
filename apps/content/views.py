@@ -504,7 +504,7 @@ class ContentListUrlPutRequest(RetrieveUpdateAPIView):
             print(datalist)
             for data in datalist:
                 print(data)
-                Content.objects.filter(pk=data['content_id']).update(video=data['final_url'])
+                Content.objects.filter(pk=data['content_id']).update(video=data['video'])
 
             context = {"success": True, "message": "update successfull"}
             return Response(context, status=status.HTTP_200_OK)
