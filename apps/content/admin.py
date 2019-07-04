@@ -7,7 +7,7 @@ from .models import Content,ContentContributors
 
 class ContentAdmin(admin.ModelAdmin):
     model = Content
-    list_display = ['content_name','chapter_state','section_state','subsection_state','subsubsection_state']
+    list_display = ['id','content_name','chapter_state','section_state','subsection_state','subsubsection_state']
 
     def chapter_state(self,req):
         try:
