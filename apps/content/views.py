@@ -27,7 +27,9 @@ from .serializers import (
     ContentStatusSerializer,
     HardSpotCreateSerializer, 
     ContentContributorsSerializer,
-    SubSubSectionKeywordsSerializer,)
+    SubSubSectionKeywordsSerializer,
+    ContentStatusSerializerFileFormat,
+    )
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import permission_required
@@ -478,3 +480,88 @@ class GetSasDownloadView(ListAPIView):
 
             
       
+
+
+class ContentListUrlUpdate(ListAPIView):
+    queryset = Content.objects.all()
+    serializer_class = ContentStatusSerializer
+    def get(self, request):
+        try:
+            queryset = self.get_queryset().filter(approved=True)
+            serializer = ContentStatusSerializerFileFormat(queryset, many=True)
+            context = {"success": True, "message": "OtherContent Approved List", "data": serializer.data}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get OtherContent Approved list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ContentListUrlPutRequest(RetrieveUpdateAPIView):
+    queryset = Content.objects.all()
+    serializer_class = ContentStatusSerializer
+    def post(self, request):
+        try:
+            datalist = request.data
+            print(datalist)
+            for data in datalist:
+                print(data)
+                Content.objects.filter(pk=data['content_id']).update(video=data['final_url'])
+
+            context = {"success": True, "message": "update successfull"}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get OtherContent Approved list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ContentListUrlPutRequestRevert(RetrieveUpdateAPIView):
+    queryset = Content.objects.all()
+    serializer_class = ContentStatusSerializer
+    def post(self, request):
+        try:
+            datalist = request.data
+            print(datalist)
+            for data in datalist:
+            
+                Content.objects.filter(pk=data['content_id']).update(video=data['file_path_from_database'])
+
+            context = {"success": True, "message": "update successfull"}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get OtherContent Approved list.'}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+class BackupContent(ListAPIView):
+    queryset = Book.objects.all()
+
+    def get(self,request):
+        try:
+            t = threading.Thread(target=self.index, args=(), kwargs={})
+            t.setDaemon(True)
+            t.start()
+    
+            context = {"success": True, "message": "Activity List", "data": 'media/files/BackupContent.csv'}
+            return Response(context, status=status.HTTP_200_OK)
+        except Exception as error:
+            context = {'success': "false", 'message': 'Failed to get Activity list.' ,"error" :str(error)}
+            return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def index(self):
+        final_list,final = [],[]
+        queryset = Content.objects.filter(approved=True)
+        for i in queryset:
+            try:
+                if i.video is not None :
+                    final=[i.id,i.video]
+                    final_list.append(final)
+            except Exception as e:
+                pass
+        path = settings.MEDIA_ROOT + '/files/'
+        data_frame = pd.DataFrame(final_list , columns=['id','url'])
+        data_frame.to_csv(path+ 'BackupContent.csv', encoding="utf-8-sig", index=False)
+
+
+
+

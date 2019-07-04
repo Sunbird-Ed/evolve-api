@@ -1342,5 +1342,19 @@ class ApprovedOtherContentSerializerBulkDownload(serializers.ModelSerializer):
 
 
 
+class ContentStatusSerializerFileFormat(serializers.ModelSerializer):
+    sas_token=serializers.SerializerMethodField()
+
+    class Meta:
+        model = Content
+        fields = ('id','video','sas_token')
+    
+    def get_sas_token(self,req):
+        try:
+            blobService = BlockBlobService(account_name=accountName, account_key=accountKey)
+            sas_token = blobService.generate_container_shared_access_signature(containerName,ContainerPermissions.READ, datetime.utcnow() + timedelta(hours=1))
+            return sas_token
+        except:
+            return None
 
 
