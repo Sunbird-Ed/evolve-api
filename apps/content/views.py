@@ -55,6 +55,7 @@ from datetime import datetime, timedelta
 import os
 import itertools
 from django.db.models import Q
+import threading
 
 account_name = settings.AZURE_ACCOUNT_NAME
 account_key = settings.AZURE_ACCOUNT_KEY
