@@ -24,6 +24,7 @@ from .serializers import (OtherContributorSerializer,
 	ContentDetailListSerializer,
 	OtherContentStatusSerializerdownload,
 	ApprovedOtherContentSerializerSecond,
+	ApprovedCuriositySerializerSecond,
 	JobSerializer,
 	OtherContentStatusSerializerFileFormat
 	)
@@ -651,12 +652,21 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 					file_status = "Approved"
 					data_frame1 = pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class' ,'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link','Time stamp of content contribution','Time stamp of content approval'])
  
+			elif tag == "8":
+				serializer = ApprovedCuriositySerializerSecond(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
+				for data in serializer.data:
+					for d in data['chapter']:
+						final_list.append(d)
+				if str(status_) == "approved":
+					file_status = "Approved"
+					data_frame1 = (pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link','Time stamp of content contribution','Time stamp of content approval']))
+			
 			else:
 				serializer = ApprovedOtherContentSerializerSecond(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
 				for data in serializer.data:
 					for d in data['chapter']:
 						final_list.append(d)
-				
+	
 				if str(status_) == "approved":
 					file_status = "Approved"
 					data_frame1 = (pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link','Time stamp of content contribution','Time stamp of content approval']))
