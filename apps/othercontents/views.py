@@ -659,7 +659,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 						final_list.append(d)
 				if str(status_) == "approved":
 					file_status = "Approved"
-					data_frame1 = (pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link','Time stamp of content contribution','Time stamp of content approval']))
+					data_frame1 = (pd.DataFrame(final_list , columns=["State/Centre","K-12","Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Chapter',"Chapter No","Chapter Name","Chapter-Concept Name","Question",'Answer','Learning Outcome','Learning Level','Name of contributor',"School",'Time stamp of content contribution','Time stamp of content approval']))
 			
 			else:
 				serializer = ApprovedOtherContentSerializerSecond(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
@@ -688,7 +688,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 			elif tag == "8":
 				# question answer
 				tag_name = Tags.objects.get(id=tag).tag_name
-				df=(data_frame1.drop(['Content Link/Video Link','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Name of the Content": "Question","text":"Answer"})
+				df=data_frame1.drop(['Chapter'], axis=1)
 				data_frame = df.drop_duplicates()
 			elif tag == "7":
 				# description

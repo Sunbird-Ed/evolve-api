@@ -1905,32 +1905,13 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
         elif self.context['status'] == "rejected":
             chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
         section, sub_section, sub_sub_section, content_name,file_url, text, keyword, keyword_list = "","","","","","","",""
-        chapter_keyword = ChapterKeyword.objects.filter(chapter__id=chapters.id).order_by("id")
 
         if chapter_content.exists(): 
             
             for chapter_content_data in chapter_content:
-                if  chapter_content_data.chapter_keywords.all().count() != 0:
-                    linked_keyword = ChapterKeyword.objects.filter(id__in=chapter_content_data.chapter_keywords.all())
-                    keyword =','.join([str(x.keyword) for x in linked_keyword.all()])
-                    
-                else:
-                    keyword = ""
-                tempList = [chapter_content_data.content_name,"This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)] + tempList + [section,sub_section,sub_sub_section,chapter_content_data.text]
-                if self.context['tag_id'] == "10":
-                    tempList.append("Learn")
-                    tempList.append(keyword)
-                    tempList.append("Learner")
-
-                elif self.context['tag_id'] == "11":
-                    tempList.append("Teach")
-                    tempList.append(keyword)
-                    tempList.append("Instructor")
-
-                else:
-                    tempList.append("Learn")
-                    tempList.append(keyword)
-                    tempList.append("Learner")
+               
+                tempList = ["centre","K-12","This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)] + tempList + ["chapter_no",chapters.chapter,"concept",chapter_content_data.content_name,chapter_content_data.text,"L-O","L-L"]
+               
                 lastname=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
                 if lastname is None  :
                     lastname=""
@@ -1940,16 +1921,6 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                     tempList.append(schoolname.school_name) 
                 else:
                     tempList.append("")
-                
-
-                tempList.append("") # for icon
-                if self.context['tag_id'] == "8":
-                    tempList.append("Text")
-                    tempList.append("")
-
-                if self.context['status'] == "rejected":
-                    tempList.append(chapter_content_data.comment)
-               
                 tempList.append(self.convert_utc_to_ist(chapter_content_data.created_at))
                 tempList.append(self.convert_utc_to_ist(chapter_content_data.updated_at))
                 data_str_list.append( tempList)
@@ -1978,27 +1949,9 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                 section_keyword = SectionKeyword.objects.filter(section__id=section_data.id).order_by("id")
                 if sec_content.exists():
                     for section_content_data in sec_content:
-                        if  section_content_data.section_keywords.all().count() != 0:
-                            linked_keyword = SectionKeyword.objects.filter(id__in=section_content_data.section_keywords.all())
-                            keyword =','.join([str(x.keyword) for x in linked_keyword.all()])
-                            
-                        else:
-                            keyword = ""
-                        keyword = self.getkeywords(section_keyword)
-                        tempList = [section_content_data.content_name,"This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , " +str(sections_1)] +tempList + [sections_1,sub_section,sub_sub_section,section_content_data.text]
-                        if self.context['tag_id'] == "10":
-                            tempList.append("Learn")
-                            tempList.append(keyword)
-                            tempList.append("Learner")
-
-                        elif self.context['tag_id'] == "11":
-                            tempList.append("Teach")
-                            tempList.append(keyword)
-                            tempList.append("Instructor")
-                        else:
-                            tempList.append("Learn")
-                            tempList.append(keyword)
-                            tempList.append("Learner")
+                        
+                        tempList = ["centre","K-12","This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , " +str(sections_1)] +tempList + ["chapter-no",sections_1,"concept",section_content_data.content_name,section_content_data.text,"L-O","L-L"]
+                       
                         lastname=OtherContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                         if lastname is None  :
                             lastname=""
@@ -2009,13 +1962,6 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                         else:
                             tempList.append("")
                         
-                        tempList.append("") #for icon
-                        if self.context['tag_id'] == "8":
-                            tempList.append("Text")
-                            tempList.append("")
-                        
-                        if self.context['status'] == "rejected":
-                            tempList.append(section_content_data.comment)
                         tempList.append(self.convert_utc_to_ist(section_content_data.created_at))
                         tempList.append(self.convert_utc_to_ist(section_content_data.updated_at))
                         data_str_list.append( tempList )
@@ -2038,26 +1984,9 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                             sub_sec_content = OtherContent.objects.filter(sub_section__id=sub_section_data.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
                         if sub_sec_content.exists():
                             for sub_section_content_data in sub_sec_content:
-                                if  sub_section_content_data.sub_section_keywords.all().count() != 0:
-                                    linked_keyword = SubSectionKeyword.objects.filter(id__in=sub_section_content_data.sub_section_keywords.all())
-                                    keyword =','.join([str(x.keyword) for x in linked_keyword.all()])
-                                    
-                                else:
-                                    keyword = ""
-                                tempList = [sub_section_content_data.content_name,"This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , "+ str(sections_1) +" , "+ str(sub_sections)]+tempList + [sub_sections,sub_sub_section ,sub_section_content_data.text]
-                                if self.context['tag_id'] == "10":
-                                    tempList.append("Learn")
-                                    tempList.append(keyword)
-                                    tempList.append("Learner")
-                                elif self.context['tag_id'] == "11":
-                                    tempList.append("Teach")
-                                    tempList.append(keyword)
-                                    tempList.append("Instructor")
-
-                                else:
-                                    tempList.append("Learn")
-                                    tempList.append(keyword)
-                                    tempList.append("Learner")
+                                
+                                tempList = ["centre","K-12","This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , "+ str(sections_1) +" , "+ str(sub_sections)]+tempList + ["chapter-no",sub_sections,"concept",sub_section_content_data.content_name,sub_section_content_data.text,"L-O","L-L"]
+                               
                                 lastname=OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                 if lastname is None  :
                                     lastname=""
@@ -2067,13 +1996,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                                     tempList.append(schoolname.school_name)
                                 else:
                                     tempList.append("")
-                                tempList.append("") #for icon
-                                if self.context['tag_id'] == "8": 
-                                    tempList.append("Text")
-                                    tempList.append("")
-
-                                if self.context['status'] == "rejected":
-                                    tempList.append(sub_section_content_data.comment)
+                                
                                 tempList.append(self.convert_utc_to_ist(sub_section_content_data.created_at))
                                 tempList.append(self.convert_utc_to_ist(sub_section_content_data.updated_at))
                                 data_str_list.append( tempList )
@@ -2099,27 +2022,9 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                                 if sub_sub_sec_content.exists():
 
                                     for sub_sub_sec_content_data in sub_sub_sec_content:
-                                        if  sub_sub_sec_content_data.sub_sub_section_keywords.all().count() != 0:
-                                            linked_keyword = SubSubSectionKeyword.objects.filter(id__in=sub_sub_sec_content_data.sub_sub_section_keywords.all())
-                                            keyword =','.join([str(x.keyword) for x in linked_keyword.all()])
-                                            
-                                        else:
-                                            keyword = ""
                                         
-                                        tempList = [sub_sub_sec_content_data.content_name,"This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , " +str(sections_1) +" , "+ str(sub_sections) +","+str(sub_sub_sections_1)]+tempList + [sub_sub_sections_1,sub_sub_sec_content_data.text]
-                                        if self.context['tag_id'] == "10":
-                                            tempList.append("Learn")
-                                            tempList.append(keyword)
-                                            tempList.append("Learner")
-                                        elif self.context['tag_id'] == "11":
-                                            tempList.append("Teach")
-                                            tempList.append(keyword)
-                                            tempList.append("Instructor")
-
-                                        else:
-                                            tempList.append("Learn")
-                                            tempList.append(keyword)
-                                            tempList.append("Learner")
+                                        tempList = ["centre","K-12","This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , " +str(sections_1) +" , "+ str(sub_sections) +","+str(sub_sub_sections_1)]+tempList + ["chapter_no",sub_sub_sections_1,"concept",sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.text,"L-O","L-L"]
+                                       
                                         lastname=OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                         if lastname is None  :
                                             lastname=""
@@ -2129,17 +2034,6 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                                             tempList.append(schoolname.school_name)
                                         else:
                                             tempList.append("")
-                                        
-                                        tempList.append("") #for icon
-                                        if self.context['tag_id'] == "8":
-                            
-                                            tempList.append("Text")
-                                            tempList.append("")
-
-                                        
-                                            
-                                        if self.context['status'] == "rejected":
-                                            tempList.append(sub_sub_sec_content_data.comment)
                                         tempList.append(self.convert_utc_to_ist(sub_sub_sec_content_data.created_at))
                                         tempList.append(self.convert_utc_to_ist(sub_sub_sec_content_data.updated_at))
                                         data_str_list.append( tempList )
