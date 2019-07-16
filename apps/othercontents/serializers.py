@@ -1183,12 +1183,17 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
     class Meta:
         model = Chapter
         fields = ['chapter']
-    
+
+    def convert_utc_to_ist(self,utc):
+        _utc = utc.strftime("%Y-%m-%d %H:%M:%S")
+        _utc_fmt = datetime.strptime(_utc, '%Y-%m-%d %H:%M:%S')
+        created_ist_ = _utc_fmt.replace(tzinfo=from_zone)
+        _ist = created_ist_.astimezone(to_zone)
+        return _ist.strftime("%Y-%m-%d %H:%M:%S")
+
     def get_chapter(self, req):
         data_str_list = []
-        # import ipdb;ipdb.set_trace()
         chapters=Chapter.objects.filter(id=req.id).first()
-        # chapters=Chapter.objects.filter(id=req.id).first()
         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
         section = " "
         sub_section = " "
@@ -1196,7 +1201,6 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
        
         chapter_con = OtherContent.objects.filter(chapter__id=chapters.id)
         section, sub_section, sub_sub_section, content_name,file_url, text, keyword, keyword_list = "","","","","","","",""
-        # import ipdb;ipdb.set_trace()
         if chapter_con.exists():
             for chapter_content_data in chapter_con:
                 tempList.append(section)
@@ -1246,14 +1250,14 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                     tempList.append("Curiosity Questions")
                 else:
                     tempList.append("")
-
+                tempList.append(self.convert_utc_to_ist(chapter_content_data.created_at))
+                tempList.append(self.convert_utc_to_ist(chapter_content_data.updated_at))
                 data_str_list.append( tempList)
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
 
         else:
-            tempList = tempList + ["","","","","","","","","",""]
-            # for i in range(10):
-            #     tempList.append("")
+            tempList = tempList + ["","","","","","","","","","","",""]
+            
             data_str_list.append( tempList)
             tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
 
@@ -1279,7 +1283,6 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                             tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name)
                         else:
                             tempList.append("") 
-                        # tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).school_name.school_name) 
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).mobile) 
                         tempList.append(OtherContributors.objects.get(id=section_content_data.content_contributors_id).email) 
                         filename = section_content_data.file_url
@@ -1313,15 +1316,16 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                             tempList.append("Curiosity Questions")
                         else:
                             tempList.append("")
+
+                        tempList.append(self.convert_utc_to_ist(section_content_data.created_at))
+                        tempList.append(self.convert_utc_to_ist(section_content_data.updated_at))
                         data_str_list.append( tempList)
-                        # print("2:>>"+str(len(tempList)))
 
                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
                 else:
                     tempList.append( section_data.section )
-                    tempList = tempList + ["","","","","","","","",""]
-                    # for i in range(9):
-                    #     tempList.append("")
+                    tempList = tempList + ["","","","","","","","","","",""]
+                    
                     data_str_list.append(tempList)
                     tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter ]
                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
@@ -1347,7 +1351,6 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                                     tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name)
                                 else:
                                     tempList.append("") 
-                                # tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).school_name.school_name) 
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).mobile) 
                                 tempList.append(OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).email) 
                                 filename = sub_section_content_data.file_url
@@ -1382,11 +1385,14 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                                     tempList.append("Curiosity Questions")
                                 else:
                                     tempList.append("")
+
+                                tempList.append(self.convert_utc_to_ist(sub_section_content_data.created_at))
+                                tempList.append(self.convert_utc_to_ist(sub_section_content_data.updated_at))
                                 data_str_list.append( tempList)
                                 tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section ]
                         else:
                             tempList.append( sub_section_data.sub_section )
-                            tempList = tempList + ["","","","","","","",""]
+                            tempList = tempList + ["","","","","","","","","",""]
                             # for i in range(8):
                             #     tempList.append("")
                             data_str_list.append( tempList)
@@ -1447,15 +1453,16 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                                             tempList.append("Curiosity Questions")
                                         else:
                                             tempList.append("")
+                                        tempList.append(self.convert_utc_to_ist(sub_sub_section_con_data.created_at))
+                                        tempList.append(self.convert_utc_to_ist(sub_sub_section_con_data.updated_at))
                                         data_str_list.append( tempList)
                                         tempList = [ chapters.book.subject.grade.medium.state, chapters.book.subject.grade.medium, chapters.book.subject.grade, chapters.book.subject, chapters.book, chapters.chapter, section_data.section,sub_section_data.sub_section ]
 
 
                                 else:
                                     tempList.append(sub_sub_section_data.sub_sub_section)
-                                    tempList = tempList + ["","","","","","",""]
-                                    # for i in range(7):
-                                    #     tempList.append("")
+                                    tempList = tempList + ["","","","","","","","",""]
+                                   
                                     data_str_list.append(tempList)
                                 
 

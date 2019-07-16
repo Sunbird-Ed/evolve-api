@@ -582,7 +582,7 @@ class OtherContentStatusDownloadView(RetrieveUpdateAPIView):
 				for d in data['chapter']:
 					final_list.append(d)
 
-			data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Content name', 'School_name', 'Mobile', 'Email', 'File name','Status',"Content Type"])
+			data_frame = pd.DataFrame(final_list , columns=['Board', 'Medium','Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Content name', 'School_name', 'Mobile', 'Email', 'File name','Status',"Content Type",'Time stamp of content contribution','Time stamp of content approval'])
 			exists = os.path.isfile('full-report.csv')
 			path = settings.MEDIA_ROOT + '/files/'
 			if exists:
