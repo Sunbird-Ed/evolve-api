@@ -2010,10 +2010,11 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                 tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, edited_medium,  chapters.book.subject, chapters.book, chapters.chapter ]
 
                 sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
-                edited_sub_section = self.edit_level_name(sub_section)
                 if sub_section.exists():
                     for sub_section_data in sub_section:
-                        sub_sections=sub_section_data.sub_section 
+                        sub_sections=sub_section_data.sub_section
+                        edited_sub_section = self.edit_level_name(sub_sections)
+ 
                         sub_sub_section,content_name,file_url,text = "","","","",
                         if self.context['status'] == "approved":
                             sub_sec_content = OtherContent.objects.filter(sub_section__id=sub_section_data.id,approved=True,tags__id=self.context['tag_id']).order_by("id")
