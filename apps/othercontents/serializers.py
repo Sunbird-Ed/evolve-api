@@ -1916,6 +1916,13 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
             return edit_value
         except Exception as e:
             return None
+    def edit_level_name(self,value):
+        try:
+            splited = (value).split("(")
+            return splited
+        except Exception as e:
+            return None
+            
         
         
 
@@ -1934,11 +1941,12 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
 
         if chapter_content.exists(): 
 
-            chapter_bracket_value=self.get_node_bracket_data(chapters.chapter)
+            
 
             for chapter_content_data in chapter_content:
-               
-                tempList = ["centre","K-12"] + tempList + ["",chapters.chapter,chapter_bracket_value,chapter_content_data.content_name,chapter_content_data.text,"",""]
+                chapter_bracket_value=self.get_node_bracket_data(chapters.chapter)
+                edited_chapter = self.edit_level_name(chapters.chapter)
+                tempList = ["centre","K-12"] + tempList + ["",edited_chapter,chapter_bracket_value,chapter_content_data.content_name,chapter_content_data.text,"",""]
                
                 lastname=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
                 if lastname is None  :
@@ -1978,7 +1986,8 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                 if sec_content.exists():
                     for section_content_data in sec_content:
                         section_bracket_value = self.get_node_bracket_data(sections_1)
-                        tempList = ["centre","K-12"] +tempList + ["",sections_1,section_bracket_value,section_content_data.content_name,section_content_data.text,"",""]
+                        edited_section = self.edit_level_name(sections_1)
+                        tempList = ["centre","K-12"] +tempList + ["",edited_section,section_bracket_value,section_content_data.content_name,section_content_data.text,"",""]
                        
                         lastname=OtherContributors.objects.get(id=section_content_data.content_contributors_id).last_name
                         if lastname is None  :
@@ -2012,7 +2021,8 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                         if sub_sec_content.exists():
                             for sub_section_content_data in sub_sec_content:
                                 sub_section_bracket_value = self.get_node_bracket_data(sub_sections)
-                                tempList = ["centre","K-12"]+tempList + ["",sub_sections,sub_section_bracket_value,sub_section_content_data.content_name,sub_section_content_data.text,"",""]
+                                edited_sub_section = self.edit_level_name(sub_sections)
+                                tempList = ["centre","K-12"]+tempList + ["",edited_sub_section,sub_section_bracket_value,sub_section_content_data.content_name,sub_section_content_data.text,"",""]
                                
                                 lastname=OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
                                 if lastname is None  :
@@ -2049,7 +2059,9 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
 
                                     for sub_sub_sec_content_data in sub_sub_sec_content:
                                         sub_sub_section_bracket_value = self.get_node_bracket_data(sub_sub_sections_1)
-                                        tempList = ["centre","K-12"]+tempList + ["",sub_sub_sections_1,sub_sub_section_bracket_value,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.text,"",""]
+                                        edited_sub_sub_section = self.edit_level_name(sub_sub_sections_1)
+
+                                        tempList = ["centre","K-12"]+tempList + ["",edited_sub_sub_section,sub_sub_section_bracket_value,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.text,"",""]
                                        
                                         lastname=OtherContributors.objects.get(id=sub_sub_sec_content_data.content_contributors_id).last_name
                                         if lastname is None  :
