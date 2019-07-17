@@ -1919,7 +1919,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
     def edit_level_name(self,value):
         try:
             splited = (value).split("(")
-            return splited
+            return splited[0]
         except Exception as e:
             return None
             
