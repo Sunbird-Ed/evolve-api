@@ -1938,14 +1938,13 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
         elif self.context['status'] == "rejected":
             chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
         section, sub_section, sub_sub_section, content_name,file_url, text, keyword, keyword_list = "","","","","","","",""
-
+        edited_chapter = self.edit_level_name(chapters.chapter)
         if chapter_content.exists(): 
 
             
 
             for chapter_content_data in chapter_content:
                 chapter_bracket_value=self.get_node_bracket_data(chapters.chapter)
-                edited_chapter = self.edit_level_name(chapters.chapter)
                 tempList = ["centre","K-12"] + tempList + ["",edited_chapter,chapter_bracket_value,chapter_content_data.content_name,chapter_content_data.text,"",""]
                
                 lastname=OtherContributors.objects.get(id=chapter_content_data.content_contributors_id).last_name
@@ -1957,7 +1956,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                     tempList.append(schoolname.school_name) 
                 else:
                     tempList.append("")
-                tempList.append("This resource is about "+str(chapters.book)+" , "+str(chapters.chapter))
+                tempList.append("This resource is about "+str(chapters.book)+" , "+str(edited_chapter))
                 tempList.append(self.convert_utc_to_ist(chapter_content_data.created_at))
                 tempList.append(self.convert_utc_to_ist(chapter_content_data.updated_at))
                 data_str_list.append( tempList)
@@ -1983,10 +1982,11 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                 elif self.context['status'] == "rejected":
                     sec_content = OtherContent.objects.filter(section__id=section_data.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
                 sub_section,sub_sub_section,content_name,file_url,text,keyword,keyword_list = "","","","","","",""
+                edited_section = self.edit_level_name(sections_1)
                 if sec_content.exists():
                     for section_content_data in sec_content:
                         section_bracket_value = self.get_node_bracket_data(sections_1)
-                        edited_section = self.edit_level_name(sections_1)
+                        
                         tempList = ["centre","K-12"] +tempList + ["",edited_section,section_bracket_value,section_content_data.content_name,section_content_data.text,"",""]
                        
                         lastname=OtherContributors.objects.get(id=section_content_data.content_contributors_id).last_name
@@ -1998,7 +1998,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                             tempList.append(schoolname.school_name)
                         else:
                             tempList.append("")
-                        tempList.append("This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , " +str(sections_1))
+                        tempList.append("This resource is about "+str(chapters.book)+" , "+str(edited_chapter)+" , " +str(edited_section))
                         tempList.append(self.convert_utc_to_ist(section_content_data.created_at))
                         tempList.append(self.convert_utc_to_ist(section_content_data.updated_at))
                         data_str_list.append( tempList )
@@ -2010,6 +2010,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                 tempList = [ chapters.book.subject.grade.medium.state,chapters.book.subject.grade, edited_medium,  chapters.book.subject, chapters.book, chapters.chapter ]
 
                 sub_section=SubSection.objects.filter(section__id=section_data.id).order_by('id')
+                edited_sub_section = self.edit_level_name(sub_section)
                 if sub_section.exists():
                     for sub_section_data in sub_section:
                         sub_sections=sub_section_data.sub_section 
@@ -2021,7 +2022,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                         if sub_sec_content.exists():
                             for sub_section_content_data in sub_sec_content:
                                 sub_section_bracket_value = self.get_node_bracket_data(sub_sections)
-                                edited_sub_section = self.edit_level_name(sub_sections)
+                                
                                 tempList = ["centre","K-12"]+tempList + ["",edited_sub_section,sub_section_bracket_value,sub_section_content_data.content_name,sub_section_content_data.text,"",""]
                                
                                 lastname=OtherContributors.objects.get(id=sub_section_content_data.content_contributors_id).last_name
@@ -2033,7 +2034,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                                     tempList.append(schoolname.school_name)
                                 else:
                                     tempList.append("")
-                                tempList.append("This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , "+ str(sections_1) +" , "+ str(sub_sections))
+                                tempList.append("This resource is about "+str(chapters.book)+" , "+str(edited_chapter)+" , "+ str(edited_section) +" , "+ str(edited_sub_section))
                                 tempList.append(self.convert_utc_to_ist(sub_section_content_data.created_at))
                                 tempList.append(self.convert_utc_to_ist(sub_section_content_data.updated_at))
                                 data_str_list.append( tempList )
@@ -2054,12 +2055,12 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                                 elif self.context['status'] == "rejected":
                                     sub_sub_sec_content = OtherContent.objects.filter(sub_sub_section__id=sub_sub_section.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
 
-
+                                edited_sub_sub_section = self.edit_level_name(sub_sub_sections_1)
                                 if sub_sub_sec_content.exists():
 
                                     for sub_sub_sec_content_data in sub_sub_sec_content:
                                         sub_sub_section_bracket_value = self.get_node_bracket_data(sub_sub_sections_1)
-                                        edited_sub_sub_section = self.edit_level_name(sub_sub_sections_1)
+                                        
 
                                         tempList = ["centre","K-12"]+tempList + ["",edited_sub_sub_section,sub_sub_section_bracket_value,sub_sub_sec_content_data.content_name,sub_sub_sec_content_data.text,"",""]
                                        
@@ -2072,7 +2073,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
                                             tempList.append(schoolname.school_name)
                                         else:
                                             tempList.append("")
-                                        tempList.append("This resource is about "+str(chapters.book)+" , "+str(chapters.chapter)+" , " +str(sections_1) +" , "+ str(sub_sections) +","+str(sub_sub_sections_1))
+                                        tempList.append("This resource is about "+str(chapters.book)+" , "+str(edited_chapter)+" , " +str(edited_section) +" , "+ str(edited_sub_section) +","+str(edited_sub_sub_section))
                                         tempList.append(self.convert_utc_to_ist(sub_sub_sec_content_data.created_at))
                                         tempList.append(self.convert_utc_to_ist(sub_sub_sec_content_data.updated_at))
                                         data_str_list.append( tempList )
