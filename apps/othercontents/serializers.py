@@ -1939,6 +1939,7 @@ class ApprovedCuriositySerializerSecond(serializers.ModelSerializer):
             chapter_content = OtherContent.objects.filter(chapter__id=chapters.id,approved=False,tags__id=self.context['tag_id']).exclude(approved_by=None).order_by("id")
         section, sub_section, sub_sub_section, content_name,file_url, text, keyword, keyword_list = "","","","","","","",""
         edited_chapter = self.edit_level_name(chapters.chapter)
+        # import ipdb;ipdb.set_trace()
         if chapter_content.exists(): 
 
             

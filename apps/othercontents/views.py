@@ -657,7 +657,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 						final_list.append(d)
 				if str(status_) == "approved":
 					file_status = "Approved"
-					data_frame1 = (pd.DataFrame(final_list , columns=["State/Centre","Type","Board","Grade","Subject","Medium","Textbook Name","Chapter No.","Chapter Name","Chapter - Concept Name","QuestionText","Answer Text","Learning outcome","Learning Level","Name of Contributor","School","Description","Time stamp of content contribution","Time stamp of content approval"]))
+					data_frame1 = (pd.DataFrame(final_list , columns=["State/Centre","Type","Board","Grade","Subject","Medium","Textbook Name","Chapter","Chapter No.","Chapter Name","Chapter - Concept Name","QuestionText","Answer Text","Learning outcome","Learning Level","Name of Contributor","School","Description","Time stamp of content contribution","Time stamp of content approval"]))
 			
 			else:
 				serializer = ApprovedOtherContentSerializerSecond(chapters, many=True,context={'tag_id':tag, "status" : str(status_)})
