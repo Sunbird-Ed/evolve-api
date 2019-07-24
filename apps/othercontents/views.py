@@ -667,7 +667,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 	
 				if str(status_) == "approved":
 					file_status = "Approved"
-					data_frame1 = (pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link','Time stamp of content contribution','Time stamp of content approval']))
+					data_frame1 = (pd.DataFrame(final_list , columns=['Name of the Content',"Description of the content in one line - telling about the content",'Board','Class', 'Medium', 'Subject', 'Textbook Name','chapter','Topic' , 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','text','Resource Type','Keywords','Audience',"Creators",'Attribution (Credits)','icon','File format','Content Link/Video Link','Time stamp of content contribution','Time stamp of content approval']))
 				elif str(status_) == "rejected":
 					file_status = "Rejected"
 					data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Topic', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment'])
@@ -677,7 +677,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 			tag_name=""
 			if tag == "10" or tag == "9":
 				tag_name = Tags.objects.get(id=tag).tag_name
-				df =(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "File path"})
+				df =(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name','chapter'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "File path"})
 				data_frame = df.drop_duplicates()
 			elif tag == "8":
 				tag_name = Tags.objects.get(id=tag).tag_name
@@ -685,11 +685,11 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 				data_frame = df.drop_duplicates()
 			elif tag == "7":
 				tag_name = Tags.objects.get(id=tag).tag_name
-				df=(data_frame1.drop(['Content Link/Video Link','Content Name','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"text":"Learning Outcome Definition"})
+				df=(data_frame1.drop(['Content Link/Video Link','Content Name','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name','chapter'], axis=1)).rename(index=str, columns={"text":"Learning Outcome Definition"})
 				data_frame = df.drop_duplicates()
 			elif tag == "11":
 				tag_name = Tags.objects.get(id=tag).tag_name
-				df =(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
+				df =(data_frame1.drop(['text','Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Textbook Name','chapter'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"})
 				data_frame = df.drop_duplicates()
 			elif tag == "1":
 				tag_name = "Content"
