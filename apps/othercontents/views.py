@@ -503,14 +503,11 @@ class ApprovedOtherContentDownload(ListAPIView):
 					file_status = "Rejected"
 					data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit','Keywords','Content Name','Content Link/Video Link','text',"Creators",'Credit To','File format','Comment',"linked_keywords"])
 
-				# repeat_list=['Content Name','Content Link/Video Link','text','linked_keywords']
-				# data_frame1 = pd.DataFrame(final_list , columns=['Board', 'Medium', 'Grade', 'Subject', 'Textbook Name', 'Level 1 Textbook Unit', 'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit', 'Keywords',]+(list(itertools.chain.from_iterable(itertools.repeat(repeat_list, 5)))))
 			tag_name=""
 			if tag == "10" or tag == "9":
 				# video and pdf
 				tag_name = Tags.objects.get(id=tag).tag_name
 				data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link": "Content Link"})
-				# data_frame=data_frame_.rename(index=str, columns={"Content Link/Video Link": "Content Document Link","Content Name":"Question"})
 			elif tag == "8":
 				# question answer
 				tag_name = Tags.objects.get(id=tag).tag_name
@@ -521,7 +518,7 @@ class ApprovedOtherContentDownload(ListAPIView):
 				tag_name = Tags.objects.get(id=tag).tag_name
 				data_frame=(data_frame1.drop(['Content Link/Video Link','Content Name'], axis=1)).rename(index=str, columns={"text":"Learning Outcome Definition"})
 
-			elif tag == "11":
+			elif tag == "11" or tag == "12":
 				# only pdf
 				tag_name = Tags.objects.get(id=tag).tag_name
 				data_frame=(data_frame1.drop(['text'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"Content Link"})
