@@ -196,7 +196,7 @@ class UpdateOtherContentView(RetrieveUpdateAPIView):
 
 
 
-@permission_classes((IsAuthenticated,))
+
 class OtherContentApprovedList(ListAPIView):
 	queryset = OtherContent.objects.all()
 	serializer_class = OtherContentStatusSerializer
@@ -246,7 +246,7 @@ class OtherContentApprovedList(ListAPIView):
 
 
 
-@permission_classes((IsAuthenticated,))
+
 class OtherContentPendingList(ListAPIView):
 	queryset = OtherContent.objects.all()
 	serializer_class = OtherContentStatusSerializer
@@ -292,7 +292,6 @@ class OtherContentPendingList(ListAPIView):
 			context = {'success': "false", 'message': 'Failed to get OtherContent Pending list.'}
 			return Response(context, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@permission_classes((IsAuthenticated,))
 class OtherContentRejectedList(ListAPIView):
 	queryset = OtherContent.objects.all()
 	serializer_class = OtherContentStatusSerializer
