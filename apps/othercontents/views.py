@@ -196,7 +196,7 @@ class UpdateOtherContentView(RetrieveUpdateAPIView):
 
 
 
-
+@permission_classes((IsAuthenticated,))
 class OtherContentApprovedList(ListAPIView):
 	queryset = OtherContent.objects.all()
 	serializer_class = OtherContentStatusSerializer
@@ -339,7 +339,7 @@ class OtherContentRejectedList(ListAPIView):
 
 
 
-# @permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 class OtherContentDetailList(ListAPIView):
 	queryset = Book.objects.all()
 	serializer_class = OtherContentDetailListSerializer
@@ -461,7 +461,7 @@ class OtherContentContributorsDownloadView(RetrieveUpdateAPIView):
 		   
 
 
-# @permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 class ApprovedOtherContentDownload(ListAPIView):
 	queryset = Book.objects.all()
 

@@ -618,8 +618,7 @@ class OtherContentStatusSerializer(serializers.ModelSerializer):
 
 
 class OtherContentDetailListSerializer(serializers.ModelSerializer):
-    # total_hardspot=serializers.SerializerMethodField()
-    # approved_hardspot=serializers.SerializerMethodField()
+
     total_content=serializers.SerializerMethodField()
     approved_content=serializers.SerializerMethodField()
     rejected_content = serializers.SerializerMethodField()
@@ -1241,6 +1240,8 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                     tempList.append("Learning Outcome Definition")
                 elif tag_id == "11":
                     tempList.append("Lesson Plans")
+                elif tag_id == "12":
+                    tempList.append("Concept Map")
                 elif tag_id == "10":
                     tempList.append("Experential")
                 elif tag_id == "9":
@@ -1307,6 +1308,8 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                             tempList.append("Learning Outcome Definition")
                         elif tag_id == "11":
                             tempList.append("Lesson Plans")
+                        elif tag_id == "12":
+                            tempList.append("Concept Map")
                         elif tag_id == "10":
                             tempList.append("Experential")
                         elif tag_id == "9":
@@ -1376,6 +1379,8 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                                     tempList.append("Learning Outcome Definition")
                                 elif tag_id == "11":
                                     tempList.append("Lesson Plans")
+                                elif tag_id == "12":
+                                    tempList.append("Concept Map")
                                 elif tag_id == "10":
                                     tempList.append("Experential")
                                 elif tag_id == "9":
@@ -1444,6 +1449,8 @@ class OtherContentStatusSerializerdownload(serializers.ModelSerializer):
                                             tempList.append("Learning Outcome Definition")
                                         elif tag_id == "11":
                                             tempList.append("Lesson Plans")
+                                        elif tag_id == "12":
+                                            tempList.append("Concept Map")
                                         elif tag_id == "10":
                                             tempList.append("Experential")
                                         elif tag_id == "9":
