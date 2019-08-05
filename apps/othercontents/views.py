@@ -684,7 +684,7 @@ class ApprovedOtherContentDownloadSecond(ListAPIView):
 				tag_name = Tags.objects.get(id=tag).tag_name
 				df=(data_frame1.drop(['Content Link/Video Link','Content Name','Textbook Name','chapter'], axis=1)).rename(index=str, columns={"text":"Learning Outcome Definition"}) #,'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit'
 				data_frame = df.drop_duplicates()
-			elif tag == "11":
+			elif tag == "11" or tag == "12":
 				tag_name = Tags.objects.get(id=tag).tag_name
 				df =(data_frame1.drop(['text','Textbook Name','chapter'], axis=1)).rename(index=str, columns={"Content Link/Video Link":"File path"}) #,'Level 2 Textbook Unit', 'Level 3 Textbook Unit','Level 4 Textbook Unit'
 				data_frame = df.drop_duplicates()
